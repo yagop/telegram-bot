@@ -1,9 +1,14 @@
 our_id = 0
+started = 0
+now = os.time()
 
 function on_msg_receive (msg)
    -- vardump(msg)
    if msg.out then
       return
+   end
+   if msg.date < now then
+     return
    end
    if msg.text == nil then
       return
@@ -18,8 +23,14 @@ function on_msg_receive (msg)
    end
 end
 
+-- Where magic happens
 function do_action(msg)
    receiver = get_receiver(msg)
+   -- sudo apt-get install fortunes-es-off
+   if string.starts(msg.text, 'fortune') then
+      text = run_bash('fortune')
+      send_msg(receiver, text)
+   end  
    if string.starts(msg.text, 'forni') then
       text = msg.text:sub(7,-1)
       send_msg('Fornicio_2.0', text)
@@ -46,13 +57,14 @@ function do_action(msg)
       send_msg(receiver, text)
    end
    if string.starts(msg.text, 'help') then
-      text = [[ !help : print this help 
+      text = [[!help : print this help 
 !ping : bot sends pong 
 !echo <text> : echoes the msg 
 !version : version info
 !cpu : Status (uname + top)
 !fwd : Forward msg
-!forni : Send text to group Fornicio]]
+!forni : Send text to group Fornicio
+!fortune : Print a random adage]]
       send_msg(receiver, text)
    end
 end
@@ -95,6 +107,13 @@ function run_bash(str)
   local result = cmd:read('*all')
   cmd:close()
   return result
+end
+
+function readAll(file)
+    local f = io.open(file, "rb")
+    local content = f:read("*all")
+    f:close()
+    return content
 end
 
 function vardump(value, depth, key)
