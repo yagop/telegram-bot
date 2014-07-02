@@ -1,5 +1,7 @@
+http = require("socket.http")
+json = (loadfile "./bot/JSON.lua")()
+
 our_id = 0
-started = 0
 now = os.time()
 
 function on_msg_receive (msg)
@@ -21,12 +23,12 @@ function on_msg_receive (msg)
       msg.text = msg.text:sub(2,-1)
       do_action(msg)
    end
+   mark_read(get_receiver(msg))
 end
 
 -- Where magic happens
 function do_action(msg)
    receiver = get_receiver(msg)
-   -- sudo apt-get install fortunes-es-off
    if string.starts(msg.text, 'fortune') then
       text = run_bash('fortune')
       send_msg(receiver, text)
@@ -39,12 +41,16 @@ function do_action(msg)
       fwd_msg (receiver, msg.id)
    end  
    if string.starts(msg.text, 'cpu') then
-      text = run_bash('uname -snr')
+      text = run_bash('uname -snr') .. ' ' .. run_bash('whoami')
       text = text .. '\n' .. run_bash('top -b |head -2')
       send_msg(receiver, text)
    end
    if string.starts(msg.text, 'ping') then
       send_msg(receiver, "pong")
+   end
+   if string.starts(msg.text, 'weather') then
+      text = get_weather('Madrid,ES')
+      send_msg(receiver, text)
    end
    if string.starts(msg.text, 'echo') then
       -- Removes echo from the string
@@ -52,19 +58,19 @@ function do_action(msg)
       send_msg(receiver, echo)
    end
    if string.starts(msg.text, 'version') then
-      text = 'v0.0.2 aka Study\n'
-      text = text .. 'Host user: ' .. run_bash('whoami')
+      text = 'Version v0.0.4\n'
       send_msg(receiver, text)
    end
    if string.starts(msg.text, 'help') then
       text = [[!help : print this help 
 !ping : bot sends pong 
-!echo <text> : echoes the msg 
+!echo (text) : echo the msg 
 !version : version info
-!cpu : Status (uname + top)
-!fwd : Forward msg
-!forni : Send text to group Fornicio
-!fortune : Print a random adage]]
+!cpu : status (uname + top)
+!fwd : forward msg
+!forni : send text to group Fornicio
+!fortune : print a random adage
+!weather : weather in Madrid]]
       send_msg(receiver, text)
    end
 end
@@ -114,6 +120,19 @@ function readAll(file)
     local content = f:read("*all")
     f:close()
     return content
+end
+
+function get_weather(location)
+   b, c, h = http.request("http://api.openweathermap.org/data/2.5/weather?q=" .. location .. "&units=metric")
+   weather = json:decode(b)
+   temp = 'The temperature in ' .. weather.name .. ' is ' .. weather.main.temp .. '°C'
+   conditions = 'Current conditions are: ' .. weather.weather[1].description
+   if weather.weather[1].main == 'Clear' then
+	  conditions = conditions .. ' ☀'
+   elseif weather.weather[1].main == 'Clouds' then
+	  conditions = conditions .. ' ☁'
+   end
+   return temp .. '\n' .. conditions
 end
 
 function vardump(value, depth, key)
