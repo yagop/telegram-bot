@@ -1,9 +1,7 @@
 http = require("socket.http")
 json = (loadfile "./bot/JSON.lua")()
 
-our_id = 0
-now = os.time()
-VERSION = 'v0.0.5'
+VERSION = 'v0.0.6'
 
 function on_msg_receive (msg)
    -- vardump(msg)
@@ -30,19 +28,17 @@ end
 -- Where magic happens
 function do_action(msg)
    receiver = get_receiver(msg)
-   local name = msg.from.first_name
-   if name == nil then
-      name = 'Noob '
-   end
+   
    if string.starts(msg.text, 'sh') then
-      bash = msg.text:sub(4,-1)
-      if is_sudo(msg) then
-         text = run_bash(bash)
-      else
-         text = name .. ' you have no power here!'
-      end
+      text = run_sh(msg)
       send_msg(receiver, text)
-   end   
+   end
+   
+   if string.starts(msg.text, 'torrent') then
+      text = save_torrent(msg)
+      send_msg(receiver, text)
+   end
+  
    if string.starts(msg.text, 'uc3m') then
       text = get_fortunes_uc3m()
       send_msg(receiver, text)
@@ -86,6 +82,7 @@ function do_action(msg)
    if string.starts(msg.text, 'help') then
       text = [[!help : print this help 
 !ping : bot sends pong 
+!sh (text) : send commands to bash (only privileged users)
 !echo (text) : echo the msg 
 !version : version info
 !cpu : status (uname + top)
@@ -93,7 +90,8 @@ function do_action(msg)
 !forni : send text to group Fornicio
 !fortune : print a random adage
 !weather : weather in Madrid
-!9gag : send random url image from 9gag]]
+!9gag : send random url image from 9gag
+!uc3m : fortunes from Universidad Carlos III]]
       send_msg(receiver, text)
    end
 end
@@ -131,15 +129,69 @@ function string.starts(String,Start)
    return string.sub(String,1,string.len(Start))==Start
 end
 
-function is_sudo(msg)
-   print('from: '.. msg.from.id)
-   if msg.from.id == 11696011 then
-      print('is sudo')
-      return true
-   else
-      print('is a noob')
-      return false
+function load_config()
+   local f = assert(io.open('./bot/config.json', "r"))
+   local c = f:read "*a"
+   local config = json:decode(c)
+   if config.torrent_path then 
+      print ("!sh command is enabled")
+      for v,user in pairs(config.sudo_users) do
+         print("Allowed user: " .. user)
+      end
    end
+   print("Torrent path: " .. config.torrent_path)
+   f:close()
+   return config
+end
+
+function save_torrent(msg)
+   if is_sudo(msg) == false then
+      local name = msg.from.first_name
+      if name == nil then
+         name = 'Noob '
+      end
+      text = name .. ' you have no power here!'
+      return text
+   end
+   path = msg.text:sub(9,-1)  
+   -- Check this is a torrent   
+   pattern = 'http://[%w/%.%%%(%)%[%]&_-]+%.torrent'
+   path = string.match(path, pattern)
+   name = string.random(7) .. '.torrent'
+   filePath = config.torrent_path .. name
+   print ("Download ".. path .." to "..filePath)
+   download_to_file(path, filePath)
+   return "Downloaded ".. path .." to "..filePath
+end
+
+function is_sudo(msg)
+   local var = false
+   -- Check users id in config 
+   for v,user in pairs(config.sudo_users) do 
+      if user == msg.from.id then 
+         var = true 
+      end
+   end
+   return var
+end
+
+function run_sh(msg)
+   local name = msg.from.first_name
+   if name == nil then
+      name = 'Noob '
+   end
+   text = ''
+   if config.sh_enabled == false then 
+      text = '!sh command is disabled'
+   else
+      if is_sudo(msg) then
+         bash = msg.text:sub(4,-1)
+         text = run_bash(bash)
+      else
+         text = name .. ' you have no power here!'
+      end
+   end
+   return text
 end
 
 function run_bash(str)
@@ -157,20 +209,19 @@ function readAll(file)
 end
 
 function get_fortunes_uc3m()
-   i = math.random(0,178) -- max 178 
-   b, c, h = http.request("http://www.gul.es/fortunes/f"..i)
+   local i = math.random(0,178) -- max 178
+   local web = "http://www.gul.es/fortunes/f"..i 
+   b, c, h = http.request(web)
    return b
 end
 
 function get_infiniGAG()
    b, c, h = http.request("http://infinigag-us.aws.af.cm")
    local gag = json:decode(b)
-   -- for key,value in pairs(gag.data) do print(key,value) end
    i = math.random(table.getn(gag.data)) -- random
    local link_image = gag.data[i].images.normal
    return link_image
 end
-
 
 function download_to_file(source, filePath)
    local oFile = io.open(filePath, "w")
@@ -193,6 +244,16 @@ function get_weather(location)
 	  conditions = conditions .. ' ☔☔☔☔'
    end
    return temp .. '\n' .. conditions
+end
+
+function string.random(length)
+   math.randomseed(os.time())
+   local str = "";
+   for i = 1, length do
+      math.random(97, 122)
+      str = str..string.char(math.random(97, 122));
+   end
+   return str;
 end
 
 function vardump(value, depth, key)
@@ -231,3 +292,8 @@ function vardump(value, depth, key)
     print(spaces..linePrefix.."("..type(value)..") "..tostring(value))
   end
 end
+
+-- Start and load values
+config = load_config()
+our_id = 0
+now = os.time()
