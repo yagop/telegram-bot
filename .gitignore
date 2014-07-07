@@ -1,3 +1,6 @@
+# Config file
+bot/config.json
+
 # Object files
 *.o
 *.ko

@@ -1,7 +1,7 @@
 http = require("socket.http")
 json = (loadfile "./bot/JSON.lua")()
 
-VERSION = 'v0.0.6'
+VERSION = 'v0.0.7'
 
 function on_msg_receive (msg)
    -- vardump(msg)
@@ -54,6 +54,10 @@ function do_action(msg)
    if string.starts(msg.text, 'forni') then
       text = msg.text:sub(7,-1)
       send_msg('Fornicio_2.0', text)
+   end 
+   if string.starts(msg.text, 'hackers') then
+      text = msg.text:sub(9,-1)
+      send_msg('Juankers._Dios_existe_y_es_<span_class=', text)
    end  
    if string.starts(msg.text, 'fwd') then
       fwd_msg (receiver, msg.id)
@@ -67,7 +71,12 @@ function do_action(msg)
       send_msg(receiver, "pong")
    end
    if string.starts(msg.text, 'weather') then
-      text = get_weather('Madrid,ES')
+      if string.len(msg.text) <= 9 then
+         city = 'Madrid,ES'
+      else  
+         city = msg.text:sub(9,-1)
+      end    
+      text = get_weather(city)
       send_msg(receiver, text)
    end
    if string.starts(msg.text, 'echo') then
@@ -89,9 +98,10 @@ function do_action(msg)
 !fwd : forward msg
 !forni : send text to group Fornicio
 !fortune : print a random adage
-!weather : weather in Madrid
+!weather [city] : weather in that city (Madrid if not city)
 !9gag : send random url image from 9gag
-!uc3m : fortunes from Universidad Carlos III]]
+!uc3m : fortunes from Universidad Carlos III
+!hackers : send text to group Juankers]]
       send_msg(receiver, text)
    end
 end
@@ -139,12 +149,12 @@ function load_config()
          print("Allowed user: " .. user)
       end
    end
-   print("Torrent path: " .. config.torrent_path)
+   -- print("Torrent path: " .. config.torrent_path)
    f:close()
    return config
 end
 
-function save_torrent(msg)
+--[[ function save_torrent(msg)
    if is_sudo(msg) == false then
       local name = msg.from.first_name
       if name == nil then
@@ -162,7 +172,7 @@ function save_torrent(msg)
    print ("Download ".. path .." to "..filePath)
    download_to_file(path, filePath)
    return "Downloaded ".. path .." to "..filePath
-end
+end ]]--
 
 function is_sudo(msg)
    local var = false
@@ -223,16 +233,13 @@ function get_infiniGAG()
    return link_image
 end
 
-function download_to_file(source, filePath)
-   local oFile = io.open(filePath, "w")
-   local save = ltn12.sink.file(oFile)
-   http.request{url = addr, sink = save } 
-end
-
 function get_weather(location)
    b, c, h = http.request("http://api.openweathermap.org/data/2.5/weather?q=" .. location .. "&units=metric")
    weather = json:decode(b)
-   temp = 'The temperature in ' .. weather.name .. ' is ' .. weather.main.temp .. '°C'
+   local city = weather.name
+   local country = weather.sys.country
+   temp = 'The temperature in ' .. city .. ' (' .. country .. ')'
+   temp = temp .. ' is ' .. weather.main.temp .. '°C'
    conditions = 'Current conditions are: ' .. weather.weather[1].description
    if weather.weather[1].main == 'Clear' then
 	  conditions = conditions .. ' ☀'
