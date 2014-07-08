@@ -176,7 +176,7 @@ end
 function write_to_file(filename, value)
   if (value) then
     local file = io.open(filename,"a")
-    file:write(value)
+    file:write(value, "\n")
     file:close()
   end
 end
