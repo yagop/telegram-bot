@@ -175,7 +175,7 @@ end
 -- Saves a string to file
 function write_to_file(filename, value)
   if (value) then
-    local file = io.open(filename,"w+")
+    local file = io.open(filename,"a")
     file:write(value)
     file:close()
   end
