@@ -5,6 +5,7 @@ VERSION = 'v0.0.7'
 
 function on_msg_receive (msg)
    -- vardump(msg)
+   mark_read(get_receiver(msg))
    if msg.out then
       return
    end
@@ -22,7 +23,7 @@ function on_msg_receive (msg)
       msg.text = msg.text:sub(2,-1)
       do_action(msg)
    end
-   mark_read(get_receiver(msg))
+   write_log_file(msg)
 end
 
 -- Where magic happens
@@ -154,26 +155,6 @@ function load_config()
    return config
 end
 
---[[ function save_torrent(msg)
-   if is_sudo(msg) == false then
-      local name = msg.from.first_name
-      if name == nil then
-         name = 'Noob '
-      end
-      text = name .. ' you have no power here!'
-      return text
-   end
-   path = msg.text:sub(9,-1)  
-   -- Check this is a torrent   
-   pattern = 'http://[%w/%.%%%(%)%[%]&_-]+%.torrent'
-   path = string.match(path, pattern)
-   name = string.random(7) .. '.torrent'
-   filePath = config.torrent_path .. name
-   print ("Download ".. path .." to "..filePath)
-   download_to_file(path, filePath)
-   return "Downloaded ".. path .." to "..filePath
-end ]]--
-
 function is_sudo(msg)
    local var = false
    -- Check users id in config 
@@ -185,11 +166,31 @@ function is_sudo(msg)
    return var
 end
 
-function run_sh(msg)
+function write_log_file(msg)
+  name = get_name(msg)
+  ret = name .. ' > ' .. msg.text
+  write_to_file(config.log_file, ret)
+end
+
+-- Saves a string to file
+function write_to_file(filename, value)
+  if (value) then
+    local file = io.open(filename,"w+")
+    file:write(value)
+    file:close()
+  end
+end
+
+function get_name(msg)
    local name = msg.from.first_name
    if name == nil then
-      name = 'Noob '
+      name = msg.from.id
    end
+   return name
+end
+
+function run_sh(msg)
+   name = get_name(msg)
    text = ''
    if config.sh_enabled == false then 
       text = '!sh command is disabled'
@@ -219,6 +220,7 @@ function readAll(file)
 end
 
 function get_fortunes_uc3m()
+   math.randomseed(os.time())
    local i = math.random(0,178) -- max 178
    local web = "http://www.gul.es/fortunes/f"..i 
    b, c, h = http.request(web)
@@ -251,6 +253,18 @@ function get_weather(location)
 	  conditions = conditions .. ' ☔☔☔☔'
    end
    return temp .. '\n' .. conditions
+end
+
+function sanitize(txt)
+    local replacements = {
+        ['&' ] = '&amp;', 
+        ['<' ] = '&lt;', 
+        ['>' ] = '&gt;', 
+        ['\n'] = '<br/>'
+    }
+    return txt
+        :gsub('[&<>\n]', replacements)
+        :gsub(' +', function(s) return ' '..('&nbsp;'):rep(#s-1) end)
 end
 
 function string.random(length)
