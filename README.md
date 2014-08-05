@@ -1,7 +1,7 @@
 telegram-bot
 ============
 
-Bot for telegram with tg [tg](https://github.com/vysheng/tg).
+Bot for telegram with [tg](https://github.com/vysheng/tg).
 
 
 Requires sudo apt-get install lua-socket:
@@ -15,4 +15,18 @@ $ make
 $ ../launch.sh
 ```
 
-`!help` for command list.
+Command list
+```
+!help : print this help
+!ping : bot sends pong
+!sh (text) : send commands to bash (only privileged users)
+!echo (text) : echo the msg
+!version : version info
+!cpu : status (uname + top)
+!fwd : forward msg
+!forni : send text to group Fornicio
+!fortune : print a random adage
+!weather [city] : weather in that city (Madrid if not city)
+!9gag : send random image from 9gag
+!uc3m : fortunes from Universidad Carlos III
+```
