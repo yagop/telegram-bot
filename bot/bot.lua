@@ -233,6 +233,7 @@ end
 function get_infiniGAG()
    b, c, h = http.request("http://infinigag-us.aws.af.cm")
    local gag = json:decode(b)
+   math.randomseed(os.time())
    i = math.random(#gag.data) -- random max json table size (# is an operator o.O)
    local link_image = gag.data[i].images.normal
    print("9gag image"..link_image)
