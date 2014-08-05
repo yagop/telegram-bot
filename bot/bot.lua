@@ -45,12 +45,13 @@ function do_action(msg)
       send_msg(receiver, text)
    end 
    if string.starts(msg.text, '9gag') then
-      url = get_infiniGAG()
+      url, title = get_9GAG()
       file_name = url:match("([^/]+)$")
       file = "/tmp/"..file_name
       sh = "curl -o '"..file.."' "..url
       run_bash(sh)
       send_photo(receiver, file)
+      send_msg(receiver, title)
    end  
    if string.starts(msg.text, 'fortune') then
       text = run_bash('fortune')
@@ -230,14 +231,18 @@ function get_fortunes_uc3m()
    return b
 end
 
-function get_infiniGAG()
-   b, c, h = http.request("http://infinigag-us.aws.af.cm")
+function get_9GAG()
+   b = http.request("http://api-9gag.herokuapp.com/")
    local gag = json:decode(b)
    math.randomseed(os.time())
-   i = math.random(#gag.data) -- random max json table size (# is an operator o.O)
-   local link_image = gag.data[i].images.normal
+   i = math.random(#gag) -- random max json table size (# is an operator o.O)
+   local link_image = gag[i].src
+   local title = gag[i].title
+   if link_image:sub(0,2) == '//' then
+      link_image = msg.text:sub(3,-1)
+   end
    print("9gag image"..link_image)
-   return link_image
+   return link_image, title
 end
 
 function get_weather(location)
