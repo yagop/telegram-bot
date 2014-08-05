@@ -1,0 +1,3 @@
+[submodule "tg"]
+	path = tg
+	url = git@github.com:yagop/tg.git

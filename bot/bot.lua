@@ -1,11 +1,11 @@
 http = require("socket.http")
 json = (loadfile "./bot/JSON.lua")()
 
-VERSION = 'v0.0.7'
+VERSION = 'v0.1'
 
 function on_msg_receive (msg)
    -- vardump(msg)
-   mark_read(get_receiver(msg))
+   -- mark_read(get_receiver(msg))
    if msg.out then
       return
    end
@@ -23,13 +23,13 @@ function on_msg_receive (msg)
       msg.text = msg.text:sub(2,-1)
       do_action(msg)
    end
-   write_log_file(msg)
+   -- write_log_file(msg)
 end
 
 -- Where magic happens
 function do_action(msg)
    receiver = get_receiver(msg)
-   
+
    if string.starts(msg.text, 'sh') then
       text = run_sh(msg)
       send_msg(receiver, text)
@@ -45,8 +45,12 @@ function do_action(msg)
       send_msg(receiver, text)
    end 
    if string.starts(msg.text, '9gag') then
-      text = get_infiniGAG()
-      send_msg(receiver, text)
+      url = get_infiniGAG()
+      file_name = url:match("([^/]+)$")
+      file = "/tmp/"..file_name
+      sh = "curl -o '"..file.."' "..url
+      run_bash(sh)
+      send_photo(receiver, file)
    end  
    if string.starts(msg.text, 'fortune') then
       text = run_bash('fortune')
@@ -101,8 +105,7 @@ function do_action(msg)
 !fortune : print a random adage
 !weather [city] : weather in that city (Madrid if not city)
 !9gag : send random url image from 9gag
-!uc3m : fortunes from Universidad Carlos III
-!hackers : send text to group Juankers]]
+!uc3m : fortunes from Universidad Carlos III]]
       send_msg(receiver, text)
    end
 end
@@ -230,8 +233,9 @@ end
 function get_infiniGAG()
    b, c, h = http.request("http://infinigag-us.aws.af.cm")
    local gag = json:decode(b)
-   i = math.random(table.getn(gag.data)) -- random
+   i = math.random(#gag.data) -- random max json table size (# is an operator o.O)
    local link_image = gag.data[i].images.normal
+   print("9gag image"..link_image)
    return link_image
 end
 
@@ -255,7 +259,7 @@ function get_weather(location)
    return temp .. '\n' .. conditions
 end
 
-function sanitize(txt)
+function sanitize_html(txt)
     local replacements = {
         ['&' ] = '&amp;', 
         ['<' ] = '&lt;', 
