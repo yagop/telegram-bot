@@ -5,7 +5,6 @@ VERSION = 'v0.1'
 
 function on_msg_receive (msg)
    -- vardump(msg)
-   -- mark_read(get_receiver(msg))
    if msg.out then
       return
    end
@@ -23,7 +22,36 @@ function on_msg_receive (msg)
       msg.text = msg.text:sub(2,-1)
       do_action(msg)
    end
+
+-- This is very unestable ...
+   if is_image_url(msg.text) then
+    last = string.get_last_word(msg.text)
+    last = last:match("[%w_:/.%%&-]+") -- Lets sanitize!
+    extension = string.get_extension_from_filename(last)
+
+    file_name = string.random(5)
+    file = "/tmp/"..file_name.."."..extension
+    sh = "curl --insecure -o '"..file.."' "..last
+    run_bash(sh)
+    send_photo(get_receiver(msg), file)
+   end
+
+   mark_read(get_receiver(msg))
+
    -- write_log_file(msg)
+end
+
+function is_image_url(text)
+  print ('IS image ' .. text ..'?')
+  last = string.get_last_word(text)
+  print ('Last is: ' .. last)
+  extension = string.get_extension_from_filename(last)
+  if extension == 'jpg' or extension == 'png' then
+    print('Is image :D')
+    return true
+  end
+  print 'Not image D:'
+  return false
 end
 
 -- Where magic happens
@@ -241,7 +269,6 @@ function get_9GAG()
    if link_image:sub(0,2) == '//' then
       link_image = msg.text:sub(3,-1)
    end
-   print("9gag image"..link_image)
    return link_image, title
 end
 
@@ -285,6 +312,25 @@ function string.random(length)
       str = str..string.char(math.random(97, 122));
    end
    return str;
+end
+
+function string.get_extension_from_filename( filename )
+  return filename:match( "%.([^%.]+)$" )
+end
+
+function string.get_last_word( words )
+  print ('Last word of: ' .. words)
+  local splitted = split_by_space ( words )
+  return splitted[#splitted]
+end
+
+function split_by_space ( text )
+  print ('Split: ' .. text)
+  words = {}
+  for word in string.gmatch(text, "[^%s]+") do
+     table.insert(words, word) 
+  end
+  return words
 end
 
 function vardump(value, depth, key)
