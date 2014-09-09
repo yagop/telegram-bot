@@ -8,10 +8,10 @@ if [ ! -f ./tg/telegram.h ]; then
     exit
 fi
 
-if [ ! -f ./tg/telegram ]; then
+if [ ! -f ./tg/bin/telegram-cli ]; then
     echo "Compile telegram first:"
     echo "cd tg && ./configure && make"
     exit
 fi
 
-./tg/telegram -k tg/tg-server.pub -s ./bot/bot.lua
+./tg/bin/telegram-cli -k tg/tg-server.pub -s ./bot/bot.lua
