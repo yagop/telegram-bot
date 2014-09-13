@@ -1,128 +1,150 @@
 http = require("socket.http")
 json = (loadfile "./bot/JSON.lua")()
 
-VERSION = 'v0.1'
+VERSION = 'v0.2'
+
 
 function on_msg_receive (msg)
-   -- vardump(msg)
+
+  if msg_valid(msg) == false then
+    return
+  end
+  -- Check if command starts with ! eg !echo
+  if msg.text:sub(0,1) == '!' then
+    do_action(msg)
+  else
+  if is_image_url(msg.text) then
+      send_image_from_url (msg)
+    end
+  end
+
+  print('mark_read: '..get_receiver(msg))
+  mark_read(get_receiver(msg), ok_cb, false)
+  -- write_log_file(msg)
+end
+
+
+function ok_cb(extra, success, result)
+end
+
+function msg_valid(msg)
    if msg.out then
-      return
+      return false
    end
    if msg.date < now then
-     return
+     return false
    end
    if msg.text == nil then
-      return
+      return false
    end
    if msg.unread == 0 then
-      return
+      return false
    end
-   -- Check if command starts with ! eg !echo
-   if msg.text:sub(0,1) == '!' then
-      msg.text = msg.text:sub(2,-1)
-      do_action(msg)
-   end
+end
 
--- This is very unestable ...
-   if is_image_url(msg.text) then
-    last = string.get_last_word(msg.text)
-    last = last:match("[%w_:/.%%&-]+") -- Lets sanitize!
-    extension = string.get_extension_from_filename(last)
+function send_image_from_url (msg)
+  last = string.get_last_word(msg.text)
+  last = last:match("[%w_:/.%%&-]+") -- Lets sanitize!
+  extension = string.get_extension_from_filename(last)
 
-    file_name = string.random(5)
-    file = "/tmp/"..file_name.."."..extension
-    sh = "curl --insecure -o '"..file.."' "..last
-    run_bash(sh)
-    send_photo(get_receiver(msg), file)
-   end
-
-   mark_read(get_receiver(msg))
-
-   -- write_log_file(msg)
+  file_name = string.random(5)
+  file = "/tmp/"..file_name.."."..extension
+  sh = "curl --insecure -o '"..file.."' "..last
+  run_bash(sh)
+  send_photo(get_receiver(msg), file, ok_cb, false)
 end
 
 function is_image_url(text)
   print ('IS image ' .. text ..'?')
   last = string.get_last_word(text)
-  print ('Last is: ' .. last)
   extension = string.get_extension_from_filename(last)
   if extension == 'jpg' or extension == 'png' then
-    print('Is image :D')
     return true
   end
-  print 'Not image D:'
   return false
 end
 
 -- Where magic happens
 function do_action(msg)
-   receiver = get_receiver(msg)
+   local receiver = get_receiver(msg)
 
-   if string.starts(msg.text, 'sh') then
+   if string.starts(msg.text, '!sh') then
       text = run_sh(msg)
-      send_msg(receiver, text)
-   end
-   
-   if string.starts(msg.text, 'torrent') then
-      text = save_torrent(msg)
-      send_msg(receiver, text)
+      send_msg(receiver, text, ok_cb, false)
+      return
    end
   
-   if string.starts(msg.text, 'uc3m') then
+   if string.starts(msg.text, '!uc3m') then
       text = get_fortunes_uc3m()
-      send_msg(receiver, text)
+      send_msg(receiver, text, ok_cb, false)
+      return
    end 
-   if string.starts(msg.text, '9gag') then
+
+   if string.starts(msg.text, '!9gag') then
       url, title = get_9GAG()
       file_name = url:match("([^/]+)$")
       file = "/tmp/"..file_name
       sh = "curl -o '"..file.."' "..url
       run_bash(sh)
-      send_photo(receiver, file)
-      send_msg(receiver, title)
-   end  
-   if string.starts(msg.text, 'fortune') then
+      send_photo(receiver, file, ok_cb, false)
+      send_msg(receiver, title, ok_cb, false)
+      return
+   end 
+
+   if string.starts(msg.text, '!fortune') then
       text = run_bash('fortune')
-      send_msg(receiver, text)
+      send_msg(receiver, text, ok_cb, false)
+      return
    end 
-   if string.starts(msg.text, 'forni') then
-      text = msg.text:sub(7,-1)
-      send_msg('Fornicio_2.0', text)
+
+   if string.starts(msg.text, '!forni') then
+      text = msg.text:sub(8,-1)
+      send_msg('Fornicio_2.0', text, ok_cb, false)
+      return
    end 
-   if string.starts(msg.text, 'hackers') then
-      text = msg.text:sub(9,-1)
-      send_msg('Juankers._Dios_existe_y_es_<span_class=', text)
-   end  
-   if string.starts(msg.text, 'fwd') then
-      fwd_msg (receiver, msg.id)
-   end  
-   if string.starts(msg.text, 'cpu') then
+
+   if string.starts(msg.text, '!fwd') then
+      fwd_msg (receiver, msg.id, ok_cb, false)
+      return
+   end 
+
+   if string.starts(msg.text, '!cpu') then
       text = run_bash('uname -snr') .. ' ' .. run_bash('whoami')
       text = text .. '\n' .. run_bash('top -b |head -2')
-      send_msg(receiver, text)
+      send_msg(receiver, text, ok_cb, false)
+      return
    end
-   if string.starts(msg.text, 'ping') then
-      send_msg(receiver, "pong")
+
+   if string.starts(msg.text, '!ping') then
+      print('receiver: '..receiver)
+      send_msg (receiver, 'pong', ok_cb, false)
+      return
    end
-   if string.starts(msg.text, 'weather') then
+
+   if string.starts(msg.text, '!weather') then
       if string.len(msg.text) <= 9 then
          city = 'Madrid,ES'
       else  
-         city = msg.text:sub(9,-1)
+         city = msg.text:sub(10,-1)
       end    
       text = get_weather(city)
-      send_msg(receiver, text)
+      send_msg(receiver, text, ok_cb, false)
+      return
    end
-   if string.starts(msg.text, 'echo') then
-      -- Removes echo from the string
-      echo = msg.text:sub(6,-1)
-      send_msg(receiver, echo)
+
+   if string.starts(msg.text, '!echo') then
+      echo = msg.text:sub(7,-1)
+      send_msg(receiver, echo, ok_cb, false)
+      return
    end
-   if string.starts(msg.text, 'version') then
+
+   if string.starts(msg.text, '!version') then
       text = 'James Bot '.. VERSION
-      send_msg(receiver, text)
+      send_msg(receiver, text, ok_cb, false)
+      return
    end
-   if string.starts(msg.text, 'help') then
+
+   if string.starts(msg.text, '!help') then
       text = [[!help : print this help 
 !ping : bot sends pong 
 !sh (text) : send commands to bash (only privileged users)
@@ -135,37 +157,10 @@ function do_action(msg)
 !weather [city] : weather in that city (Madrid if not city)
 !9gag : send random url image from 9gag
 !uc3m : fortunes from Universidad Carlos III]]
-      send_msg(receiver, text)
+      send_msg(receiver, text, ok_cb, false)
+      return
    end
-end
 
-function get_receiver(msg)
-   if msg.to.type == 'user' then
-      return msg.from.print_name
-   end
-   if msg.to.type == 'chat' then
-      return msg.to.print_name
-   end   
-end
-
-
-function on_our_id (id)
-   our_id = id
-end
-
-function on_secret_chat_created (peer)
-end
-
-function on_user_update (user)
-end
-
-function on_chat_update (user)
-end
-
-function on_get_difference_end ()
-end
-
-function on_binlog_replay_end ()
 end
 
 function string.starts(String,Start)
@@ -244,13 +239,6 @@ function run_bash(str)
   return result
 end
 
-function readAll(file)
-    local f = io.open(file, "rb")
-    local content = f:read("*all")
-    f:close()
-    return content
-end
-
 function get_fortunes_uc3m()
    math.randomseed(os.time())
    local i = math.random(0,178) -- max 178
@@ -290,18 +278,6 @@ function get_weather(location)
 	  conditions = conditions .. ' ☔☔☔☔'
    end
    return temp .. '\n' .. conditions
-end
-
-function sanitize_html(txt)
-    local replacements = {
-        ['&' ] = '&amp;', 
-        ['<' ] = '&lt;', 
-        ['>' ] = '&gt;', 
-        ['\n'] = '<br/>'
-    }
-    return txt
-        :gsub('[&<>\n]', replacements)
-        :gsub(' +', function(s) return ' '..('&nbsp;'):rep(#s-1) end)
 end
 
 function string.random(length)
@@ -374,3 +350,36 @@ end
 config = load_config()
 our_id = 0
 now = os.time()
+
+function get_receiver(msg)
+  if msg.to.type == 'user' then
+    return 'user#id'..msg.from.id
+  end
+  if msg.to.type == 'chat' then
+    return 'chat#id'..msg.to.id
+  end
+end
+
+
+function on_our_id (id)
+  our_id = id
+end
+
+function on_user_update (user, what)
+  --vardump (user)
+end
+
+function on_chat_update (chat, what)
+  --vardump (chat)
+end
+
+function on_secret_chat_update (schat, what)
+  --vardump (schat)
+end
+
+function on_get_difference_end ()
+end
+
+function on_binlog_replay_end ()
+  started = 1
+end
