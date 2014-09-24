@@ -13,8 +13,12 @@ function on_msg_receive (msg)
   if msg.text:sub(0,1) == '!' then
     do_action(msg)
   else
-  if is_image_url(msg.text) then
+    if is_image_url(msg.text) then
       send_image_from_url (msg)
+    else
+      if is_file_url(msg.text) then
+        send_file_from_url (msg)
+      end
     end
   end
 
@@ -42,6 +46,18 @@ function msg_valid(msg)
    end
 end
 
+function send_file_from_url (msg)
+  last = string.get_last_word(msg.text)
+  last = last:match("[%w_:/.%%&-]+") -- Lets sanitize!
+  extension = string.get_extension_from_filename(last)
+
+  file_name = string.random(5)
+  file = "/tmp/"..file_name.."."..extension
+  sh = "curl --insecure -o '"..file.."' "..last
+  run_bash(sh)
+  send_document(get_receiver(msg), file, ok_cb, false)
+end
+
 function send_image_from_url (msg)
   last = string.get_last_word(msg.text)
   last = last:match("[%w_:/.%%&-]+") -- Lets sanitize!
@@ -58,7 +74,16 @@ function is_image_url(text)
   print ('IS image ' .. text ..'?')
   last = string.get_last_word(text)
   extension = string.get_extension_from_filename(last)
-  if extension == 'jpg' or extension == 'png' or extension == 'gif' then
+  if extension == 'jpg' or extension == 'png' then
+    return true
+  end
+  return false
+end
+
+function is_file_url(text)
+  last = string.get_last_word(text)
+  extension = string.get_extension_from_filename(last)
+  if extension == 'gif' then
     return true
   end
   return false
