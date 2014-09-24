@@ -1,7 +1,7 @@
 http = require("socket.http")
 json = (loadfile "./bot/JSON.lua")()
 
-VERSION = 'v0.2'
+VERSION = 'v0.2.1'
 
 
 function on_msg_receive (msg)
@@ -58,7 +58,7 @@ function is_image_url(text)
   print ('IS image ' .. text ..'?')
   last = string.get_last_word(text)
   extension = string.get_extension_from_filename(last)
-  if extension == 'jpg' or extension == 'png' then
+  if extension == 'jpg' or extension == 'png' or extension == 'gif' then
     return true
   end
   return false
