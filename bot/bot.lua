@@ -1,7 +1,8 @@
 http = require("socket.http")
+URL = require("socket.url")
 json = (loadfile "./bot/JSON.lua")()
 
-VERSION = 'v0.2.1'
+VERSION = 'v0.3'
 
 
 function on_msg_receive (msg)
@@ -104,6 +105,17 @@ function do_action(msg)
       send_msg(receiver, text, ok_cb, false)
       return
    end 
+
+   if string.starts(msg.text, '!img') then
+      text = msg.text:sub(5,-1)
+      url = getGoogleImage(text)
+      file_name = url:match("([^/]+)$")
+      file = "/tmp/"..file_name
+      sh = "curl -o '"..file.."' "..url
+      run_bash(sh)
+      send_photo(receiver, file, ok_cb, false)
+      return
+   end
 
    if string.starts(msg.text, '!9gag') then
       url, title = get_9GAG()
@@ -270,6 +282,14 @@ function get_fortunes_uc3m()
    local web = "http://www.gul.es/fortunes/f"..i 
    b, c, h = http.request(web)
    return b
+end
+
+function getGoogleImage(text)
+  local api = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q="
+  text = URL.escape(text)
+  b = http.request(api..text)
+  local google = json:decode(b)
+  return google.responseData.results[1].url
 end
 
 function get_9GAG()
