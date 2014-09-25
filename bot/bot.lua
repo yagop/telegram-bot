@@ -2,7 +2,7 @@ http = require("socket.http")
 URL = require("socket.url")
 json = (loadfile "./bot/JSON.lua")()
 
-VERSION = 'v0.3'
+VERSION = 'v0.4'
 
 
 function on_msg_receive (msg)
@@ -23,7 +23,6 @@ function on_msg_receive (msg)
     end
   end
 
-  print('mark_read: '..get_receiver(msg))
   mark_read(get_receiver(msg), ok_cb, false)
   -- write_log_file(msg)
 end
@@ -49,25 +48,13 @@ end
 
 function send_file_from_url (msg)
   last = string.get_last_word(msg.text)
-  last = last:match("[%w_:/.%%&-]+") -- Lets sanitize!
-  extension = string.get_extension_from_filename(last)
-
-  file_name = string.random(5)
-  file = "/tmp/"..file_name.."."..extension
-  sh = "curl --insecure -o '"..file.."' "..last
-  run_bash(sh)
+  file = download_to_file(last)
   send_document(get_receiver(msg), file, ok_cb, false)
 end
 
 function send_image_from_url (msg)
   last = string.get_last_word(msg.text)
-  last = last:match("[%w_:/.%%&-]+") -- Lets sanitize!
-  extension = string.get_extension_from_filename(last)
-
-  file_name = string.random(5)
-  file = "/tmp/"..file_name.."."..extension
-  sh = "curl --insecure -o '"..file.."' "..last
-  run_bash(sh)
+  file = download_to_file(last)
   send_photo(get_receiver(msg), file, ok_cb, false)
 end
 
@@ -107,23 +94,18 @@ function do_action(msg)
    end 
 
    if string.starts(msg.text, '!img') then
-      text = msg.text:sub(5,-1)
+      text = msg.text:sub(6,-1)
       url = getGoogleImage(text)
-      file_name = url:match("([^/]+)$")
-      file = "/tmp/"..file_name
-      sh = "curl -o '"..file.."' "..url
-      run_bash(sh)
-      send_photo(receiver, file, ok_cb, false)
+      file_path = download_to_file(url)
+      print(file_path)
+      send_photo(receiver, file_path, ok_cb, false)
       return
    end
 
    if string.starts(msg.text, '!9gag') then
       url, title = get_9GAG()
-      file_name = url:match("([^/]+)$")
-      file = "/tmp/"..file_name
-      sh = "curl -o '"..file.."' "..url
-      run_bash(sh)
-      send_photo(receiver, file, ok_cb, false)
+      file_path = download_to_file(url)
+      send_photo(receiver, file_path, ok_cb, false)
       send_msg(receiver, title, ok_cb, false)
       return
    end 
@@ -176,7 +158,11 @@ function do_action(msg)
    end
 
    if string.starts(msg.text, '!version') then
-      text = 'James Bot '.. VERSION
+      text = 'James Bot '.. VERSION .. [[ 
+Licencia GNU v2, código disponible en http://git.io/6jdjGg
+
+Al Bot le gusta la gente solidaria. 
+Puedes hacer una donación a la ONG que decidas y ayudar a otras personas.]]
       send_msg(receiver, text, ok_cb, false)
       return
    end
@@ -289,7 +275,9 @@ function getGoogleImage(text)
   text = URL.escape(text)
   b = http.request(api..text)
   local google = json:decode(b)
-  return google.responseData.results[1].url
+  math.randomseed(os.time())
+  i = math.random(#google.responseData.results)
+  return google.responseData.results[i].url
 end
 
 function get_9GAG()
@@ -303,6 +291,36 @@ function get_9GAG()
       link_image = msg.text:sub(3,-1)
    end
    return link_image, title
+end
+
+
+function download_to_file( url )
+  print("url a descargar: "..url)
+  req, c, h = http.request(url)
+  htype = h["content-type"]
+  vardump(c)
+  print("content-type: "..htype)
+  if htype == "image/jpeg" then
+    file_name = string.random(5)..".jpg"
+    file_path = "/tmp/"..file_name
+  else
+    if htype == "image/gif" then
+      file_name = string.random(5)..".gif"
+      file_path = "/tmp/"..file_name
+    else
+      if htype == "image/png" then
+        file_name = string.random(5)..".png"
+        file_path = "/tmp/"..file_name
+      else
+        file_name = url:match("([^/]+)$")
+        file_path = "/tmp/"..file_name
+      end
+    end
+  end
+  file = io.open(file_path, "w+")
+  file:write(req)
+  file:close()
+  return file_path
 end
 
 function get_weather(location)
@@ -340,13 +358,11 @@ function string.get_extension_from_filename( filename )
 end
 
 function string.get_last_word( words )
-  print ('Last word of: ' .. words)
   local splitted = split_by_space ( words )
   return splitted[#splitted]
 end
 
 function split_by_space ( text )
-  print ('Split: ' .. text)
   words = {}
   for word in string.gmatch(text, "[^%s]+") do
      table.insert(words, word) 
