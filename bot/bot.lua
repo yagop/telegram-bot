@@ -179,6 +179,7 @@ Puedes hacer una donación a la ONG que decidas y ayudar a otras personas.]]
 !fortune : print a random adage
 !weather [city] : weather in that city (Madrid if not city)
 !9gag : send random url image from 9gag
+!img (text) : search image with Google API and sends it
 !uc3m : fortunes from Universidad Carlos III]]
       send_msg(receiver, text, ok_cb, false)
       return

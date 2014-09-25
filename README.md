@@ -4,7 +4,7 @@ telegram-bot
 Bot for telegram with [tg](https://github.com/vysheng/tg).
 
 ```bash
-sudo apt-get install lua-socket libreadline-dev libconfig-dev libssl-dev lua5.2 liblua5.2-dev libevent-dev
+sudo apt-get install lua-socket libreadline-dev libconfig-dev libssl-dev lua5.2 liblua5.2-dev libevent-dev fortune curl
 git submodule update --init --recursive
 cd tg
 ./configure
@@ -25,5 +25,6 @@ Command list
 !fortune : print a random adage
 !weather [city] : weather in that city (Madrid if not city)
 !9gag : send random image from 9gag
+!img (text) : search image with Google API and sends it
 !uc3m : fortunes from Universidad Carlos III
 ```
