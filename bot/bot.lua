@@ -157,6 +157,12 @@ function do_action(msg)
       return
    end
 
+   if string.starts(msg.text, '!eur') then
+      local eur = getEURUSD( )
+      send_msg(receiver, eur, ok_cb, false)
+      return
+   end
+
    if string.starts(msg.text, '!version') then
       text = 'James Bot '.. VERSION .. [[ 
 Licencia GNU v2, código disponible en http://git.io/6jdjGg
@@ -294,6 +300,16 @@ function get_9GAG()
    return link_image, title
 end
 
+function getEURUSD( )
+  b = http.request("http://webrates.truefx.com/rates/connect.html?c=EUR/USD&f=csv&s=n")
+  local rates = b:split(", ")
+  local symbol = rates[1]
+  local timestamp = rates[2]
+  local sell = rates[3]..rates[4]
+  local buy = rates[5]..rates[6]
+  return symbol..'\n'..'Buy: '..buy..'\n'..'Sell: '..sell
+end
+
 
 function download_to_file( url )
   print("url a descargar: "..url)
@@ -369,6 +385,13 @@ function split_by_space ( text )
      table.insert(words, word) 
   end
   return words
+end
+
+function string:split(sep)
+        local sep, fields = sep or ":", {}
+        local pattern = string.format("([^%s]+)", sep)
+        self:gsub(pattern, function(c) fields[#fields+1] = c end)
+        return fields
 end
 
 function vardump(value, depth, key)
