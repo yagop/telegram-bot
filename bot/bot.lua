@@ -59,7 +59,6 @@ function send_image_from_url (msg)
 end
 
 function is_image_url(text)
-  print ('IS image ' .. text ..'?')
   last = string.get_last_word(text)
   extension = string.get_extension_from_filename(last)
   if extension == 'jpg' or extension == 'png' then
@@ -101,6 +100,12 @@ function do_action(msg)
       send_photo(receiver, file_path, ok_cb, false)
       return
    end
+
+  if string.starts(msg.text, '!rae') then
+    text = msg.text:sub(6,-1)
+    meaning = getDulcinea(text)
+    send_msg(receiver, meaning, ok_cb, false)
+  end
 
    if string.starts(msg.text, '!9gag') then
       url, title = get_9GAG()
@@ -277,14 +282,52 @@ function get_fortunes_uc3m()
    return b
 end
 
-function getGoogleImage(text)
-  local api = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q="
-  text = URL.escape(text)
+function getDulcinea( text )
+  local api = "http://dulcinea.herokuapp.com/api/?query="
   b = http.request(api..text)
-  local google = json:decode(b)
-  math.randomseed(os.time())
-  i = math.random(#google.responseData.results)
-  return google.responseData.results[i].url
+  dulcinea = json:decode(b)
+  if dulcinea.status == "error" then
+    return "Error: " .. dulcinea.message
+  end
+  while dulcinea.type == "multiple" do
+    text = dulcinea.response[1].id
+    b = http.request(api..text)
+    dulcinea = json:decode(b)
+  end
+  vardump(dulcinea)
+  local text = ""
+  local responses = #dulcinea.response
+  if (responses > 5) then
+    responses = 5
+  end
+  for i = 1, responses, 1 do 
+    text = text .. dulcinea.response[i].word .. "\n"
+    local meanings = #dulcinea.response[i].meanings
+    if (meanings > 5) then
+      meanings = 5
+    end
+    for j = 1, meanings, 1 do
+      local meaning = dulcinea.response[i].meanings[j].meaning 
+      text = text .. meaning .. "\n\n"
+    end
+  end
+  return text
+
+end
+
+function getGoogleImage(text)
+  text = URL.escape(text)
+  for i = 1, 5, 1 do -- Try 5 times
+    local api = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&rsz=8&q="
+    b = http.request(api..text)
+    local google = json:decode(b)
+
+    if (google.responseStatus == 200) then -- OK
+      math.randomseed(os.time())
+      i = math.random(#google.responseData.results) -- Random image from results
+      return google.responseData.results[i].url
+    end
+  end
 end
 
 function get_9GAG()
