@@ -2,7 +2,7 @@ http = require("socket.http")
 URL = require("socket.url")
 json = (loadfile "./bot/JSON.lua")()
 
-VERSION = 'v0.4'
+VERSION = 'v0.5'
 
 
 function on_msg_receive (msg)
@@ -190,6 +190,8 @@ Puedes hacer una donación a la ONG que decidas y ayudar a otras personas.]]
 !fortune : print a random adage
 !weather [city] : weather in that city (Madrid if not city)
 !9gag : send random url image from 9gag
+!rae (word): Spanish dictionary
+!eur : EURUSD market value
 !img (text) : search image with Google API and sends it
 !uc3m : fortunes from Universidad Carlos III]]
       send_msg(receiver, text, ok_cb, false)
