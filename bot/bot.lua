@@ -2,7 +2,7 @@ http = require("socket.http")
 URL = require("socket.url")
 json = (loadfile "./bot/JSON.lua")()
 
-VERSION = 'v0.4'
+VERSION = 'v0.5'
 
 
 function on_msg_receive (msg)
@@ -16,9 +16,11 @@ function on_msg_receive (msg)
   else
     if is_image_url(msg.text) then
       send_image_from_url (msg)
+    elseif is_youtube_url(msg.text) then
+      send_youtube_thumbnail(msg.text)
     else
       if is_file_url(msg.text) then
-        send_file_from_url (msg)
+        send_file_from_url(msg)
       end
     end
   end
@@ -60,11 +62,25 @@ end
 
 function is_image_url(text)
   last = string.get_last_word(text)
-  extension = string.get_extension_from_filename(last)
-  if extension == 'jpg' or extension == 'png' then
+  extension = string.get_extension_from_filename(last) -- TODO:  Change it please
+  if extension == 'jpg' or extension == 'png' or extension == 'jpeg' then
     return true
   end
   return false
+end
+
+function is_youtube_url(text)
+  -- http://stackoverflow.com/questions/19377262/regex-for-youtube-url
+  not_full_yt_url = string.match(text, "youtube.com/watch%?v=([A-Za-z0-9-]*)") == nil
+  not_short_yt_url = string.match(text, "youtu.be/([A-Za-z0-9-]*)") == nil
+  yt = full_yt_url or short_yt_url
+  return yt
+end
+
+function send_youtube_thumbnail(msg)
+  yt_thumbnail = "http://img.youtube.com/vi/".. string.match(msg.text, "([A-Za-z0-9-]*)").."/hqdefault.jpg"
+  file = download_to_file(yt_thumbnail)
+  send_photo(get_receiver(msg), file, ok_cb, false)
 end
 
 function is_file_url(text)
@@ -106,14 +122,14 @@ function do_action(msg)
     meaning = getDulcinea(text)
     send_msg(receiver, meaning, ok_cb, false)
   end
-
-   if string.starts(msg.text, '!9gag') then
-      url, title = get_9GAG()
-      file_path = download_to_file(url)
-      send_photo(receiver, file_path, ok_cb, false)
-      send_msg(receiver, title, ok_cb, false)
-      return
-   end 
+  
+  if string.starts(msg.text, '!9gag') then
+    url, title = get_9GAG()
+    file_path = download_to_file(url)
+    send_photo(receiver, file_path, ok_cb, false)
+    send_msg(receiver, title, ok_cb, false)
+    return
+  end 
 
    if string.starts(msg.text, '!fortune') then
       text = run_bash('fortune')
@@ -162,6 +178,12 @@ function do_action(msg)
       return
    end
 
+   if string.starts(msg.text, '!eur') then
+      local eur = getEURUSD( )
+      send_msg(receiver, eur, ok_cb, false)
+      return
+   end
+
    if string.starts(msg.text, '!version') then
       text = 'James Bot '.. VERSION .. [[ 
 Licencia GNU v2, código disponible en http://git.io/6jdjGg
@@ -184,6 +206,8 @@ Puedes hacer una donación a la ONG que decidas y ayudar a otras personas.]]
 !fortune : print a random adage
 !weather [city] : weather in that city (Madrid if not city)
 !9gag : send random url image from 9gag
+!rae (word): Spanish dictionary
+!eur : EURUSD market value
 !img (text) : search image with Google API and sends it
 !uc3m : fortunes from Universidad Carlos III]]
       send_msg(receiver, text, ok_cb, false)
@@ -338,6 +362,16 @@ function get_9GAG()
    return link_image, title
 end
 
+function getEURUSD( )
+  b = http.request("http://webrates.truefx.com/rates/connect.html?c=EUR/USD&f=csv&s=n")
+  local rates = b:split(", ")
+  local symbol = rates[1]
+  local timestamp = rates[2]
+  local sell = rates[3]..rates[4]
+  local buy = rates[5]..rates[6]
+  return symbol..'\n'..'Buy: '..buy..'\n'..'Sell: '..sell
+end
+
 
 function download_to_file( url )
   print("url a descargar: "..url)
@@ -413,6 +447,13 @@ function split_by_space ( text )
      table.insert(words, word) 
   end
   return words
+end
+
+function string:split(sep)
+        local sep, fields = sep or ":", {}
+        local pattern = string.format("([^%s]+)", sep)
+        self:gsub(pattern, function(c) fields[#fields+1] = c end)
+        return fields
 end
 
 function vardump(value, depth, key)
