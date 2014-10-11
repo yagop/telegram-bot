@@ -60,8 +60,8 @@ end
 
 function is_image_url(text)
   last = string.get_last_word(text)
-  extension = string.get_extension_from_filename(last)
-  if extension == 'jpg' or extension == 'png' then
+  extension = string.get_extension_from_filename(last) -- TODO:  Change it please
+  if extension == 'jpg' or extension == 'png' or extension == 'jpeg' then
     return true
   end
   return false
