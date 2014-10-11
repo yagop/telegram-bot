@@ -5,21 +5,17 @@ A telegram bot using https://github.com/vysheng/tg.
 
 Installation
 ------------
-
-* Requirements
 ```bash
 # Tested on Ubuntu 14.04, for other OSs check out https://github.com/vysheng/tg#installation
-$ sudo apt-get install libreadline-dev libconfig-dev libssl-dev lua5.2 liblua5.2-dev libevent-dev fortune curl luarocks
-```
-
-* Clone the repo & compile the telegram library
-```bash
-$ git clone https://github.com/yagop/telegram-bot --recursive && cd telegram-bot/tg
+$ sudo apt-get install lua-socket libreadline-dev libconfig-dev libssl-dev lua5.2 liblua5.2-dev libevent-dev fortune
+$ git clone https://github.com/yagop/telegram-bot --recursive
+$ cd telegram-bot/tg
 $ ./configure && make
-$ cd .. && ./launch.sh # Will ask you for a telegram enabled number phone & confirmation code.
+$ cd .. && ./launch.sh # Will ask you for a phone number & confirmation code.
 ```
 
 Command list
+------------
 ```
 !help : print command list
 !ping : bot sends pong 
