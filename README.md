@@ -2,8 +2,8 @@ telegram-bot
 ============
 
 Bot for telegram with [tg](https://github.com/vysheng/tg).
-
 ```bash
+# Tested on Ubuntu 14.04
 sudo apt-get install lua-socket libreadline-dev libconfig-dev libssl-dev lua5.2 liblua5.2-dev libevent-dev fortune curl
 git clone https://github.com/yagop/telegram-bot.git && cd telegram-bot
 git submodule update --init --recursive
