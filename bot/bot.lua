@@ -277,6 +277,7 @@ function get_fortunes_uc3m()
 end
 
 function getDulcinea( text )
+  -- Powered by https://github.com/javierhonduco/dulcinea
   local api = "http://dulcinea.herokuapp.com/api/?query="
   b = http.request(api..text)
   dulcinea = json:decode(b)
