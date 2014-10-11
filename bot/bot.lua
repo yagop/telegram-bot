@@ -17,7 +17,7 @@ function on_msg_receive (msg)
     if is_image_url(msg.text) then
       send_image_from_url (msg)
     elseif is_youtube_url(msg.text) then
-      send_youtube_thumbnail(msg.text)
+      send_youtube_thumbnail(msg)
     else
       if is_file_url(msg.text) then
         send_file_from_url(msg)
@@ -71,14 +71,26 @@ end
 
 function is_youtube_url(text)
   -- http://stackoverflow.com/questions/19377262/regex-for-youtube-url
-  not_full_yt_url = string.match(text, "youtube.com/watch%?v=([A-Za-z0-9-]*)") == nil
-  not_short_yt_url = string.match(text, "youtu.be/([A-Za-z0-9-]*)") == nil
-  yt = full_yt_url or short_yt_url
-  return yt
+  if string.match(text, "youtube.com/watch%?v=([A-Za-z0-9-]+)") then
+    return true
+  end
+  if string.match(text, "youtu.be/([A-Za-z0-9-]+)") then
+    return true
+  end
+  return false
 end
 
 function send_youtube_thumbnail(msg)
-  yt_thumbnail = "http://img.youtube.com/vi/".. string.match(msg.text, "([A-Za-z0-9-]*)").."/hqdefault.jpg"
+  local yt_normal = string.match(msg.text, "youtube.com/watch%?v=([A-Za-z0-9-]+)")
+  if yt_normal then
+    yt_code = yt_normal
+  end
+  yt_short = string.match(msg.text, "youtu.be/([A-Za-z0-9-]+)")
+  if yt_short then
+    yt_code = yt_short
+  end
+  yt_thumbnail = "http://img.youtube.com/vi/".. yt_code .."/hqdefault.jpg"
+  print (yt_thumbnail)
   file = download_to_file(yt_thumbnail)
   send_photo(get_receiver(msg), file, ok_cb, false)
 end
