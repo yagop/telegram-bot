@@ -16,9 +16,11 @@ function on_msg_receive (msg)
   else
     if is_image_url(msg.text) then
       send_image_from_url (msg)
+    elseif is_youtube_url(msg.text) then
+      send_youtube_thumbnail(msg.text)
     else
       if is_file_url(msg.text) then
-        send_file_from_url (msg)
+        send_file_from_url(msg)
       end
     end
   end
@@ -67,6 +69,20 @@ function is_image_url(text)
   return false
 end
 
+function is_youtube_url(text)
+  -- http://stackoverflow.com/questions/19377262/regex-for-youtube-url
+  not_full_yt_url = string.match(text, "youtube.com/watch%?v=([A-Za-z0-9-]*)") == nil
+  not_short_yt_url = string.match(text, "youtu.be/([A-Za-z0-9-]*)") == nil
+  yt = full_yt_url or short_yt_url
+  return yt
+end
+
+function send_youtube_thumbnail(msg)
+  yt_thumbnail = "http://img.youtube.com/vi/".. string.match(msg.text, "([A-Za-z0-9-]*)").."/hqdefault.jpg"
+  file = download_to_file(yt_thumbnail)
+  send_photo(get_receiver(msg), file, ok_cb, false)
+end
+
 function is_file_url(text)
   last = string.get_last_word(text)
   extension = string.get_extension_from_filename(last)
@@ -106,14 +122,14 @@ function do_action(msg)
     meaning = getDulcinea(text)
     send_msg(receiver, meaning, ok_cb, false)
   end
-
-   if string.starts(msg.text, '!9gag') then
-      url, title = get_9GAG()
-      file_path = download_to_file(url)
-      send_photo(receiver, file_path, ok_cb, false)
-      send_msg(receiver, title, ok_cb, false)
-      return
-   end 
+  
+  if string.starts(msg.text, '!9gag') then
+    url, title = get_9GAG()
+    file_path = download_to_file(url)
+    send_photo(receiver, file_path, ok_cb, false)
+    send_msg(receiver, title, ok_cb, false)
+    return
+  end 
 
    if string.starts(msg.text, '!fortune') then
       text = run_bash('fortune')
