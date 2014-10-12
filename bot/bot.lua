@@ -184,7 +184,7 @@ function do_action(msg)
    end
 
    if string.starts(msg.text, '!eur') then
-      local eur = getEURUSD( )
+      local eur = getEURUSD(msg.text)
       send_msg(receiver, eur, ok_cb, false)
       return
    end
@@ -367,14 +367,20 @@ function get_9GAG()
    return link_image, title
 end
 
-function getEURUSD( )
+function getEURUSD(text)
   b = http.request("http://webrates.truefx.com/rates/connect.html?c=EUR/USD&f=csv&s=n")
   local rates = b:split(", ")
   local symbol = rates[1]
   local timestamp = rates[2]
   local sell = rates[3]..rates[4]
-  local buy = rates[5]..rates[6]
-  return symbol..'\n'..'Buy: '..buy..'\n'..'Sell: '..sell
+  local buy = rates[5]..rates[6] 
+  local usd =  string.match(text, "!eur (%d+[%d%.]*)")
+  text = symbol..'\n'..'Buy: '..buy..'\n'..'Sell: '..sell
+  if usd then
+    eur = tonumber(usd) / tonumber(buy)
+    text = text.."\n "..usd.."USD = "..eur.."EUR"
+  end
+  return text
 end
 
 
