@@ -220,14 +220,14 @@
   !fwd : forward msg
   !forni : send text to group Fornicio
   !fortune : print a random adage
-  !weather [city] : weather in that city (Madrid if not city)
+  !weather (city) : weather in that city (Madrid is default)
   !9gag : send random url image from 9gag
   !rae (word): Spanish dictionary
-  !eur : EURUSD market value
-  !img (text) : search image with Google API and sends it
-  !uc3m : fortunes from Universidad Carlos III
-  !set [variable_name] [value] store for !get
-  !get (variable_name) retrieves variables saved with !set]]
+  !eur (USD): EURUSD market value
+  !img (text): search image with Google API and sends it
+  !uc3m: fortunes from Universidad Carlos III
+  !set [variable_name] [value]: store for !get
+  !get (variable_name): retrieves variables saved with !set]]
         send_msg(receiver, text, ok_cb, false)
         return
      end
