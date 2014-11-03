@@ -189,8 +189,8 @@ function do_action(msg)
       return
    end
 
-   if string.starts(msg.text, '!save') then
-      local text = save_value(msg.text:sub(6,-1))
+   if string.starts(msg.text, '!set') then
+      local text = save_value(msg.text:sub(5,-1))
       send_msg(receiver, text, ok_cb, false)
       return
    end
@@ -255,7 +255,7 @@ end
 function save_value( text )
   local vars = split_by_space(text)
   if (#vars < 2) then
-    return "Usage: !save var_name value"
+    return "Usage: !set var_name value"
   end
   config.values[vars[1]] = vars[2]
   local json_text = json:encode_pretty(config) 
