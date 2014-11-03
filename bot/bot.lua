@@ -2,8 +2,7 @@
   URL = require("socket.url")
   json = (loadfile "./bot/JSON.lua")()
 
-  VERSION = 'v0.5'
-
+  VERSION = 'v0.6'
 
   function on_msg_receive (msg)
 
@@ -226,7 +225,9 @@
   !rae (word): Spanish dictionary
   !eur : EURUSD market value
   !img (text) : search image with Google API and sends it
-  !uc3m : fortunes from Universidad Carlos III]]
+  !uc3m : fortunes from Universidad Carlos III
+  !set [variable_name] [value] store for !get
+  !get (variable_name) retrieves variables saved with !set]]
         send_msg(receiver, text, ok_cb, false)
         return
      end
@@ -253,16 +254,16 @@
   end
 
   function save_value( text )
-    local vars = split_by_space(text)
-    if (#vars < 2) then
+    var_name, var_value = string.match(text, "(%a+) (.+)")
+    if (a == nil or b == nil) then
       return "Usage: !set var_name value"
     end
-    config.values[vars[1]] = vars[2]
+    config.values[var_name] = var_value
     local json_text = json:encode_pretty(config) 
     file = io.open ("./bot/config.json", "w+")
     file:write(json_text)
     file:close()
-    return "Saved "..vars[1].."="..vars[2]
+    return "Saved "..var_name.." = "..var_value
   end
 
   function get_value( value_name )
@@ -270,7 +271,7 @@
     if (value_name == "" ) then
       local text = ""
       for key,value in pairs(config.values) do
-        text = text..key.."="..value.."\n"
+        text = text..key.." = "..value.."\n"
       end
       return text
     end 
