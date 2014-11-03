@@ -255,7 +255,7 @@
 
   function save_value( text )
     var_name, var_value = string.match(text, "(%a+) (.+)")
-    if (a == nil or b == nil) then
+    if (var_name == nil or var_value == nil) then
       return "Usage: !set var_name value"
     end
     config.values[var_name] = var_value
