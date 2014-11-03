@@ -266,6 +266,14 @@
   end
 
   function get_value( value_name )
+    -- If there is not value name, return all the values.
+    if (value_name == "" ) then
+      local text = ""
+      for key,value in pairs(config.values) do
+        text = text..key.."="..value.."\n"
+      end
+      return text
+    end 
     local value = config.values[value_name]
     if ( value == nil) then
       return "Cant find "..value_name
