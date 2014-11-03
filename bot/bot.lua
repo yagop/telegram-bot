@@ -189,6 +189,18 @@ function do_action(msg)
       return
    end
 
+   if string.starts(msg.text, '!save') then
+      local text = save_value(msg.text:sub(6,-1))
+      send_msg(receiver, text, ok_cb, false)
+      return
+   end
+
+   if string.starts(msg.text, '!get') then
+      local text = get_value(msg.text:sub(6,-1))
+      send_msg(receiver, text, ok_cb, false)
+      return
+   end
+
    if string.starts(msg.text, '!version') then
       text = 'James Bot '.. VERSION .. [[ 
 Licencia GNU v2, código disponible en http://git.io/6jdjGg
@@ -229,7 +241,7 @@ function load_config()
    local f = assert(io.open('./bot/config.json', "r"))
    local c = f:read "*a"
    local config = json:decode(c)
-   if config.torrent_path then 
+   if config.sh_enabled then 
       print ("!sh command is enabled")
       for v,user in pairs(config.sudo_users) do
          print("Allowed user: " .. user)
@@ -238,6 +250,27 @@ function load_config()
    -- print("Torrent path: " .. config.torrent_path)
    f:close()
    return config
+end
+
+function save_value( text )
+  local vars = split_by_space(text)
+  if (#vars < 2) then
+    return "Usage: !save var_name value"
+  end
+  config.values[vars[1]] = vars[2]
+  local json_text = json:encode_pretty(config) 
+  file = io.open ("./bot/config.json", "w+")
+  file:write(json_text)
+  file:close()
+  return "Saved "..vars[1].."="..vars[2]
+end
+
+function get_value( value_name )
+  local value = config.values[value_name]
+  if ( value == nil) then
+    return "Cant find "..value_name
+  end
+  return value_name.." = "..value
 end
 
 function is_sudo(msg)
@@ -461,10 +494,10 @@ function split_by_space ( text )
 end
 
 function string:split(sep)
-        local sep, fields = sep or ":", {}
-        local pattern = string.format("([^%s]+)", sep)
-        self:gsub(pattern, function(c) fields[#fields+1] = c end)
-        return fields
+  local sep, fields = sep or ":", {}
+  local pattern = string.format("([^%s]+)", sep)
+  self:gsub(pattern, function(c) fields[#fields+1] = c end)
+  return fields
 end
 
 function vardump(value, depth, key)
