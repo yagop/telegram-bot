@@ -1,13 +1,8 @@
 
-function send_image_from_url (msg)
-	last = string.get_last_word(msg.text)
-	file = download_to_file(last)
-	print("I will send the image " .. file)
-	send_photo(get_receiver(msg), file, ok_cb, false)
-end
-
 function run(msg, matches)
-	send_image_from_url(msg)
+	file = download_to_file(matches[1])
+    print("I will send the image " .. file)
+    send_photo(get_receiver(msg), file, ok_cb, false)
 end
 
 return {
