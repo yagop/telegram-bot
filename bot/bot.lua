@@ -30,20 +30,8 @@
     if msg_valid(msg) == false then
       return
     end
-    -- Check if command starts with ! eg !echo
-    if msg.text:sub(0,1) == '!' then
-      do_action(msg)
-    else
-      if is_image_url(msg.text) then
-        send_image_from_url (msg)
-      elseif get_youtube_code(msg.text) then
-        send_youtube_thumbnail(msg)
-      else
-        if is_file_url(msg.text) then
-          send_file_from_url(msg)
-        end
-      end
-    end
+
+    do_action(msg)
 
     mark_read(get_receiver(msg), ok_cb, false)
     -- write_log_file(msg)
@@ -53,71 +41,24 @@
   end
 
   function msg_valid(msg)
-     if msg.from.id == our_id then
-       return true
-     end
-     if msg.out then
-        return false
-     end
-     if msg.date < now then
-       return false
-     end
-     if msg.text == nil then
-        return false
-     end
-     if msg.unread == 0 then
-        return false
-     end
-  end
-
-  function send_file_from_url (msg)
-    last = string.get_last_word(msg.text)
-    file = download_to_file(last)
-    send_document(get_receiver(msg), file, ok_cb, false)
-  end
-
-  function send_image_from_url (msg)
-    last = string.get_last_word(msg.text)
-    file = download_to_file(last)
-    print("I will send the image " .. file)
-    send_photo(get_receiver(msg), file, ok_cb, false)
-  end
-
-  function is_image_url(text)
-    last = string.get_last_word(text)
-    extension = string.get_extension_from_filename(last) -- TODO:  Change it please
-    if extension == 'jpg' or extension == 'png' or extension == 'jpeg' then
+    if msg.text == nil then
+      return false
+    end
+    if msg.from.id == our_id then
       return true
     end
-    return false
-  end
-
-  function get_youtube_code( text )
-    local yt_normal = string.match(text, "youtube.com/watch%?v=([A-Za-z0-9-]+)")
-    if yt_normal then
-      return yt_normal
+    if msg.out then
+      return false
     end
-    yt_short = string.match(text, "youtu.be/([A-Za-z0-9-]+)")
-    if yt_short then
-      return yt_short
+    if msg.date < now then
+      return false
     end
-    return false
-  end
-
-  function send_youtube_thumbnail(msg)
-    yt_code = get_youtube_code(msg.text)
-    yt_thumbnail = "http://img.youtube.com/vi/".. yt_code .."/hqdefault.jpg"
-    file = download_to_file(yt_thumbnail)
-    send_photo(get_receiver(msg), file, ok_cb, false)
-  end
-
-  function is_file_url(text)
-    last = string.get_last_word(text)
-    extension = string.get_extension_from_filename(last)
-    if extension == 'gif' then
-      return true
+    if msg.text == nil then
+      return false
     end
-    return false
+    if msg.unread == 0 then
+      return false
+    end
   end
 
   -- Where magic happens
