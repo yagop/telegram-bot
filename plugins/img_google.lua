@@ -26,8 +26,8 @@ end
 
 return {
     description = "search image with Google API and sends it", 
-    usage = "img [topic]",
-    regexp = "^img (.*)$", 
+    usage = "!img [topic]",
+    patterns = {"^!img (.*)$"}, 
     run = run 
 }
 

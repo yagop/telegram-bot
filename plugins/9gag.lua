@@ -21,9 +21,9 @@ function run(msg, matches)
 end
 
 return {
-    description = "send random url image from 9gag", 
-    usage = "9gag",
-    regexp = "^9gag$", 
+    description = "send random image from 9gag", 
+    usage = "!9gag",
+    patterns = {"^!9gag$"}, 
     run = run 
 }
 

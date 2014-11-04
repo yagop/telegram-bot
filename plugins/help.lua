@@ -9,8 +9,8 @@ end
 
 return {
     description = "Lists all available commands", 
-    usage = "help",
-    regexp = "^help$", 
+    usage = "!help",
+    patterns = {"^!help$"}, 
     run = run 
 }
 

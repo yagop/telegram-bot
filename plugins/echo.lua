@@ -5,8 +5,8 @@ end
 
 return {
     description = "echoes the msg", 
-    usage = "echo [whatever]",
-    regexp = "^echo (.*)$", 
+    usage = "!echo [whatever]",
+    patterns = {"^!echo (.*)$"}, 
     run = run 
 }
 

@@ -14,8 +14,8 @@ end
 
 return {
     description = "Fortunes from Universidad Carlos III", 
-    usage = "uc3m",
-    regexp = "^uc3m$", 
+    usage = "!uc3m",
+    patterns = {"^!uc3m$"}, 
     run = run 
 }
 

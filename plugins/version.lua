@@ -9,8 +9,8 @@ end
 
 return {
     description = "Shows the bot version", 
-    usage = "version",
-    regexp = "^version$", 
+    usage = "!version",
+    patterns = {"^!version$"}, 
     run = run 
 }
 

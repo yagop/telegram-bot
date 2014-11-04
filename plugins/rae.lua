@@ -39,8 +39,8 @@ end
 
 return {
     description = "Spanish dictionary", 
-    usage = "rae [word]",
-    regexp = "^rae (.*)$", 
+    usage = "!rae [word]",
+   patterns = {"^!rae (.*)$"}, 
     run = run 
 }
 

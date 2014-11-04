@@ -20,8 +20,8 @@ end
 
 return {
     description = "EURUSD market value", 
-    usage = "eur [USD]",
-    regexp = "^eur (%d+[%d%.]*)$", 
+    usage = "!eur [USD]",
+    patterns = {"^!eur (%d+[%d%.]*)$"}, 
     run = run 
 }
 

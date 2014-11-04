@@ -6,7 +6,7 @@ end
 return {
     description = "Says hello to someone", 
     usage = "say hello to [name]",
-    regexp = "^say hello to (.*)$", 
+    patterns = {"^say hello to (.*)$"}, 
     run = run 
 }
 

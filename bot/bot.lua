@@ -1,7 +1,7 @@
   http = require("socket.http")
   URL = require("socket.url")
   json = (loadfile "./bot/JSON.lua")()
-  lrexlib = require("rex_pcre")
+--  lrexlib = require("rex_pcre")
 
   VERSION = 'v0.6'
 
@@ -123,21 +123,23 @@
   -- Where magic happens
   function do_action(msg)
     local receiver = get_receiver(msg)
-    local text = msg.text:sub(2) -- removes the '!'
-     print("Received msg", msg.text)
+    --local text = msg.text:sub(2) -- removes the '!'
+    local text = msg.text
+    print("Received msg", text)
     for name, desc in pairs(plugins) do
-        regexp = desc.regexp
-        runmethod = desc.run
-         print("Trying", text, "against", regexp)
-        matches = { string.match(text, regexp) } 
+      print("Trying module", name)
+      for k, pattern in pairs(desc.patterns) do
+        print("Trying", text, "against", pattern)
+        matches = { string.match(text, pattern) }
         if matches[1] then
-            print("  matches!")
-           result = runmethod(msg, matches)
-            print("  should return", result)
-           if (result) then
-                send_msg(receiver, result, ok_cb, false)
-           end
+          print("  matches!")
+          result = desc.run(msg, matches)
+          print("  should return", result)
+          if (result) then
+            send_msg(receiver, result, ok_cb, false)
+          end
         end
+      end
     end
   end
 
@@ -189,7 +191,7 @@
   -- end
 
   function string.starts(String,Start)
-     return string.sub(String,1,string.len(Start))==Start
+    return string.sub(String,1,string.len(Start))==Start
   end
 
   function load_config()

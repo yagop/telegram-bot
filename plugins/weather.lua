@@ -32,8 +32,8 @@ end
 
 return {
     description = "weather in that city (Madrid is default)", 
-    usage = "weather [city]",
-    regexp = "^weather(.*)$", 
+    usage = "!weather (city)",
+    patterns = {"^!weather(.*)$"}, 
     run = run 
 }
 

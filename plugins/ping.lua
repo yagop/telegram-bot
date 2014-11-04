@@ -7,8 +7,8 @@ end
 
 return {
     description = "bot sends pong", 
-    usage = "ping",
-    regexp = "^ping$", 
+    usage = "!ping",
+    patterns = {"^!ping$"}, 
     run = run 
 }
 
