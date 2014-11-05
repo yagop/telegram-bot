@@ -4,8 +4,6 @@
 --  lrexlib = require("rex_pcre")
 
   VERSION = 'v0.6'
-
-  plugins = {}
   
   -- taken from http://stackoverflow.com/a/11130774/3163199
   function scandir(directory)
@@ -16,16 +14,7 @@
     end
     return t
   end
-
-  -- load all plugins in the plugins/ directory
-  for k, v in pairs(scandir("plugins")) do 
-    if not (v:sub(0, 1) == ".") then
-        print("Loading plugin", v)
-        t = loadfile("plugins/" .. v)()
-        table.insert(plugins, t)
-    end 
-  end
-
+  
   function on_msg_receive (msg)
     if msg_valid(msg) == false then
       return
@@ -336,11 +325,6 @@
     end
   end
 
-  -- Start and load values
-  config = load_config()
-  our_id = 0
-  now = os.time()
-
   function get_receiver(msg)
     if msg.to.type == 'user' then
       return 'user#id'..msg.from.id
@@ -349,7 +333,6 @@
       return 'chat#id'..msg.to.id
     end
   end
-
 
   function on_our_id (id)
     our_id = id
@@ -373,3 +356,23 @@
   function on_binlog_replay_end ()
     started = 1
   end
+
+
+
+  -- Start and load values
+  config = load_config()
+  our_id = 0
+  now = os.time()
+
+  -- load plugins
+  plugins = {}
+
+  -- load all plugins in the plugins/ directory
+  for k, v in pairs(scandir("plugins")) do 
+    if not (v:sub(0, 1) == ".") then
+        print("Loading plugin", v)
+        t = loadfile("plugins/" .. v)()
+        table.insert(plugins, t)
+    end 
+  end
+
