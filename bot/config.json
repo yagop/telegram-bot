@@ -2,5 +2,11 @@
       "log_file": "/var/www/html/log.txt",
     "sh_enabled": false,
     "sudo_users": [ 0, 1 ],
-        "values": { }
+        "values": { },
+       "twitter": {
+                     "consumer_key" : "",
+                     "consumer_secret" : "",
+                     "access_token" : "",
+                     "access_token_secret" : ""
+                  }
 }
