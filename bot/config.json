@@ -4,9 +4,9 @@
     "sudo_users": [ 0, 1 ],
         "values": { },
        "twitter": {
-                     "consumer_key" : "",
-                     "consumer_secret" : "",
-                     "access_token" : "",
-                     "access_token_secret" : ""
+                     "consumer_key" : "gO6IYCtgQ6jaDni3dDAg",
+                     "consumer_secret" : "ow6bjXfWLO2izVEMIAqbPE9YdSDqQaO9bcwWa3QU",
+                     "access_token" : "45872404-ATKqDJDnmR03uuYSa8KKEwnpww21bNdjqox3IbKJ0",
+                     "access_token_secret" : "1OcwUGlBmm2YrqJcO5oD3mNaXs1KtBB8TXvDRyFCdxWi1"
                   }
 }
