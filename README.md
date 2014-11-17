@@ -11,7 +11,6 @@ $ tar -xzvf luarocks-2.2.0.tar.gz
 $ cd luarocks-2.2.0/
 $ ./configure 
 $ make && sudo make install
-$ sudo luarocks install 
 $ sudo luarocks install oauth # You need unzip
 ```
 
