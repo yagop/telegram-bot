@@ -64,7 +64,6 @@
   -- Where magic happens
   function do_action(msg)
     local receiver = get_receiver(msg)
-    --local text = msg.text:sub(2) -- removes the '!'
     local text = msg.text
     print("Received msg", text)
     for name, desc in pairs(plugins) do
@@ -117,23 +116,7 @@
   --       return
   --    end
 
-  --    if string.starts(msg.text, '!set') then
-  --       local text = save_value(msg.text:sub(5,-1))
-  --       send_msg(receiver, text, ok_cb, false)
-  --       return
-  --    end
-
-  --    if string.starts(msg.text, '!get') then
-  --       local text = get_value(msg.text:sub(6,-1))
-  --       send_msg(receiver, text, ok_cb, false)
-  --       return
-  --    end
-
   -- end
-
-  function string.starts(String,Start)
-    return string.sub(String,1,string.len(Start))==Start
-  end
 
   function load_config()
      local f = assert(io.open('./bot/config.json', "r"))
@@ -148,35 +131,6 @@
      -- print("Torrent path: " .. config.torrent_path)
      f:close()
      return config
-  end
-
-  function save_value( text )
-    var_name, var_value = string.match(text, "(%a+) (.+)")
-    if (var_name == nil or var_value == nil) then
-      return "Usage: !set var_name value"
-    end
-    config.values[var_name] = var_value
-    local json_text = json:encode_pretty(config) 
-    file = io.open ("./bot/config.json", "w+")
-    file:write(json_text)
-    file:close()
-    return "Saved "..var_name.." = "..var_value
-  end
-
-  function get_value( value_name )
-    -- If there is not value name, return all the values.
-    if (value_name == "" ) then
-      local text = ""
-      for key,value in pairs(config.values) do
-        text = text..key.." = "..value.."\n"
-      end
-      return text
-    end 
-    local value = config.values[value_name]
-    if ( value == nil) then
-      return "Cant find "..value_name
-    end
-    return value_name.." = "..value
   end
 
   function is_sudo(msg)
@@ -273,23 +227,6 @@
         str = str..string.char(math.random(97, 122));
      end
      return str;
-  end
-
-  function string.get_extension_from_filename( filename )
-    return filename:match( "%.([^%.]+)$" )
-  end
-
-  function string.get_last_word( words )
-    local splitted = split_by_space ( words )
-    return splitted[#splitted]
-  end
-
-  function split_by_space ( text )
-    words = {}
-    for word in string.gmatch(text, "[^%s]+") do
-       table.insert(words, word) 
-    end
-    return words
   end
 
   function string:split(sep)
