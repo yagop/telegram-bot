@@ -33,9 +33,9 @@
     if msg.text == nil then
       return false
     end
-    if msg.from.id == our_id then
-      return true
-    end
+    --if msg.from.id == our_id then
+    --  return false
+    --end
     if msg.out then
       return false
     end
@@ -66,6 +66,7 @@
           print("  should return", result)
           if (result) then
             send_msg(receiver, result, ok_cb, false)
+            return
           end
         end
       end
@@ -81,22 +82,6 @@
   --       return
   --    end
   --   
-  --    if string.starts(msg.text, '!fortune') then
-  --       text = run_bash('fortune')
-  --       send_msg(receiver, text, ok_cb, false)
-  --       return
-  --    end 
-
-  --    if string.starts(msg.text, '!forni') then
-  --       text = msg.text:sub(8,-1)
-  --       send_msg('Fornicio_2.0', text, ok_cb, false)
-  --       return
-  --    end 
-
-  --    if string.starts(msg.text, '!fwd') then
-  --       fwd_msg (receiver, msg.id, ok_cb, false)
-  --       return
-  --    end 
 
   --    if string.starts(msg.text, '!cpu') then
   --       text = run_bash('uname -snr') .. ' ' .. run_bash('whoami')

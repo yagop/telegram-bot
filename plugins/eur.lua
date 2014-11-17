@@ -15,13 +15,19 @@ function getEURUSD(usd)
 end
 
 function run(msg, matches)
-   return getEURUSD(matches[1])
+  if matches[1] == "!eur" then
+    return getEURUSD(nil)
+  end
+  return getEURUSD(matches[1])
 end
 
 return {
     description = "EURUSD market value", 
     usage = "!eur [USD]",
-    patterns = {"^!eur (%d+[%d%.]*)$"}, 
+    patterns = {
+      "^!eur$",
+      "^!eur (%d+[%d%.]*)$",
+    }, 
     run = run 
 }
 

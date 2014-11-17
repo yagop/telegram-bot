@@ -1,5 +1,5 @@
 function save_value( text )
-	var_name, var_value = string.match(text, "(%a+) (.+)")
+	var_name, var_value = string.match(text, "!set (%a+) (.+)")
 	if (var_name == nil or var_value == nil) then
 		return "Usage: !set var_name value"
 	end

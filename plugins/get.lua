@@ -15,13 +15,17 @@ function get_value( value_name )
 end
 
 function run(msg, matches)
-  local text = matches[1]
-  return text
+  if matches[1] == "!get" then
+    return get_value(nil)
+  end  
+   return get_value(matches[1])
 end
 
 return {
     description = "retrieves variables saved with !set", 
     usage = "!get (value_name)",
-    patterns = {"^!get ?(%a+)?$"}, 
+    patterns = {
+      "^!get (%a+)$",
+      "^!get$"}, 
     run = run 
 }

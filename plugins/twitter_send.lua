@@ -29,6 +29,6 @@ end
 return {
     description = "Sends a tweet", 
     usage = "!tw [text]",
-    patterns = {"!tw (.+)"}, 
+    patterns = {"^!tw (.+)"}, 
     run = run
 }
