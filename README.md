@@ -16,8 +16,8 @@ $ sudo luarocks install oauth # You need unzip
 
 ```bash
 # Tested on Ubuntu 14.04, for other OSs check out https://github.com/vysheng/tg#installation
-$ sudo apt-get install lua-socket libreadline-dev libconfig-dev libssl-dev lua5.2 liblua5.2-dev libevent-dev fortune
-$ git clone https://github.com/yagop/telegram-bot --recursive
+$ sudo apt-get install lua-socket libreadline-dev libconfig-dev libssl-dev lua5.2 liblua5.2-dev libevent-dev
+$ git clone git@github.com:yagop/telegram-bot.git --recursive
 $ cd telegram-bot/tg
 $ ./configure && make
 $ cd .. && ./launch.sh # Will ask you for a phone number & confirmation code.
