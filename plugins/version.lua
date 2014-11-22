@@ -1,10 +1,8 @@
 
 function run(msg, matches)
-  return 'James Bot '.. VERSION .. [[ 
-  Licencia GNU v2, código disponible en http://git.io/6jdjGg
-
-  Al Bot le gusta la gente solidaria. 
-  Puedes hacer una donación a la ONG que decidas y ayudar a otras personas.]]
+  return 'Telegram Bot '.. VERSION .. [[ 
+  Checkout http://git.io/6jdjGg
+  GNU v2 license.]]
 end
 
 return {

@@ -3,7 +3,7 @@
   URL = require("socket.url")
   json = (loadfile "./bot/JSON.lua")()
 
-  VERSION = 'v0.7'
+  VERSION = 'v0.7.1'
   
   -- taken from http://stackoverflow.com/a/11130774/3163199
   function scandir(directory)
