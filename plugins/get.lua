@@ -1,13 +1,17 @@
+local f = assert(io.open('./res/values.json', "r+"))
+local c = f:read "*a"
+_values = json:decode(c)
+
 function get_value( value_name )
   -- If there is not value name, return all the values.
   if (value_name == nil ) then
     local text = ""
-    for key,value in pairs(config.values) do
+    for key,value in pairs(_values) do
       text = text..key.." = "..value.."\n"
     end
     return text
   end 
-  local value = config.values[value_name]
+  local value = _values[value_name]
   if ( value == nil) then
     return "Can't find "..value_name
   end

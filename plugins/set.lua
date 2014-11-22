@@ -3,11 +3,13 @@ function save_value( text )
 	if (var_name == nil or var_value == nil) then
 		return "Usage: !set var_name value"
 	end
-	config.values[var_name] = var_value
-	local json_text = json:encode_pretty(config) 
-	file = io.open ("./bot/config.json", "w+")
+	_values[var_name] = var_value
+
+	local json_text = json:encode_pretty(_values) 
+	file = io.open ("./res/values.json", "w+")
 	file:write(json_text)
 	file:close()
+	
 	return "Saved "..var_name.." = "..var_value
 end
 

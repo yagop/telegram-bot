@@ -2,7 +2,7 @@
 --
 -- Simple JSON encoding and decoding in pure Lua.
 --
--- Copyright 2010-2013 Jeffrey Friedl
+-- Copyright 2010-2014 Jeffrey Friedl
 -- http://regex.info/blog/
 --
 -- Latest version: http://regex.info/blog/lua/json
@@ -10,11 +10,22 @@
 -- This code is released under a Creative Commons CC-BY "Attribution" License:
 -- http://creativecommons.org/licenses/by/3.0/deed.en_US
 --
--- It can be used for any purpose so long as the copyright notice and
--- web-page links above are maintained. Enjoy.
+-- It can be used for any purpose so long as the copyright notice above,
+-- the web-page links above, and the 'AUTHOR_NOTE' string below are
+-- maintained. Enjoy.
 --
-local VERSION = 20140418.11  -- version history at end of file
-local OBJDEF = { VERSION = VERSION }
+local VERSION = 20140920.13  -- version history at end of file
+local AUTHOR_NOTE = "-[ JSON.lua package by Jeffrey Friedl (http://regex.info/blog/lua/json) version 20140920.13 ]-"
+
+--
+-- The 'AUTHOR_NOTE' variable exists so that information about the source
+-- of the package is maintained even in compiled versions. It's included in
+-- OBJDEF mostly to quiet warnings about unused variables.
+--
+local OBJDEF = {
+   VERSION      = VERSION,
+   AUTHOR_NOTE  = AUTHOR_NOTE,
+}
 
 
 --
@@ -170,8 +181,6 @@ local OBJDEF = { VERSION = VERSION }
 --
 ---------------------------------------------------------------------------
 
-
-local author = "-[ JSON.lua package by Jeffrey Friedl (http://regex.info/blog/lua/json), version " .. tostring(VERSION) .. " ]-"
 local isArray  = { __tostring = function() return "JSON array"  end }    isArray.__index  = isArray
 local isObject = { __tostring = function() return "JSON object" end }    isObject.__index = isObject
 
@@ -386,7 +395,7 @@ end
 
 local function skip_whitespace(text, start)
 
-   local match_start, match_end = text:find("^[ \n\r\t]+", start) -- [http://www.ietf.org/rfc/rfc4627.txt] Section 2
+   local _, match_end = text:find("^[ \n\r\t]+", start) -- [http://www.ietf.org/rfc/rfc4627.txt] Section 2
    if match_end then
       return match_end + 1
    else
@@ -397,7 +406,7 @@ end
 local grok_one -- assigned later
 
 local function grok_object(self, text, start, etc)
-   if not text:sub(start,start) == '{' then
+   if text:sub(start,start) ~= '{' then
       self:onDecodeError("expected '{'", text, start, etc)
    end
 
@@ -420,9 +429,9 @@ local function grok_object(self, text, start, etc)
 
       i = skip_whitespace(text, i + 1)
 
-      local val, new_i = grok_one(self, text, i)
+      local new_val, new_i = grok_one(self, text, i)
 
-      VALUE[key] = val
+      VALUE[key] = new_val
 
       --
       -- Expect now either '}' to end things, or a ',' to allow us to continue.
@@ -446,7 +455,7 @@ local function grok_object(self, text, start, etc)
 end
 
 local function grok_array(self, text, start, etc)
-   if not text:sub(start,start) == '[' then
+   if text:sub(start,start) ~= '[' then
       self:onDecodeError("expected '['", text, start, etc)
    end
 
@@ -649,7 +658,7 @@ local function object_or_array(self, T, etc)
       -- It's not ideal, but we'll turn the numbers into strings so that we can at least create a JSON object.
       --
 
-      if JSON.noKeyConversion then
+      if self.noKeyConversion then
          self:onEncodeError("a table with both numeric and string keys could be an object or array; aborting", etc)
       end
 
@@ -840,6 +849,13 @@ return OBJDEF:new()
 
 --
 -- Version history:
+--
+--   20140920.13   Put back (in a way that doesn't cause warnings about unused variables) the author string,
+--                 so that the source of the package, and its version number, are visible in compiled copies.
+--
+--   20140911.12   Minor lua cleanup.
+--                 Fixed internal reference to 'JSON.noKeyConversion' to reference 'self' instead of 'JSON'.
+--                 (Thanks to SmugMug's David Parry for these.)
 --
 --   20140418.11   JSON nulls embedded within an array were being ignored, such that
 --                     ["1",null,null,null,null,null,"seven"],
