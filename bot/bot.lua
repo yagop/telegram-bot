@@ -16,10 +16,13 @@
   end
   
   function on_msg_receive (msg)
+    vardump(msg)
+
     if msg_valid(msg) == false then
       return
     end
 
+    update_user_stats(msg)
     do_action(msg)
 
     mark_read(get_receiver(msg), ok_cb, false)
@@ -228,6 +231,19 @@
     end
   end
 
+  function update_user_stats(msg)
+     -- Save user to users 
+    if (users[msg.from.id] == nil) then
+      users[msg.from.id] = {
+        name = msg.from.print_name,
+        msg_num = 1
+      }
+    else
+      users[msg.from.id].msg_num = users[msg.from.id].msg_num + 1
+    end
+    print (msg.from.print_name .. ": "..users[msg.from.id].msg_num)
+  end
+
   function get_receiver(msg)
     if msg.to.type == 'user' then
       return 'user#id'..msg.from.id
@@ -265,6 +281,7 @@
   -- Start and load values
   config = load_config()
   our_id = 0
+  users = {}
   now = os.time()
 
   -- load plugins
