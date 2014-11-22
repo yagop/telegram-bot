@@ -5,7 +5,7 @@
 
 -- Globals
 -- If you have a google api key for the geocoding/timezone api
-api_key  = config.time.api_key or nil
+api_key  = config.google_api_key or nil
 base_api = "https://maps.googleapis.com/maps/api"
 dateFormat = "%A %d %B - %H:%M:%S"
 
@@ -19,7 +19,7 @@ end
 function get_latlong(area)
    local api        = base_api .. "/geocode/json?"
    local parameters = "address=".. (URL.escape(area) or "")
-   if api_key ~=nil then
+   if api_key ~= nil then
       parameters = parameters .. "&key="..api_key
    end
 
