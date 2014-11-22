@@ -23,24 +23,31 @@ $ ./configure && make
 $ cd .. && ./launch.sh # Will ask you for a phone number & confirmation code.
 ```
 
+Multimedia
+----------
+- When user sends image (png, jpg, jpeg) URL download and send it to origin.
+- When user sends media (gif, mp4, pdf, etc.) URL download and send it to origin.
+- When user sends twitter URL, send text and images to origin. Requieres OAuth Key.
+- When user sends youtube URL, send to origin video image.
+
+![http://i.imgur.com/RQYGUuH.png](http://i.imgur.com/RQYGUuHm.png) ![http://i.imgur.com/zqojNhh.png](http://i.imgur.com/zqojNhhm.png)
+
 Command list
 ------------
 ```
-!help : print command list
-!ping : bot sends pong 
-!sh (text) : send commands to bash (only privileged users)
-!echo (text) : echo the msg 
-!version : version info
-!cpu : status (uname + top)
-!fwd : forward msg
-!forni : send text to group Fornicio
-!fortune : print a random adage
-!weather (city) : weather in that city (Madrid is default)
-!9gag : send random url image from 9gag
-!rae (word) : Spanish dictionary
-!eur (USD) : EURUSD market value
-!img (text) : search image with Google API and sends it
-!uc3m : fortunes from Universidad Carlos III
-!set [variable_name] [value] : store for !get
-!get (variable_name) : retrieves variables saved with !set
+9gag -> send random image from 9gag
+!echo [whatever] -> echoes the msg
+!eur [USD] -> EURUSD market value
+!uc3m -> Fortunes from Universidad Carlos III
+!get (value_name) -> retrieves variables saved with !set
+say hello to [name] -> Says hello to someone
+!help -> Lists all available commands
+!img [topic] -> search image with Google API and sends it
+!ping -> bot sends pong
+!rae [word] -> Spanish dictionary
+!set [value_name] [data] -> Set value
+!tw [text] -> Sends a tweet
+!version -> Shows the bot version
+!weather (city) -> weather in that city (Madrid is default)
 ```
+
