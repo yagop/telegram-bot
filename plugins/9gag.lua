@@ -13,10 +13,9 @@ function get_9GAG()
 end
 
 function send_title(cb_extra, success, result)
-  --if success then
-    print("return called")
+  if success then
     send_msg(cb_extra[1], cb_extra[2], ok_cb, false)
-  --end
+  end
 end
 
 function run(msg, matches)
