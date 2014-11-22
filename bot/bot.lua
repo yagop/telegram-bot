@@ -177,7 +177,7 @@
     file:write(req)
     file:close()
 
-    if noremove~=nil then
+    if noremove == nil then
        postpone(rmtmp_cb, file_path, config.rmtmp_delay)
     end
 
