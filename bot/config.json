@@ -1,4 +1,5 @@
 {
+       "rmtmp_delay": 20,
     "google_api_key": "",
           "log_file": "/var/www/html/log.txt",
         "sh_enabled": false,
