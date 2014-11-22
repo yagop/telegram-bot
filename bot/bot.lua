@@ -26,7 +26,6 @@
     do_action(msg)
 
     mark_read(get_receiver(msg), ok_cb, false)
-    -- write_log_file(msg)
   end
 
   function ok_cb(extra, success, result)
@@ -105,21 +104,6 @@
         end
      end
      return var
-  end
-
-  function write_log_file(msg)
-    name = get_name(msg)
-    ret = name .. ' > ' .. msg.text
-    write_to_file(config.log_file, ret)
-  end
-
-  -- Saves a string to file
-  function write_to_file(filename, value)
-    if (value) then
-      local file = io.open(filename,"a")
-      file:write(value, "\n")
-      file:close()
-    end
   end
 
   function get_name(msg)
@@ -242,10 +226,10 @@
   end
 
   function update_user_stats(msg)
-     -- Save user to users 
+     -- Save user to users table
     if (users[msg.from.id] == nil) then
       users[msg.from.id] = {
-        name = msg.from.print_name,
+        name = get_name(msg),
         msg_num = 1
       }
     else
