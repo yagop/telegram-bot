@@ -30,8 +30,7 @@ Multimedia
 - When user sends twitter URL, send text and images to origin. Requieres OAuth Key.
 - When user sends youtube URL, send to origin video image.
 
-![http://i.imgur.com/RQYGUuH.png](http://i.imgur.com/RQYGUuHm.png) ![http://i.imgur.com/zqojNhh.png](http://i.imgur.com/zqojNhhm.png)
-
+![http://i.imgur.com/zW7WWWt.png](http://i.imgur.com/zW7WWWt.png) ![http://i.imgur.com/0FGUvU0.png](http://i.imgur.com/0FGUvU0.png)
 Command list
 ------------
 ```
