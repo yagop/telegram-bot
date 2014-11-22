@@ -1,4 +1,5 @@
   http = require("socket.http")
+  https = require("ssl.https")
   URL = require("socket.url")
   json = (loadfile "./bot/JSON.lua")()
 --  lrexlib = require("rex_pcre")
