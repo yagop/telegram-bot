@@ -67,7 +67,7 @@ function get_time(lat,lng)
       -- The local time in the location is:
       -- timestamp + rawOffset + dstOffset
       local localTime = timestamp + data.rawOffset + data.dstOffset
-      return localTime
+      return localTime, data.timeZoneId
    end
    return localTime
 end
@@ -78,12 +78,12 @@ function getformattedLocalTime(area)
    end
 
    lat,lng,acc = get_latlong(area)
-   if lat == nil and lng==nil then
-      return "It seems that in '"..area.."' they do not have a concept of time."
+   if lat == nil and lng == nil then
+      return 'It seems that in "'..area..'" they do not have a concept of time.'
    end
-   local localTime = get_time(lat,lng)
+   local localTime, timeZoneId = get_time(lat,lng)
 
-   return "The local time in '"..area.."' is: ".. os.date(dateFormat,localTime) 
+   return "The local time in "..timeZoneId.." is: ".. os.date(dateFormat,localTime) 
 end
 
 function run(msg, matches)
