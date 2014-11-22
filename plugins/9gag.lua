@@ -12,12 +12,18 @@ function get_9GAG()
    return link_image, title
 end
 
+function send_title(cb_extra, success, result)
+  if success then
+    send_msg(cb_extra[1], cb_extra[2], ok_cb, false)
+  end
+end
+
 function run(msg, matches)
   local receiver = get_receiver(msg)
   url, title = get_9GAG()
   file_path = download_to_file(url)
-  send_photo(receiver, file_path, ok_cb, false)
-  return title
+  send_photo(receiver, file_path, send_title, {receiver, title})
+  return false
 end
 
 return {
