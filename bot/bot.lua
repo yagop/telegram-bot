@@ -29,6 +29,11 @@
   function ok_cb(extra, success, result)
   end
 
+  -- Callback to remove tmp files
+  function rmtmp_cb(file_path, success, result)
+     os.remove(file_path)
+  end
+
   function msg_valid(msg)
     if msg.text == nil then
       return false
@@ -145,7 +150,7 @@
     return result
   end
 
-  function download_to_file( url )
+  function download_to_file( url , noremove )
     print("url to download: "..url)
     req, c, h = http.request(url)
     htype = h["content-type"]
@@ -171,6 +176,11 @@
     file = io.open(file_path, "w+")
     file:write(req)
     file:close()
+
+    if noremove~=nil then
+       postpone(rmtmp_cb, file_path, config.rmtmp_delay)
+    end
+
     return file_path
   end
 
