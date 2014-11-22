@@ -61,7 +61,7 @@ function run(msg, matches)
 end
 
 return {
-    description = "Shows a tweet", 
+    description = "When user sends twitter URL, send text and images to origin. Requieres OAuth Key.", 
     usage = "",
     patterns = {"https://twitter.com/[^/]+/status/([0-9]+)"}, 
     run = run 

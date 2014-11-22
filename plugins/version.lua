@@ -8,7 +8,7 @@ function run(msg, matches)
 end
 
 return {
-    description = "Shows the bot version", 
+    description = "Shows bot version", 
     usage = "!version",
     patterns = {"^!version$"}, 
     run = run 

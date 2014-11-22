@@ -6,7 +6,7 @@ function run(msg, matches)
 end
 
 return {
-    description = "from image URL downloads it and sends to origin", 
+    description = "When user sends image URL (ends with png, jpg, jpeg) download and send it to origin.", 
     usage = "",
     patterns = {
     	"(https?://[%w-_%.%?%.:/%+=&]+.png)$",

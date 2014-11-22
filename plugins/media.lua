@@ -5,7 +5,7 @@ function run(msg, matches)
 end
 
 return {
-    description = "from media URL downloads it and sends to origin", 
+    description = "When user sends media URL (ends with gif, mp4, pdf, etc.) download and send it to origin.", 
     usage = "",
     patterns = {
     	"(https?://[%w-_%.%?%.:/%+=&]+.gif)$",

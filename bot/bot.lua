@@ -2,9 +2,8 @@
   https = require("ssl.https")
   URL = require("socket.url")
   json = (loadfile "./bot/JSON.lua")()
---  lrexlib = require("rex_pcre")
 
-  VERSION = 'v0.6'
+  VERSION = 'v0.7'
   
   -- taken from http://stackoverflow.com/a/11130774/3163199
   function scandir(directory)
@@ -55,16 +54,16 @@
   function do_action(msg)
     local receiver = get_receiver(msg)
     local text = msg.text
-    print("Received msg", text)
+    -- print("Received msg", text)
     for name, desc in pairs(plugins) do
-      print("Trying module", name)
+      -- print("Trying module", name)
       for k, pattern in pairs(desc.patterns) do
-        print("Trying", text, "against", pattern)
+        -- print("Trying", text, "against", pattern)
         matches = { string.match(text, pattern) }
         if matches[1] then
-          print("  matches!")
+          print("  matches!!!!!")
           result = desc.run(msg, matches)
-          print("  should return", result)
+          print("  sending", result)
           if (result) then
             send_msg(receiver, result, ok_cb, false)
             return
@@ -73,25 +72,6 @@
       end
     end
   end
-
-  -- function do_action(msg)
-  --    local receiver = get_receiver(msg)
-
-  --    if string.starts(msg.text, '!sh') then
-  --       text = run_sh(msg)
-  --       send_msg(receiver, text, ok_cb, false)
-  --       return
-  --    end
-  --   
-
-  --    if string.starts(msg.text, '!cpu') then
-  --       text = run_bash('uname -snr') .. ' ' .. run_bash('whoami')
-  --       text = text .. '\n' .. run_bash('top -b |head -2')
-  --       send_msg(receiver, text, ok_cb, false)
-  --       return
-  --    end
-
-  -- end
 
   function load_config()
      local f = assert(io.open('./bot/config.json', "r"))
@@ -166,7 +146,7 @@
   end
 
   function download_to_file( url )
-    print("url a descargar: "..url)
+    print("url to download: "..url)
     req, c, h = http.request(url)
     htype = h["content-type"]
     vardump(c)

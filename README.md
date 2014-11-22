@@ -35,7 +35,7 @@ Multimedia
 Command list
 ------------
 ```
-9gag -> send random image from 9gag
+!9gag -> send random image from 9gag
 !echo [whatever] -> echoes the msg
 !eur [USD] -> EURUSD market value
 !uc3m -> Fortunes from Universidad Carlos III
@@ -46,8 +46,9 @@ say hello to [name] -> Says hello to someone
 !ping -> bot sends pong
 !rae [word] -> Spanish dictionary
 !set [value_name] [data] -> Set value
+!time [area] -> Displays the local time in an area
 !tw [text] -> Sends a tweet
-!version -> Shows the bot version
+!version -> Shows bot version
 !weather (city) -> weather in that city (Madrid is default)
 ```
 

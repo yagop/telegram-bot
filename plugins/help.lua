@@ -2,7 +2,9 @@
 function run(msg, matches)
   local ret = ""
   for k, dict in pairs(plugins) do
-    ret = ret .. dict.usage .. " -> " .. dict.description .. "\n"
+  	if dict.usage ~= "" then
+    	ret = ret .. dict.usage .. " -> " .. dict.description .. "\n"
+	end
   end
   return ret
 end
@@ -13,4 +15,3 @@ return {
     patterns = {"^!help$"}, 
     run = run 
 }
-
