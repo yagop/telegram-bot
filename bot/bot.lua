@@ -3,7 +3,7 @@
   URL = require("socket.url")
   json = (loadfile "./bot/JSON.lua")()
 
-  VERSION = 'v0.7.1'
+  VERSION = 'v0.7.2'
   
   -- taken from http://stackoverflow.com/a/11130774/3163199
   function scandir(directory)
@@ -16,7 +16,7 @@
   end
   
   function on_msg_receive (msg)
-    vardump(msg)
+    --vardump(msg)
 
     if msg_valid(msg) == false then
       return
@@ -226,16 +226,15 @@
   end
 
   function update_user_stats(msg)
-     -- Save user to users table
-    if (users[msg.from.id] == nil) then
-      users[msg.from.id] = {
+     -- Save user to _users table
+    if (_users[msg.from.id] == nil) then
+      _users[msg.from.id] = {
         name = get_name(msg),
         msg_num = 1
       }
     else
-      users[msg.from.id].msg_num = users[msg.from.id].msg_num + 1
+      _users[msg.from.id].msg_num = _users[msg.from.id].msg_num + 1
     end
-    print (msg.from.print_name .. ": "..users[msg.from.id].msg_num)
   end
 
   function get_receiver(msg)
@@ -275,7 +274,7 @@
   -- Start and load values
   config = load_config()
   our_id = 0
-  users = {}
+  _users = {}
   now = os.time()
 
   -- load plugins
