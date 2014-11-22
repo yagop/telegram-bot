@@ -4,9 +4,8 @@
 --   2. Timezone to get the local time in that lat/long location
 
 -- Globals
--- If you have a google api key for the geocoding/timezone api, you can fill it in here
--- TODO: use bot config file
-api_key  = nil
+-- If you have a google api key for the geocoding/timezone api
+api_key  = config.time.api_key or nil
 base_api = "https://maps.googleapis.com/maps/api"
 dateFormat = "%A %d %B - %H:%M:%S"
 
@@ -84,9 +83,7 @@ function getformattedLocalTime(area)
    end
    local localTime = get_time(lat,lng)
 
-   return "The local time in '"..area..
-      "'\n(Loc: "..lat..", "..lng.." with '"..acc.."' accuracy is:\n" ..
-      os.date(dateFormat,localTime)
+   return "The local time in '"..area.."' is: ".. os.date(dateFormat,localTime) 
 end
 
 function run(msg, matches)
@@ -99,5 +96,3 @@ return {
     patterns = {"^!time (.*)$"}, 
     run = run 
 }
-
-
