@@ -68,7 +68,7 @@
         -- print("Trying", text, "against", pattern)
         matches = { string.match(text, pattern) }
         if matches[1] then
-          print("  matches!!!!!")
+          print("  matches",pattern)
           result = desc.run(msg, matches)
           print("  sending", result)
           if (result) then

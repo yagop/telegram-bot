@@ -2,7 +2,8 @@
 function getDulcinea( text )
   -- Powered by https://github.com/javierhonduco/dulcinea
   local api = "http://dulcinea.herokuapp.com/api/?query="
-  b = http.request(api..text)
+  local query_url = api..text
+  b = http.request(query_url)
   dulcinea = json:decode(b)
   if dulcinea.status == "error" then
     return "Error: " .. dulcinea.message
@@ -12,9 +13,11 @@ function getDulcinea( text )
     b = http.request(api..text)
     dulcinea = json:decode(b)
   end
-  vardump(dulcinea)
   local text = ""
   local responses = #dulcinea.response
+  if responses == 0 then
+    return "Error: 404 word not found"
+  end
   if (responses > 5) then
     responses = 5
   end
@@ -29,8 +32,8 @@ function getDulcinea( text )
       text = text .. meaning .. "\n\n"
     end
   end
+  print (text)
   return text
-
 end
 
 function run(msg, matches)
