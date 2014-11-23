@@ -3,7 +3,7 @@
   URL = require("socket.url")
   json = (loadfile "./bot/JSON.lua")()
 
-  VERSION = 'v0.7.3'
+  VERSION = 'v0.7.4'
   
   -- taken from http://stackoverflow.com/a/11130774/3163199
   function scandir(directory)
@@ -16,7 +16,7 @@
   end
   
   function on_msg_receive (msg)
-    --vardump(msg)
+    vardump(msg)
 
     if msg_valid(msg) == false then
       return
@@ -240,9 +240,18 @@
   end
 
   function load_user_stats()
-    local f = assert(io.open('./res/users.json', "r"))
-    local c = f:read "*a"
-    return json:decode(c)
+    local f = io.open('res/users.json', "r+")
+    -- If file doesn't exists
+    if f == nil then
+      f = io.open('res/users.json', "w+")
+      f:write("{}") -- Write empty table
+      f:close()
+      return {}
+    else
+      local c = f:read "*a"
+      f:close()
+      return json:decode(c)
+    end
   end
 
   function get_receiver(msg)

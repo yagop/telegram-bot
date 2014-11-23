@@ -1,6 +1,14 @@
-local f = assert(io.open('./res/values.json', "r+"))
-local c = f:read "*a"
-_values = json:decode(c)
+local f = io.open('./res/values.json', "r+")
+if f == nil then
+  f = io.open('./res/values.json', "w+")
+  f:write("{}") -- Write empty table
+  f:close()
+  _values = {}
+else
+  local c = f:read "*a"
+  f:close()
+  _values = json:decode(c)
+end
 
 function get_value( value_name )
   -- If there is not value name, return all the values.
