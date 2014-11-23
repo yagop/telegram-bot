@@ -9,7 +9,11 @@ function run(msg, matches)
 
 	local text = ""
 	for id, user in pairs(_users) do
-		text = text..user.name..": "..user.msg_num.."\n"
+		if user.last_name == nil then
+			text = text..user.name..": "..user.msg_num.."\n"
+		else
+			text = text..user.name.." "..user.last_name..": "..user.msg_num.."\n"
+		end
 	end
 	return text
 end

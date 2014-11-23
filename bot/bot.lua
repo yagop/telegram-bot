@@ -228,14 +228,23 @@
   function update_user_stats(msg)
      -- Save user to _users table
     local from_id = tostring(msg.from.id)
-    if (_users[from_id] == nil) then
+    local user_name = get_name(msg)
+    -- If last name is nil dont save last_name.
+    local user_last_name = msg.from.last_name
+    local user_print_name = msg.from.print_name
+    print ("user_last_name", user_last_name)
+    if _users[from_id] == nil then
       _users[from_id] = {
-        name = get_name(msg),
+        name = user_name,
+        last_name = user_last_name,
+        print_name = user_print_name,
         msg_num = 1
       }
     else
       local actual_num = _users[from_id].msg_num
       _users[from_id].msg_num = actual_num + 1
+      -- And update last_name
+      _users[from_id].last_name = user_last_name
     end
   end
 
