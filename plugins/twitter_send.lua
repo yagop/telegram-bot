@@ -15,7 +15,9 @@ local client = OAuth.new(consumer_key, consumer_secret, {
 })
 
 function run(msg, matches)
-
+    if not is_sudo(msg) then
+        return "You aren't allowed to send tweets"
+    end
 	local response_code, response_headers, response_status_line, response_body = 
     client:PerformRequest("POST", "https://api.twitter.com/1.1/statuses/update.json", {
     	status = matches[1]
@@ -23,7 +25,7 @@ function run(msg, matches)
     if response_code ~= 200 then
     	return "Error: "..response_code
     end
-	return "Tweet enviado"
+	return "Tweet sended"
 end
 
 return {
