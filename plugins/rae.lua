@@ -1,4 +1,3 @@
-
 function getDulcinea( text )
   -- Powered by https://github.com/javierhonduco/dulcinea
   local api = "http://dulcinea.herokuapp.com/api/?query="
@@ -41,9 +40,9 @@ function run(msg, matches)
 end
 
 return {
-    description = "Spanish dictionary", 
-    usage = "!rae [word]",
-   patterns = {"^!rae (.*)$"}, 
-    run = run 
+  description = "Spanish dictionary", 
+  usage = "!rae [word]",
+  patterns = {"^!rae (.*)$"}, 
+  run = run 
 }
 
