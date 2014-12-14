@@ -37,9 +37,6 @@
   end
 
   function msg_valid(msg)
-    if msg.text == nil then
-      return false
-    end
     --if msg.from.id == our_id then
     --  return false
     --end
@@ -47,9 +44,6 @@
       return false
     end
     if msg.date < now then
-      return false
-    end
-    if msg.text == nil then
       return false
     end
     if msg.unread == 0 then
@@ -61,6 +55,11 @@
   function do_action(msg)
     local receiver = get_receiver(msg)
     local text = msg.text
+    if msg.text == nil then
+       -- Not a text message, make text the same as what tg shows so
+       -- we can match on it. The plugin is resposible for handling
+       text = '['..msg.media.type..']'
+    end
     -- print("Received msg", text)
     for name, desc in pairs(plugins) do
       -- print("Trying module", name)
