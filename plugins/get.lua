@@ -10,16 +10,22 @@ else
   _values = json:decode(c)
 end
 
-function get_value( value_name )
+function get_value(chat, value_name)
+
+  -- If chat values is empty
+  if (_values[chat] == nil) then
+    return "There isn't any data"
+  end
+
   -- If there is not value name, return all the values.
   if (value_name == nil ) then
     local text = ""
-    for key,value in pairs(_values) do
+    for key,value in pairs(_values[chat]) do
       text = text..key.." = "..value.."\n"
     end
     return text
   end 
-  local value = _values[value_name]
+  local value = _values[chat][value_name]
   if ( value == nil) then
     return "Can't find "..value_name
   end
@@ -28,9 +34,9 @@ end
 
 function run(msg, matches)
   if matches[1] == "!get" then
-    return get_value(nil)
+    return get_value(msg.to.id, nil)
   end  
-   return get_value(matches[1])
+   return get_value(msg.to.id, matches[1])
 end
 
 return {

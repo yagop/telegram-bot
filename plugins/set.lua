@@ -1,9 +1,12 @@
-function save_value( text )
+function save_value(chat, text )
 	var_name, var_value = string.match(text, "!set (%a+) (.+)")
 	if (var_name == nil or var_value == nil) then
 		return "Usage: !set var_name value"
 	end
-	_values[var_name] = var_value
+	if _values[chat] == nil then
+		_values[chat] = {}
+	end
+	_values[chat][var_name] = var_value
 
 	local json_text = json:encode_pretty(_values) 
 	file = io.open ("./res/values.json", "w+")
@@ -14,7 +17,7 @@ function save_value( text )
 end
 
 function run(msg, matches)
-	local text = save_value(msg.text)
+	local text = save_value(msg.to.id, msg.text)
 	return text
 end
 
