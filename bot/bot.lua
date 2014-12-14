@@ -71,13 +71,31 @@
           result = desc.run(msg, matches)
           print("  sending", result)
           if (result) then
-            send_msg(receiver, result, ok_cb, false)
+            _send_msg(receiver, result)
             return
           end
         end
       end
     end
   end
+
+  -- If text is longer than 4096 chars, send multiple msg.
+  -- https://core.telegram.org/method/messages.sendMessage
+  function _send_msg( destination, text)
+    local msg_text_max = 4096
+    local len = string.len(text)
+    local iterations = math.ceil(len / msg_text_max)
+
+    for i = 1, iterations, 1 do
+      print ("iteracion: "..i)
+      local inital_c = i * msg_text_max - msg_text_max
+      local final_c = i * msg_text_max
+      -- dont worry about if text length < msg_text_max
+      local text_msg = string.sub(text,inital_c,final_c)
+      send_msg(destination, text_msg, ok_cb, false)
+    end
+  end
+
 
   function load_config()
      local f = assert(io.open('./bot/config.json', "r"))
