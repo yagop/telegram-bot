@@ -17,7 +17,8 @@ function save_value(chat, text )
 end
 
 function run(msg, matches)
-	local text = save_value(msg.to.id, msg.text)
+	local chat_id = tostring(msg.to.id)
+	local text = save_value(chat_id, msg.text)
 	return text
 end
 

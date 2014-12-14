@@ -33,10 +33,11 @@ function get_value(chat, value_name)
 end
 
 function run(msg, matches)
+  local chat_id = tostring(msg.to.id)
   if matches[1] == "!get" then
-    return get_value(msg.to.id, nil)
+    return get_value(chat_id, nil)
   end  
-   return get_value(msg.to.id, matches[1])
+   return get_value(chat_id, matches[1])
 end
 
 return {
