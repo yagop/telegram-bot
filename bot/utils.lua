@@ -1,3 +1,19 @@
+function get_receiver(msg)
+  if msg.to.type == 'user' then
+    return 'user#id'..msg.from.id
+  end
+  if msg.to.type == 'chat' then
+    return 'chat#id'..msg.to.id
+  end
+end
+
+function is_chat_msg( msg )
+  if msg.to.type == 'chat' then
+    return true
+  end
+  return false
+end
+
 function string.random(length)
    math.randomseed(os.time())
    local str = "";

@@ -78,7 +78,6 @@ function _send_msg( destination, text)
   local iterations = math.ceil(len / msg_text_max)
 
   for i = 1, iterations, 1 do
-    print ("iteracion: "..i)
     local inital_c = i * msg_text_max - msg_text_max
     local final_c = i * msg_text_max
     -- dont worry about if text length < msg_text_max
@@ -98,7 +97,6 @@ function load_config()
          print("Allowed user: " .. user)
       end
    end
-   -- print("Torrent path: " .. config.torrent_path)
    f:close()
    return config
 end
@@ -125,22 +123,26 @@ end
 function update_user_stats(msg)
    -- Save user to _users table
   local from_id = tostring(msg.from.id)
+  local to_id = tostring(msg.to.id)
   local user_name = get_name(msg)
   -- If last name is nil dont save last_name.
   local user_last_name = msg.from.last_name
-  local user_print_name = msg.from.print_name    
-  if _users[from_id] == nil then
-    _users[from_id] = {
+  local user_print_name = msg.from.print_name
+  if _users[to_id] == nil then
+    _users[to_id] = {}
+  end
+  if _users[to_id][from_id] == nil then
+    _users[to_id][from_id] = {
       name = user_name,
       last_name = user_last_name,
       print_name = user_print_name,
       msg_num = 1
     }
   else
-    local actual_num = _users[from_id].msg_num
-    _users[from_id].msg_num = actual_num + 1
+    local actual_num = _users[to_id][from_id].msg_num
+    _users[to_id][from_id].msg_num = actual_num + 1
     -- And update last_name
-    _users[from_id].last_name = user_last_name
+    _users[to_id][from_id].last_name = user_last_name
   end
 end
 
@@ -156,15 +158,6 @@ function load_user_stats()
     local c = f:read "*a"
     f:close()
     return json:decode(c)
-  end
-end
-
-function get_receiver(msg)
-  if msg.to.type == 'user' then
-    return 'user#id'..msg.from.id
-  end
-  if msg.to.type == 'chat' then
-    return 'chat#id'..msg.to.id
   end
 end
 
