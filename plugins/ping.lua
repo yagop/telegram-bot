@@ -1,4 +1,3 @@
-
 function run(msg, matches)
     local receiver = get_receiver(msg)
     print('receiver: '..receiver)
@@ -11,4 +10,3 @@ return {
     patterns = {"^!ping$"}, 
     run = run 
 }
-
