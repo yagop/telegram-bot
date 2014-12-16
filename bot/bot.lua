@@ -28,9 +28,9 @@ function rmtmp_cb(file_path, success, result)
 end
 
 function msg_valid(msg)
-  if msg.from.id == our_id then
-    return true
-  end
+  -- if msg.from.id == our_id then
+  --   return true
+  -- end
   if msg.out then
     return false
   end
