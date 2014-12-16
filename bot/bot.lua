@@ -196,8 +196,9 @@ plugins = {}
 -- load all plugins in the plugins/ directory
 function load_plugins()
   plugins = {}
-  for k, v in pairs(scandir("plugins")) do 
-    if not (v:sub(0, 1) == ".") then
+  for k, v in pairs(scandir("plugins")) do
+    -- Load only lua files
+    if (v:match(".lua$")) then
         print("Loading plugin", v)
         t = loadfile("plugins/" .. v)()
         table.insert(plugins, t)
