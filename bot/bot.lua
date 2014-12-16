@@ -28,9 +28,9 @@ function rmtmp_cb(file_path, success, result)
 end
 
 function msg_valid(msg)
-  --if msg.from.id == our_id then
-  --  return false
-  --end
+  if msg.from.id == our_id then
+    return true
+  end
   if msg.out then
     return false
   end
@@ -194,10 +194,16 @@ now = os.time()
 plugins = {}
 
 -- load all plugins in the plugins/ directory
-for k, v in pairs(scandir("plugins")) do 
-  if not (v:sub(0, 1) == ".") then
-      print("Loading plugin", v)
-      t = loadfile("plugins/" .. v)()
-      table.insert(plugins, t)
-  end 
+function load_plugins()
+  plugins = {}
+  for k, v in pairs(scandir("plugins")) do 
+    if not (v:sub(0, 1) == ".") then
+        print("Loading plugin", v)
+        t = loadfile("plugins/" .. v)()
+        table.insert(plugins, t)
+    end 
+  end
 end
+
+load_plugins()
+
