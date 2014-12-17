@@ -28,9 +28,9 @@ function rmtmp_cb(file_path, success, result)
 end
 
 function msg_valid(msg)
-  --if msg.from.id == our_id then
-  --  return false
-  --end
+  -- if msg.from.id == our_id then
+  --   return true
+  -- end
   if msg.out then
     return false
   end
@@ -59,11 +59,13 @@ function do_action(msg)
       matches = { string.match(text, pattern) }
       if matches[1] then
         print("  matches",pattern)
-        result = desc.run(msg, matches)
-        print("  sending", result)
-        if (result) then
-          _send_msg(receiver, result)
-          return
+        if desc.run ~= nil then
+          result = desc.run(msg, matches)
+          print("  sending", result)
+          if (result) then
+            _send_msg(receiver, result)
+            return
+          end
         end
       end
     end
@@ -182,6 +184,10 @@ end
 
 function on_binlog_replay_end ()
   started = 1
+  load_plugins()
+  -- Uncomment the line to enable cron plugins.
+  -- cron_plugins()
+  -- See plugins/ping.lua as an example for cron
 end
 
 -- Start and load values
@@ -194,10 +200,27 @@ now = os.time()
 plugins = {}
 
 -- load all plugins in the plugins/ directory
-for k, v in pairs(scandir("plugins")) do 
-  if not (v:sub(0, 1) == ".") then
-      print("Loading plugin", v)
-      t = loadfile("plugins/" .. v)()
-      table.insert(plugins, t)
-  end 
+function load_plugins()
+  for k, v in pairs(scandir("plugins")) do
+    -- Load only lua files
+    if (v:match(".lua$")) then
+        print("Loading plugin", v)
+        t = loadfile("plugins/" .. v)()
+        table.insert(plugins, t)
+    end 
+  end
+end
+
+-- Cron all the enabled plugins
+function cron_plugins()
+
+  for name, desc in pairs(plugins) do
+    if desc.cron ~= nil then
+      print("croned!"..desc.description)
+      desc.cron()
+    end
+  end
+
+  -- Called again in 5 mins
+  postpone (cron_plugins, false, 5*60.0)
 end
