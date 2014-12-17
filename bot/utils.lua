@@ -111,3 +111,11 @@ function scandir(directory)
   end
   return t
 end
+
+-- http://www.lua.org/manual/5.2/manual.html#pdf-io.popen
+function run_command(str)
+  local cmd = io.popen(str)
+  local result = cmd:read('*all')
+  cmd:close()
+  return result
+end
