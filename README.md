@@ -53,5 +53,9 @@ $ cd $HOME
 $ git clone https://github.com/yagop/telegram-bot.git --recursive
 $ cd telegram-bot/tg
 $ ./configure && make
-$ cd .. && ./launch.sh # Will ask you for a phone number & confirmation code.
+$ cd ..
+$ sed -i "s/yourusername/$(whoami)/g" etc/telegram.conf
+$ sed -i "s_telegrambotpath_$(pwd)_g" etc/telegram.conf
+$ sudo cp etc/telegram.conf /etc/init/
+$ ./launch.sh # Will ask you for a phone number & confirmation code.
 ```
