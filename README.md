@@ -1,7 +1,7 @@
 telegram-bot
 ============
 
-A telegram bot using https://github.com/vysheng/tg.
+A Telegram Bot based on plugins using [tg](https://github.com/vysheng/tg).
 
 Multimedia
 ----------
@@ -59,3 +59,14 @@ $ sed -i "s_telegrambotpath_$(pwd)_g" etc/telegram.conf
 $ sudo cp etc/telegram.conf /etc/init/
 $ ./launch.sh # Will ask you for a phone number & confirmation code.
 ```
+
+TODO
+------------
+- [ ] Enable / Disable plugins
+- [ ] Cron
+- [ ] Regex
+- [ ] Moar plugins
+
+Contact me
+------------
+You can contact me [via Telegram](https://telegram.me/yago_perez) but if you have an issue please [open](https://github.com/yagop/telegram-bot/issues) one.
