@@ -4,7 +4,7 @@ URL = require("socket.url")
 json = (loadfile "./bot/JSON.lua")()
 require("./bot/utils")
 
-VERSION = 'v0.7.6'
+VERSION = 'v0.7.7'
 
 function on_msg_receive (msg)
   vardump(msg)
@@ -186,15 +186,16 @@ function on_binlog_replay_end ()
   started = 1
   load_plugins()
   -- Uncomment the line to enable cron plugins.
-  -- cron_plugins()
+  -- postpone (cron_plugins, false, 1.0)
   -- See plugins/ping.lua as an example for cron
 end
 
 -- Start and load values
-config = load_config()
-_users = load_user_stats()
 our_id = 0
 now = os.time()
+
+config = load_config()
+_users = load_user_stats()
 
 -- load plugins
 plugins = {}
