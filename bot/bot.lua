@@ -166,7 +166,7 @@ end
 function on_binlog_replay_end ()
   started = 1
   -- Uncomment the line to enable cron plugins.
-  -- postpone (cron_plugins, false, 1.0)
+  -- postpone (cron_plugins, false, 5.0)
   -- See plugins/ping.lua as an example for cron
 end
 
@@ -187,7 +187,7 @@ function cron_plugins()
 
   for name, desc in pairs(plugins) do
     if desc.cron ~= nil then
-      print("croned!"..desc.description)
+      print(desc.description)
       desc.cron()
     end
   end

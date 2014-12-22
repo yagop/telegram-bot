@@ -1,10 +1,10 @@
 socket = require("socket")
 
 function cron()
-	-- Checks a TCP connexion
 	-- Use yours desired web and id
-	local addr = "gul.es"
+	local addr = "www.google.com"
 	local dest = "user#id"..our_id
+    -- Checks a TCP connexion
     local connexion = socket.connect(addr, 80)
     if not connexion then 
     	local text = "ALERT: "..addr.." is offline"
