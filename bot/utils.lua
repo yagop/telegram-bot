@@ -121,3 +121,22 @@ function run_command(str)
   cmd:close()
   return result
 end
+
+function is_sudo(msg)
+   local var = false
+   -- Check users id in config 
+   for v,user in pairs(config.sudo_users) do 
+      if user == msg.from.id then 
+         var = true 
+      end
+   end
+   return var
+end
+
+function get_name(msg)
+   local name = msg.from.first_name
+   if name == nil then
+      name = msg.from.id
+   end
+   return name
+end
