@@ -33,7 +33,9 @@ end
 
 function download_to_file( url , noremove )
   print("url to download: "..url)
-  req, c, h = http.request(url)
+  local ltn12 = require "ltn12"
+  local respbody = {}
+  one, c, h = http.request{url=url, sink=ltn12.sink.table(respbody), redirect=true}
   htype = h["content-type"]
   vardump(c)
   print("content-type: "..htype)
@@ -55,7 +57,7 @@ function download_to_file( url , noremove )
     end
   end
   file = io.open(file_path, "w+")
-  file:write(req)
+  file:write(table.concat(respbody))
   file:close()
 
   if noremove == nil then
