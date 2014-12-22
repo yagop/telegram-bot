@@ -165,21 +165,10 @@ end
 
 function on_binlog_replay_end ()
   started = 1
-  load_plugins()
   -- Uncomment the line to enable cron plugins.
   -- postpone (cron_plugins, false, 1.0)
   -- See plugins/ping.lua as an example for cron
 end
-
--- Start and load values
-our_id = 0
-now = os.time()
-
-config = load_config()
-_users = load_user_stats()
-
--- load plugins
-plugins = {}
 
 -- load all plugins in the plugins/ directory
 function load_plugins()
@@ -206,3 +195,14 @@ function cron_plugins()
   -- Called again in 5 mins
   postpone (cron_plugins, false, 5*60.0)
 end
+
+-- Start and load values
+our_id = 0
+now = os.time()
+
+config = load_config()
+_users = load_user_stats()
+
+-- load plugins
+plugins = {}
+load_plugins()
