@@ -14,13 +14,13 @@
 -- the web-page links above, and the 'AUTHOR_NOTE' string below are
 -- maintained. Enjoy.
 --
-local VERSION = 20140920.13  -- version history at end of file
-local AUTHOR_NOTE = "-[ JSON.lua package by Jeffrey Friedl (http://regex.info/blog/lua/json) version 20140920.13 ]-"
+local VERSION = 20141223.14 -- version history at end of file
+local AUTHOR_NOTE = "-[ JSON.lua package by Jeffrey Friedl (http://regex.info/blog/lua/json) version 20141223.14 ]-"
 
 --
 -- The 'AUTHOR_NOTE' variable exists so that information about the source
--- of the package is maintained even in compiled versions. It's included in
--- OBJDEF mostly to quiet warnings about unused variables.
+-- of the package is maintained even in compiled versions. It's also
+-- included in OBJDEF below mostly to quiet warnings about unused variables.
 --
 local OBJDEF = {
    VERSION      = VERSION,
@@ -33,7 +33,7 @@ local OBJDEF = {
 -- http://www.json.org/
 --
 --
---   JSON = (loadfile "JSON.lua")() -- one-time load of the routines
+--   JSON = assert(loadfile "JSON.lua")() -- one-time load of the routines
 --
 --   local lua_value = JSON:decode(raw_json_text)
 --
@@ -41,9 +41,11 @@ local OBJDEF = {
 --   local pretty_json_text = JSON:encode_pretty(lua_table_or_value) -- "pretty printed" version for human readability
 --
 --
--- DECODING
 --
---   JSON = (loadfile "JSON.lua")() -- one-time load of the routines
+-- DECODING (from a JSON string to a Lua table)
+--
+--
+--   JSON = assert(loadfile "JSON.lua")() -- one-time load of the routines
 --
 --   local lua_value = JSON:decode(raw_json_text)
 --
@@ -58,22 +60,27 @@ local OBJDEF = {
 --     { "Larry", "Curly", "Moe" }
 --
 --
---   The encode and decode routines accept an optional second argument, "etc", which is not used
---   during encoding or decoding, but upon error is passed along to error handlers. It can be of any
---   type (including nil).
+--   The encode and decode routines accept an optional second argument,
+--   "etc", which is not used during encoding or decoding, but upon error
+--   is passed along to error handlers. It can be of any type (including nil).
+--
+--
+--
+-- ERROR HANDLING
 --
 --   With most errors during decoding, this code calls
 --
 --      JSON:onDecodeError(message, text, location, etc)
 --
---   with a message about the error, and if known, the JSON text being parsed and the byte count
---   where the problem was discovered. You can replace the default JSON:onDecodeError() with your
---   own function.
+--   with a message about the error, and if known, the JSON text being
+--   parsed and the byte count where the problem was discovered. You can
+--   replace the default JSON:onDecodeError() with your own function.
 --
---   The default onDecodeError() merely augments the message with data about the text and the
---   location if known (and if a second 'etc' argument had been provided to decode(), its value is
---   tacked onto the message as well), and then calls JSON.assert(), which itself defaults to Lua's
---   built-in assert(), and can also be overridden.
+--   The default onDecodeError() merely augments the message with data
+--   about the text and the location if known (and if a second 'etc'
+--   argument had been provided to decode(), its value is tacked onto the
+--   message as well), and then calls JSON.assert(), which itself defaults
+--   to Lua's built-in assert(), and can also be overridden.
 --
 --   For example, in an Adobe Lightroom plugin, you might use something like
 --
@@ -95,9 +102,10 @@ local OBJDEF = {
 --
 --      JSON:onDecodeOfHTMLError(message, text, nil, etc)
 --
---   The use of the fourth 'etc' argument allows stronger coordination between decoding and error
---   reporting, especially when you provide your own error-handling routines. Continuing with the
---   the Adobe Lightroom plugin example:
+--   The use of the fourth 'etc' argument allows stronger coordination
+--   between decoding and error reporting, especially when you provide your
+--   own error-handling routines. Continuing with the the Adobe Lightroom
+--   plugin example:
 --
 --          function JSON:onDecodeError(message, text, location, etc)
 --             local note = "Internal Error: invalid JSON data"
@@ -121,42 +129,136 @@ local OBJDEF = {
 --
 --
 --
-
+--
 -- DECODING AND STRICT TYPES
 --
---   Because both JSON objects and JSON arrays are converted to Lua tables, it's not normally
---   possible to tell which a JSON type a particular Lua table was derived from, or guarantee
---   decode-encode round-trip equivalency.
+--   Because both JSON objects and JSON arrays are converted to Lua tables,
+--   it's not normally possible to tell which original JSON type a
+--   particular Lua table was derived from, or guarantee decode-encode
+--   round-trip equivalency.
 --
 --   However, if you enable strictTypes, e.g.
 --
---      JSON = (loadfile "JSON.lua")() --load the routines
+--      JSON = assert(loadfile "JSON.lua")() --load the routines
 --      JSON.strictTypes = true
 --
---   then the Lua table resulting from the decoding of a JSON object or JSON array is marked via Lua
---   metatable, so that when re-encoded with JSON:encode() it ends up as the appropriate JSON type.
+--   then the Lua table resulting from the decoding of a JSON object or
+--   JSON array is marked via Lua metatable, so that when re-encoded with
+--   JSON:encode() it ends up as the appropriate JSON type.
 --
---   (This is not the default because other routines may not work well with tables that have a
---   metatable set, for example, Lightroom API calls.)
+--   (This is not the default because other routines may not work well with
+--   tables that have a metatable set, for example, Lightroom API calls.)
 --
 --
--- ENCODING
+-- ENCODING (from a lua table to a JSON string)
 --
---   JSON = (loadfile "JSON.lua")() -- one-time load of the routines
+--   JSON = assert(loadfile "JSON.lua")() -- one-time load of the routines
 --
 --   local raw_json_text    = JSON:encode(lua_table_or_value)
 --   local pretty_json_text = JSON:encode_pretty(lua_table_or_value) -- "pretty printed" version for human readability
-
+--   local custom_pretty    = JSON:encode(lua_table_or_value, etc, { pretty = true, indent = "|  ", align_keys = false })
+--
 --   On error during encoding, this code calls:
 --
---    JSON:onEncodeError(message, etc)
+--     JSON:onEncodeError(message, etc)
 --
 --   which you can override in your local JSON object.
 --
---   If the Lua table contains both string and numeric keys, it fits neither JSON's
---   idea of an object, nor its idea of an array. To get around this, when any string
---   key exists (or when non-positive numeric keys exist), numeric keys are converted
---   to strings.
+--   The 'etc' in the error call is the second argument to encode()
+--   and encode_pretty(), or nil if it wasn't provided.
+--
+--
+-- PRETTY-PRINTING
+--
+--   An optional third argument, a table of options, allows a bit of
+--   configuration about how the encoding takes place:
+--
+--     pretty = JSON:encode(val, etc, {
+--                                       pretty = true,      -- if false, no other options matter
+--                                       indent = "   ",     -- this provides for a three-space indent per nesting level
+--                                       align_keys = false, -- see below
+--                                     })
+--
+--   encode() and encode_pretty() are identical except that encode_pretty()
+--   provides a default options table if none given in the call:
+--
+--       { pretty = true, align_keys = false, indent = "  " }
+--
+--   For example, if
+--
+--      JSON:encode(data)
+--
+--   produces:
+--
+--      {"city":"Kyoto","climate":{"avg_temp":16,"humidity":"high","snowfall":"minimal"},"country":"Japan","wards":11}
+--
+--   then
+--
+--      JSON:encode_pretty(data)
+--
+--   produces:
+--
+--      {
+--        "city": "Kyoto",
+--        "climate": {
+--          "avg_temp": 16,
+--          "humidity": "high",
+--          "snowfall": "minimal"
+--        },
+--        "country": "Japan",
+--        "wards": 11
+--      }
+--
+--   The following three lines return identical results:
+--       JSON:encode_pretty(data)
+--       JSON:encode_pretty(data, nil, { pretty = true, align_keys = false, indent = "  " })
+--       JSON:encode       (data, nil, { pretty = true, align_keys = false, indent = "  " })
+--
+--   An example of setting your own indent string:
+--
+--     JSON:encode_pretty(data, nil, { pretty = true, indent = "|    " })
+--
+--   produces:
+--
+--      {
+--      |    "city": "Kyoto",
+--      |    "climate": {
+--      |    |    "avg_temp": 16,
+--      |    |    "humidity": "high",
+--      |    |    "snowfall": "minimal"
+--      |    },
+--      |    "country": "Japan",
+--      |    "wards": 11
+--      }
+--
+--   An example of setting align_keys to true:
+--
+--     JSON:encode_pretty(data, nil, { pretty = true, indent = "  ", align_keys = true })
+--  
+--   produces:
+--   
+--      {
+--           "city": "Kyoto",
+--        "climate": {
+--                     "avg_temp": 16,
+--                     "humidity": "high",
+--                     "snowfall": "minimal"
+--                   },
+--        "country": "Japan",
+--          "wards": 11
+--      }
+--
+--   which I must admit is kinda ugly, sorry. This was the default for
+--   encode_pretty() prior to version 20141223.14.
+--
+--
+--  AMBIGUOUS SITUATIONS DURING THE ENCODING
+--
+--   During the encode, if a Lua table being encoded contains both string
+--   and numeric keys, it fits neither JSON's idea of an object, nor its
+--   idea of an array. To get around this, when any string key exists (or
+--   when non-positive numeric keys exist), numeric keys are converted to
+--   strings.
 --
 --   For example, 
 --     JSON:encode({ "one", "two", "three", SOMESTRING = "some string" }))
@@ -165,6 +267,9 @@ local OBJDEF = {
 --
 --   To prohibit this conversion and instead make it an error condition, set
 --      JSON.noKeyConversion = true
+--
+
+
 
 
 --
@@ -180,6 +285,9 @@ local OBJDEF = {
 --  you can reload JSON.lua or use the :new() method.
 --
 ---------------------------------------------------------------------------
+
+local default_pretty_indent  = "  "
+local default_pretty_options = { pretty = true, align_keys = false, indent = default_pretty_indent }
 
 local isArray  = { __tostring = function() return "JSON array"  end }    isArray.__index  = isArray
 local isObject = { __tostring = function() return "JSON object" end }    isObject.__index = isObject
@@ -692,8 +800,13 @@ end
 --
 -- Encode
 --
+-- 'options' is nil, or a table with possible keys:
+--    pretty            -- if true, return a pretty-printed version
+--    indent            -- a string (usually of spaces) used to indent each nested level
+--    align_keys        -- if true, align all the keys when formatting a table
+--
 local encode_value -- must predeclare because it calls itself
-function encode_value(self, value, parents, etc, indent) -- non-nil indent means pretty-printing
+function encode_value(self, value, parents, etc, options, indent)
 
    if value == nil then
       return 'null'
@@ -739,6 +852,13 @@ function encode_value(self, value, parents, etc, indent) -- non-nil indent means
       --
       local T = value
 
+      if type(options) ~= 'table' then
+         options = {}
+      end
+      if type(indent) ~= 'string' then
+         indent = ""
+      end
+
       if parents[T] then
          self:onEncodeError("table " .. tostring(T) .. " is a child of itself", etc)
       else
@@ -754,13 +874,13 @@ function encode_value(self, value, parents, etc, indent) -- non-nil indent means
          --
          local ITEMS = { }
          for i = 1, maximum_number_key do
-            table.insert(ITEMS, encode_value(self, T[i], parents, etc, indent))
+            table.insert(ITEMS, encode_value(self, T[i], parents, etc, options, indent))
          end
 
-         if indent then
+         if options.pretty then
             result_value = "[ " .. table.concat(ITEMS, ", ") .. " ]"
          else
-            result_value = "[" .. table.concat(ITEMS, ",") .. "]"
+            result_value = "["  .. table.concat(ITEMS, ",")  .. "]"
          end
 
       elseif object_keys then
@@ -769,22 +889,24 @@ function encode_value(self, value, parents, etc, indent) -- non-nil indent means
          --
          local TT = map or T
 
-         if indent then
+         if options.pretty then
 
             local KEYS = { }
             local max_key_length = 0
             for _, key in ipairs(object_keys) do
-               local encoded = encode_value(self, tostring(key), parents, etc, "")
-               max_key_length = math.max(max_key_length, #encoded)
+               local encoded = encode_value(self, tostring(key), parents, etc, options, indent)
+               if options.align_keys then
+                  max_key_length = math.max(max_key_length, #encoded)
+               end
                table.insert(KEYS, encoded)
             end
-            local key_indent = indent .. "    "
-            local subtable_indent = indent .. string.rep(" ", max_key_length + 2 + 4)
+            local key_indent = indent .. tostring(options.indent or "")
+            local subtable_indent = key_indent .. string.rep(" ", max_key_length) .. (options.align_keys and "  " or "")
             local FORMAT = "%s%" .. string.format("%d", max_key_length) .. "s: %s"
 
             local COMBINED_PARTS = { }
             for i, key in ipairs(object_keys) do
-               local encoded_val = encode_value(self, TT[key], parents, etc, subtable_indent)
+               local encoded_val = encode_value(self, TT[key], parents, etc, options, subtable_indent)
                table.insert(COMBINED_PARTS, string.format(FORMAT, key_indent, KEYS[i], encoded_val))
             end
             result_value = "{\n" .. table.concat(COMBINED_PARTS, ",\n") .. "\n" .. indent .. "}"
@@ -793,8 +915,8 @@ function encode_value(self, value, parents, etc, indent) -- non-nil indent means
 
             local PARTS = { }
             for _, key in ipairs(object_keys) do
-               local encoded_val = encode_value(self, TT[key],       parents, etc, indent)
-               local encoded_key = encode_value(self, tostring(key), parents, etc, indent)
+               local encoded_val = encode_value(self, TT[key],       parents, etc, options, indent)
+               local encoded_key = encode_value(self, tostring(key), parents, etc, options, indent)
                table.insert(PARTS, string.format("%s:%s", encoded_key, encoded_val))
             end
             result_value = "{" .. table.concat(PARTS, ",") .. "}"
@@ -813,18 +935,18 @@ function encode_value(self, value, parents, etc, indent) -- non-nil indent means
 end
 
 
-function OBJDEF:encode(value, etc)
+function OBJDEF:encode(value, etc, options)
    if type(self) ~= 'table' or self.__index ~= OBJDEF then
       OBJDEF:onEncodeError("JSON:encode must be called in method format", etc)
    end
-   return encode_value(self, value, {}, etc, nil)
+   return encode_value(self, value, {}, etc, options or nil)
 end
 
-function OBJDEF:encode_pretty(value, etc)
+function OBJDEF:encode_pretty(value, etc, options)
    if type(self) ~= 'table' or self.__index ~= OBJDEF then
       OBJDEF:onEncodeError("JSON:encode_pretty must be called in method format", etc)
    end
-   return encode_value(self, value, {}, etc, "")
+   return encode_value(self, value, {}, etc, options or default_pretty_options)
 end
 
 function OBJDEF.__tostring()
@@ -849,6 +971,16 @@ return OBJDEF:new()
 
 --
 -- Version history:
+--
+--   20141223.14   The encode_pretty() routine produced fine results for small datasets, but isn't really
+--                 appropriate for anything large, so with help from Alex Aulbach I've made the encode routines
+--                 more flexible, and changed the default encode_pretty() to be more generally useful.
+--
+--                 Added a third 'options' argument to the encode() and encode_pretty() routines, to control
+--                 how the encoding takes place.
+--
+--                 Updated docs to add assert() call to the loadfile() line, just as good practice so that
+--                 if there is a problem loading JSON.lua, the appropriate error message will percolate up.
 --
 --   20140920.13   Put back (in a way that doesn't cause warnings about unused variables) the author string,
 --                 so that the source of the package, and its version number, are visible in compiled copies.
