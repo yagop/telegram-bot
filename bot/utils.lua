@@ -67,6 +67,11 @@ function download_to_file( url , noremove )
   return file_path
 end
 
+-- Callback to remove a file
+function rmtmp_cb(file_path, success, result)
+   os.remove(file_path)
+end
+
 function vardump(value, depth, key)
   local linePrefix = ""
   local spaces = ""
@@ -133,10 +138,34 @@ function is_sudo(msg)
    return var
 end
 
+-- Returns the name of the sender
 function get_name(msg)
    local name = msg.from.first_name
    if name == nil then
       name = msg.from.id
    end
    return name
+end
+
+-- Returns at table of lua files inside plugins
+function plugins_names( )
+  local files = {}
+  for k, v in pairs(scandir("plugins")) do
+    -- Ends with .lua
+    if (v:match(".lua$")) then
+      table.insert(files, v)
+    end 
+  end
+  return files
+end
+
+-- Function name explains what it does.
+function file_exists(name)
+  local f = io.open(name,"r")
+  if f ~= nil then 
+    io.close(f) 
+    return true 
+  else 
+    return false 
+  end
 end

@@ -22,11 +22,6 @@ end
 function ok_cb(extra, success, result)
 end
 
--- Callback to remove tmp files
-function rmtmp_cb(file_path, success, result)
-   os.remove(file_path)
-end
-
 function msg_valid(msg)
   -- if msg.from.id == our_id then
   --   return true
@@ -170,15 +165,12 @@ function on_binlog_replay_end ()
   -- See plugins/ping.lua as an example for cron
 end
 
--- load all plugins in the plugins/ directory
+-- Enable plugins in config.json
 function load_plugins()
-  for k, v in pairs(scandir("plugins")) do
-    -- Load only lua files
-    if (v:match(".lua$")) then
-        print("Loading plugin", v)
-        t = loadfile("plugins/" .. v)()
-        table.insert(plugins, t)
-    end 
+  for k, v in pairs(config.enabled_plugins) do
+    print("Loading plugin", v)
+    t = loadfile("plugins/" .. v)()
+    table.insert(plugins, t)
   end
 end
 

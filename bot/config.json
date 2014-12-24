@@ -1,4 +1,5 @@
 {
+   "enabled_plugins": [ "plugins.lua", "echo.lua", "hello.lua" ],
        "rmtmp_delay": 20,
     "google_api_key": "",
           "log_file": "/var/www/html/log.txt",
