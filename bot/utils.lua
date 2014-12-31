@@ -61,7 +61,8 @@ function download_to_file( url , noremove )
   file:close()
 
   if noremove == nil then
-     postpone(rmtmp_cb, file_path, config.rmtmp_delay)
+    print(file_path.."will be removed in 20 seconds")
+    postpone(rmtmp_cb, file_path, 20)
   end
 
   return file_path
@@ -130,7 +131,7 @@ end
 function is_sudo(msg)
    local var = false
    -- Check users id in config 
-   for v,user in pairs(config.sudo_users) do 
+   for v,user in pairs(_config.sudo_users) do 
       if user == msg.from.id then 
          var = true 
       end

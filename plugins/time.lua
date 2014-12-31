@@ -5,7 +5,8 @@
 
 -- Globals
 -- If you have a google api key for the geocoding/timezone api
-api_key  = config.google_api_key or nil
+api_key  = nil
+
 base_api = "https://maps.googleapis.com/maps/api"
 dateFormat = "%A %d %B - %H:%M:%S"
 

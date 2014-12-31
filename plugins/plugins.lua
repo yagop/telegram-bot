@@ -6,7 +6,7 @@ function enable_plugin( filename )
 	-- Checks if plugin exists
 	if plugin_exists(filename) then
 		-- Add to the config table
-		table.insert(config.enabled_plugins, filename)
+		table.insert(_config.enabled_plugins, filename)
 		-- Reload the plugins
 		return reload_plugins( )
 	else
@@ -14,18 +14,18 @@ function enable_plugin( filename )
 	end
 end
 
-function disable_plugin( filename )
+function disable_plugin( name )
 	-- Check if plugins exists
-	if not plugin_exists(filename) then
-		return 'Plugin '..filename..' does not exists'
+	if not plugin_exists(name) then
+		return 'Plugin '..name..' does not exists'
 	end
-	local k = plugin_enabled(filename)
+	local k = plugin_enabled(name)
 	-- Check if plugin is enabled
 	if not k then
-		return 'Plugin '..filename..' not enabled'
+		return 'Plugin '..name..' not enabled'
 	end
 	-- Disable and reload
-	table.remove(config.enabled_plugins, k)
+	table.remove(_config.enabled_plugins, k)
 	return reload_plugins(true)		
 end
 
@@ -37,7 +37,7 @@ end
 
 -- Retruns the key (index) in the config.enabled_plugins table
 function plugin_enabled( name )
-	for k,v in pairs(config.enabled_plugins) do
+	for k,v in pairs(_config.enabled_plugins) do
 		if name == v then
 			return k
 		end
@@ -49,7 +49,7 @@ end
 -- Returns true if file exists in plugins folder
 function plugin_exists( name )
   for k,v in pairs(plugins_names()) do
-    if name == v then
+    if name..'.lua' == v then
       return true
     end
   end
@@ -62,13 +62,13 @@ function list_plugins(only_enabled)
 		--  ✔ enabled, ❌ disabled
 		local status = '❌'
 		-- Check if is enabled
-		for k2, v2 in pairs(config.enabled_plugins) do
-			if v == v2 then 
+		for k2, v2 in pairs(_config.enabled_plugins) do
+			if v == v2..'.lua' then 
 				status = '✔' 
 			end
 		end
 		if not only_enabled or status == '✔' then
-			text = text..v..' '..status..'\n'
+			text = text..v..'\b\t'..status..'\n'
 		end
 	end
 	return text
@@ -97,7 +97,7 @@ end
 
 return {
 	description = "Enables, disables and reloads plugins", 
-	usage = "!plugins, !plugins enable [plugin.lua], !plugins disable [plugin.lua], !plugins reload",
+	usage = "!plugins, !plugins enable [plugin], !plugins disable [plugin], !plugins reload",
 	patterns = {
 		"^!plugins$",
 		"^!plugins? (enable) (.*)$",

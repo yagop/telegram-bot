@@ -1,10 +1,11 @@
 http = require("socket.http")
 https = require("ssl.https")
 URL = require("socket.url")
-json = (loadfile "./bot/JSON.lua")()
+json = (loadfile "./libs/JSON.lua")()
+serpent = (loadfile "./libs/serpent.lua")()
 require("./bot/utils")
 
-VERSION = 'v0.7.7'
+VERSION = '0.8.0'
 
 function on_msg_receive (msg)
   vardump(msg)
@@ -22,10 +23,22 @@ end
 function ok_cb(extra, success, result)
 end
 
+function on_binlog_replay_end ()
+  started = 1
+  -- Uncomment the line to enable cron plugins.
+  -- postpone (cron_plugins, false, 5.0)
+  -- See plugins/ping.lua as an example for cron
+
+  _config = load_config()
+  _users = load_user_stats()
+
+  -- load plugins
+  plugins = {}
+  load_plugins()
+end
+
 function msg_valid(msg)
-  -- if msg.from.id == our_id then
-  --   return true
-  -- end
+  -- Dont process outgoing messages
   if msg.out then
     return false
   end
@@ -83,19 +96,60 @@ function _send_msg( destination, text)
   end
 end
 
+-- Save the content of _config to config.lua
+function save_config( )
+  file = io.open('./bot/config.lua', 'w+')
+  local serialized = serpent.block(_config, {
+    comment = false,
+    name = "config"
+  })
+  file:write(serialized)
+  file:close()
+end
 
-function load_config()
-   local f = assert(io.open('./bot/config.json', "r"))
-   local c = f:read "*a"
-   local config = json:decode(c)
-   if config.sh_enabled then 
-      print ("!sh command is enabled")
-      for v,user in pairs(config.sudo_users) do
-         print("Allowed user: " .. user)
-      end
-   end
-   f:close()
-   return config
+
+function load_config( )
+  local f = io.open('./bot/config.lua', "r")
+  -- If config.lua doesnt exists
+  if not f then
+    print ("Created new config file: bot/config.lua")
+    create_config()
+  end
+  f:close()
+  local config = loadfile ("./bot/config.lua")()
+  for v,user in pairs(config.sudo_users) do
+    print("Allowed user: " .. user)
+  end
+  return config
+end
+
+-- Create a basic config.json file and saves it.
+function create_config( )
+  -- A simple config with basic plugins and ourserves as priviled user
+  config = {
+    enabled_plugins = {
+      "9gag", 
+      "echo", 
+      "get",
+      "set",
+      "images",
+      "img_google",
+      "location",
+      "media",
+      "plugins",
+      "stats",
+      "time",
+      "version",
+      "youtube" },
+    sudo_users = {our_id}  
+  }
+  file = io.open('./bot/config.lua', 'w+')
+  local serialized = serpent.block(config, {
+    comment = false,
+    name = "config"
+  })
+  file:write(serialized)
+  file:close()
 end
 
 function update_user_stats(msg)
@@ -158,18 +212,11 @@ end
 function on_get_difference_end ()
 end
 
-function on_binlog_replay_end ()
-  started = 1
-  -- Uncomment the line to enable cron plugins.
-  -- postpone (cron_plugins, false, 5.0)
-  -- See plugins/ping.lua as an example for cron
-end
-
 -- Enable plugins in config.json
 function load_plugins()
-  for k, v in pairs(config.enabled_plugins) do
+  for k, v in pairs(_config.enabled_plugins) do
     print("Loading plugin", v)
-    t = loadfile("plugins/" .. v)()
+    t = loadfile("plugins/"..v..'.lua')()
     table.insert(plugins, t)
   end
 end
@@ -191,10 +238,3 @@ end
 -- Start and load values
 our_id = 0
 now = os.time()
-
-config = load_config()
-_users = load_user_stats()
-
--- load plugins
-plugins = {}
-load_plugins()

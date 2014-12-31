@@ -1,9 +1,9 @@
 local OAuth = require "OAuth"
 
-local consumer_key = config.twitter.consumer_key
-local consumer_secret = config.twitter.consumer_secret
-local access_token = config.twitter.access_token
-local access_token_secret = config.twitter.access_token_secret
+local consumer_key = ""
+local consumer_secret = ""
+local access_token = ""
+local access_token_secret = ""
 
 local client = OAuth.new(consumer_key, consumer_secret, {
     RequestToken = "https://api.twitter.com/oauth/request_token", 
