@@ -48,6 +48,25 @@ function msg_valid(msg)
   end
 end
 
+function do_lex(msg, text)
+  local mutated = true
+  while mutated do
+    mutated = false
+    for name, desc in pairs(plugins) do
+      if (desc.lex ~= nil) then
+        result = desc.lex(msg, text)
+        if (result ~= nil) then
+          -- print ("Mutating to " .. result)
+          text = result
+          mutated = true
+        end
+      end
+    end
+  end
+  -- print("Text mutated to " .. text)
+  return text
+end
+
 -- Where magic happens
 function do_action(msg)
   local receiver = get_receiver(msg)
@@ -58,18 +77,25 @@ function do_action(msg)
      text = '['..msg.media.type..']'
   end
   -- print("Received msg", text)
+
+  text = do_lex(msg, text)
+
   for name, desc in pairs(plugins) do
     -- print("Trying module", name)
     for k, pattern in pairs(desc.patterns) do
       print("Trying", text, "against", pattern)
       matches = { string.match(text, pattern) }
       if matches[1] then
-        print("  matches", pattern)
+        print("  matches",pattern)
         if desc.run ~= nil then
           result = desc.run(msg, matches)
+          -- print("  sending", result)
           if (result) then
-            print("  sending", result)
-            _send_msg(receiver, result)
+            local result2 = do_lex(msg, result)
+            if (result2 == nil) then 
+              result2 = result
+            end
+            _send_msg(receiver, result2)
           end
         end
       end
