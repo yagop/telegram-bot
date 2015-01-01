@@ -121,13 +121,7 @@ end
 
 -- Save the content of _config to config.lua
 function save_config( )
-  file = io.open('./bot/config.lua', 'w+')
-  local serialized = serpent.block(_config, {
-    comment = false,
-    name = "config"
-  })
-  file:write(serialized)
-  file:close()
+  serialize_to_file(_config, './bot/config.lua')
   print ('saved config into ./bot/config.lua')
 end
 
@@ -167,13 +161,7 @@ function create_config( )
       "youtube" },
     sudo_users = {our_id}  
   }
-  file = io.open('./bot/config.lua', 'w+')
-  local serialized = serpent.block(config, {
-    comment = false,
-    name = "config"
-  })
-  file:write(serialized)
-  file:close()
+  serialize_to_file(config, './bot/config.lua')
   print ('saved config into ./bot/config.lua')
 end
 

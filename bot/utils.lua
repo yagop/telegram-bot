@@ -170,3 +170,14 @@ function file_exists(name)
     return false 
   end
 end
+
+-- Save into file the data serialized for lua.
+function serialize_to_file(data, file)
+  file = io.open(file, 'w+')
+  local serialized = serpent.block(data, {
+    comment = false,
+    name = "_"
+  })
+  file:write(serialized)
+  file:close()
+end
