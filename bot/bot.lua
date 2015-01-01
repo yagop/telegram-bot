@@ -83,7 +83,7 @@ function do_action(msg)
   for name, desc in pairs(plugins) do
     -- print("Trying module", name)
     for k, pattern in pairs(desc.patterns) do
-      print("Trying", text, "against", pattern)
+      -- print("Trying", text, "against", pattern)
       matches = { string.match(text, pattern) }
       if matches[1] then
         print("  matches",pattern)

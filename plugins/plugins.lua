@@ -7,6 +7,7 @@ function enable_plugin( filename )
 	if plugin_exists(filename) then
 		-- Add to the config table
 		table.insert(_config.enabled_plugins, filename)
+		save_config()
 		-- Reload the plugins
 		return reload_plugins( )
 	else
@@ -26,6 +27,7 @@ function disable_plugin( name )
 	end
 	-- Disable and reload
 	table.remove(_config.enabled_plugins, k)
+	save_config( )
 	return reload_plugins(true)		
 end
 
