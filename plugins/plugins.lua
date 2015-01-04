@@ -106,5 +106,6 @@ return {
 		"^!plugins? (disable) (.*)$",
 		"^!plugins? (reload)$"
 		}, 
-	run = run 
+	run = run,
+	privileged = true
 }

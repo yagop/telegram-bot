@@ -86,16 +86,22 @@ function do_action(msg)
       -- print("Trying", text, "against", pattern)
       matches = { string.match(text, pattern) }
       if matches[1] then
-        print("  matches",pattern)
+        print("  matches", pattern)
         if desc.run ~= nil then
-          result = desc.run(msg, matches)
-          -- print("  sending", result)
-          if (result) then
-            local result2 = do_lex(msg, result)
-            if (result2 == nil) then 
-              result2 = result
+          -- If plugin is for privileged user
+          if desc.privileged and not is_sudo(msg) then
+            local text = 'This plugin requires privileged user'
+            send_msg(receiver, text, ok_cb, false)
+          else 
+            result = desc.run(msg, matches)
+            -- print("  sending", result)
+            if (result) then
+              local result2 = do_lex(msg, result)
+              if (result2 == nil) then 
+                result2 = result
+              end
+              _send_msg(receiver, result2)
             end
-            _send_msg(receiver, result2)
           end
         end
       end

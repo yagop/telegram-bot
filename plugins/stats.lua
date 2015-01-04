@@ -12,7 +12,7 @@ function update_user_stats(msg)
   local from_id = tostring(msg.from.id)
   local to_id = tostring(msg.to.id)
   local user_name = get_name(msg)
-  print ('New message from '..user_name..'['..to_id..']'..'['..from_id..']')
+  print ('New message from '..user_name..'['..from_id..']'..' to '..to_id)
   -- If last name is nil dont save last_name.
   local user_last_name = msg.from.last_name
   local user_print_name = msg.from.print_name
@@ -79,9 +79,7 @@ local function run(msg, matches)
 	else 
 		print ("update stats")
 		update_user_stats(msg)
-    print(socket.gettime())
     save_stats()
-    print(socket.gettime())
 	end
 end
 
