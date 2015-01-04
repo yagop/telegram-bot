@@ -49,17 +49,12 @@ function msg_valid(msg)
 end
 
 function do_lex(msg, text)
-  local mutated = true
-  while mutated do
-    mutated = false
-    for name, desc in pairs(plugins) do
-      if (desc.lex ~= nil) then
-        result = desc.lex(msg, text)
-        if (result ~= nil) then
-          -- print ("Mutating to " .. result)
-          text = result
-          mutated = true
-        end
+  for name, desc in pairs(plugins) do
+    if (desc.lex ~= nil) then
+      result = desc.lex(msg, text)
+      if (result ~= nil) then
+        print ("Mutating to " .. result)
+        text = result
       end
     end
   end
@@ -78,7 +73,7 @@ function do_action(msg)
   end
   -- print("Received msg", text)
 
-  text = do_lex(msg, text)
+  msg.text = do_lex(msg, text)
 
   for name, desc in pairs(plugins) do
     -- print("Trying module", name)
@@ -96,11 +91,8 @@ function do_action(msg)
             result = desc.run(msg, matches)
             -- print("  sending", result)
             if (result) then
-              local result2 = do_lex(msg, result)
-              if (result2 == nil) then 
-                result2 = result
-              end
-              _send_msg(receiver, result2)
+              result = do_lex(msg, result)
+              _send_msg(receiver, result)
             end
           end
         end
