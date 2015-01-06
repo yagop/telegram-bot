@@ -4,7 +4,7 @@
 do
 
 local socket = require('socket') 
-local _file_stats = './res/stats.lua'
+local _file_stats = './data/stats.lua'
 local _stats
 
 function update_user_stats(msg)
