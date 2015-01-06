@@ -70,7 +70,9 @@ function list_plugins(only_enabled)
 			end
 		end
 		if not only_enabled or status == '✔' then
-			text = text..v..'\b\t'..status..'\n'
+			-- get the name
+			v = string.match (v, "(.*)%.lua")
+			text = text..v..'  '..status..'\n'
 		end
 	end
 	return text
