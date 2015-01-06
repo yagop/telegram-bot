@@ -61,10 +61,16 @@ function download_to_file( url , noremove )
   file:close()
 
   if noremove == nil then
-     postpone(rmtmp_cb, file_path, config.rmtmp_delay)
+    print(file_path.."will be removed in 20 seconds")
+    postpone(rmtmp_cb, file_path, 20)
   end
 
   return file_path
+end
+
+-- Callback to remove a file
+function rmtmp_cb(file_path, success, result)
+   os.remove(file_path)
 end
 
 function vardump(value, depth, key)
@@ -125,7 +131,7 @@ end
 function is_sudo(msg)
    local var = false
    -- Check users id in config 
-   for v,user in pairs(config.sudo_users) do 
+   for v,user in pairs(_config.sudo_users) do 
       if user == msg.from.id then 
          var = true 
       end
@@ -133,10 +139,50 @@ function is_sudo(msg)
    return var
 end
 
+-- Returns the name of the sender
 function get_name(msg)
    local name = msg.from.first_name
    if name == nil then
       name = msg.from.id
    end
    return name
+end
+
+-- Returns at table of lua files inside plugins
+function plugins_names( )
+  local files = {}
+  for k, v in pairs(scandir("plugins")) do
+    -- Ends with .lua
+    if (v:match(".lua$")) then
+      table.insert(files, v)
+    end 
+  end
+  return files
+end
+
+-- Function name explains what it does.
+function file_exists(name)
+  local f = io.open(name,"r")
+  if f ~= nil then 
+    io.close(f) 
+    return true 
+  else 
+    return false 
+  end
+end
+
+-- Save into file the data serialized for lua.
+function serialize_to_file(data, file)
+  file = io.open(file, 'w+')
+  local serialized = serpent.block(data, {
+    comment = false,
+    name = "_"
+  })
+  file:write(serialized)
+  file:close()
+end
+
+-- Retruns true if the string is empty
+function string:isempty()
+  return self == nil or self == ''
 end

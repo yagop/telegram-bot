@@ -1,9 +1,9 @@
 local OAuth = require "OAuth"
 
-local consumer_key = config.twitter.consumer_key
-local consumer_secret = config.twitter.consumer_secret
-local access_token = config.twitter.access_token
-local access_token_secret = config.twitter.access_token_secret
+local consumer_key = ""
+local consumer_secret = ""
+local access_token = ""
+local access_token_secret = ""
 
 local client = OAuth.new(consumer_key, consumer_secret, {
     RequestToken = "https://api.twitter.com/oauth/request_token", 
@@ -16,15 +16,22 @@ local client = OAuth.new(consumer_key, consumer_secret, {
 
 function run(msg, matches)
 
+  if consumer_key:isempty() then
+    return "Twitter Consumer Key is empty, write it in plugins/twitter.lua"
+  end
+  if consumer_secret:isempty() then
+    return "Twitter Consumer Secret is empty, write it in plugins/twitter.lua"
+  end
+  if access_token:isempty() then
+    return "Twitter Access Token is empty, write it in plugins/twitter.lua"
+  end
+  if access_token_secret:isempty() then
+    return "Twitter Access Token Secret is empty, write it in plugins/twitter.lua"
+  end
+
   local twitter_url = "https://api.twitter.com/1.1/statuses/show/" .. matches[1] .. ".json"
-
-  print(twitter_url)
-
   local response_code, response_headers, response_status_line, response_body = client:PerformRequest("GET", twitter_url)
-  print(response_body)
   local response = json:decode(response_body)
-
-  print("response = ", response)
 
   local header = "Tweet from " .. response.user.name .. " (@" .. response.user.screen_name .. ")\n"
   local text = response.text
@@ -66,5 +73,3 @@ return {
     patterns = {"https://twitter.com/[^/]+/status/([0-9]+)"}, 
     run = run 
 }
-
-

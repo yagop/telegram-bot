@@ -14,4 +14,4 @@ if [ ! -f ./tg/bin/telegram-cli ]; then
     exit
 fi
 
-./tg/bin/telegram-cli -k tg/tg-server.pub -s ./bot/bot.lua
+./tg/bin/telegram-cli -k tg/tg-server.pub -s ./bot/bot.lua -W -l 1
