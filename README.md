@@ -60,13 +60,6 @@ $ sudo cp etc/telegram.conf /etc/init/
 $ ./launch.sh # Will ask you for a phone number & confirmation code.
 ```
 
-TODO
-------------
-- [ ] Enable / Disable plugins
-- [ ] Cron
-- [ ] Regex
-- [ ] Moar plugins
-
 Contact me
 ------------
 You can contact me [via Telegram](https://telegram.me/yago_perez) but if you have an issue please [open](https://github.com/yagop/telegram-bot/issues) one.
