@@ -119,20 +119,21 @@ end
 
 -- Save the content of _config to config.lua
 function save_config( )
-  serialize_to_file(_config, './bot/config.lua')
-  print ('saved config into ./bot/config.lua')
+  serialize_to_file(_config, './data/config.lua')
+  print ('saved config into ./data/config.lua')
 end
 
 
 function load_config( )
-  local f = io.open('./bot/config.lua', "r")
+  local f = io.open('./data/config.lua', "r")
   -- If config.lua doesnt exists
   if not f then
-    print ("Created new config file: bot/config.lua")
+    print ("Created new config file: data/config.lua")
     create_config()
+  else
+    f:close()
   end
-  f:close()
-  local config = loadfile ("./bot/config.lua")()
+  local config = loadfile ("./data/config.lua")()
   for v,user in pairs(config.sudo_users) do
     print("Allowed user: " .. user)
   end
@@ -159,8 +160,8 @@ function create_config( )
       "youtube" },
     sudo_users = {our_id}  
   }
-  serialize_to_file(config, './bot/config.lua')
-  print ('saved config into ./bot/config.lua')
+  serialize_to_file(config, './data/config.lua')
+  print ('saved config into ./data/config.lua')
 end
 
 function on_our_id (id)
