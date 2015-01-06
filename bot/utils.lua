@@ -181,3 +181,8 @@ function serialize_to_file(data, file)
   file:write(serialized)
   file:close()
 end
+
+-- Retruns true if the string is empty
+function string:isempty()
+  return self == nil or self == ''
+end
