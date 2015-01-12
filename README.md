@@ -7,7 +7,7 @@ Multimedia
 ----------
 - When user sends image (png, jpg, jpeg) URL download and send it to origin.
 - When user sends media (gif, mp4, pdf, etc.) URL download and send it to origin.
-- When user sends twitter URL, send text and images to origin. Requieres OAuth Key.
+- When user sends twitter URL, send text and images to origin. Requires OAuth Key.
 - When user sends youtube URL, send to origin video image.
 
 ![http://i.imgur.com/0FGUvU0.png](http://i.imgur.com/0FGUvU0.png) ![http://i.imgur.com/zW7WWWt.png](http://i.imgur.com/zW7WWWt.png) ![http://i.imgur.com/zW7WWWt.png](http://i.imgur.com/kPK7paz.png)
@@ -59,13 +59,6 @@ $ sed -i "s_telegrambotpath_$(pwd)_g" etc/telegram.conf
 $ sudo cp etc/telegram.conf /etc/init/
 $ ./launch.sh # Will ask you for a phone number & confirmation code.
 ```
-
-TODO
-------------
-- [ ] Enable / Disable plugins
-- [ ] Cron
-- [ ] Regex
-- [ ] Moar plugins
 
 Contact me
 ------------
