@@ -145,15 +145,16 @@ function create_config( )
   -- A simple config with basic plugins and ourserves as priviled user
   config = {
     enabled_plugins = {
-      "9gag", 
-      "echo", 
+      "9gag",
+      "echo",
       "get",
-      "set",
+      "help"
       "images",
       "img_google",
       "location",
       "media",
       "plugins",
+      "set",
       "stats",
       "time",
       "version",
