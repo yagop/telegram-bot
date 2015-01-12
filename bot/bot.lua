@@ -5,7 +5,7 @@ json = (loadfile "./libs/JSON.lua")()
 serpent = (loadfile "./libs/serpent.lua")()
 require("./bot/utils")
 
-VERSION = '0.8.2'
+VERSION = '0.8.3'
 
 function on_msg_receive (msg)
   vardump(msg)
@@ -15,8 +15,6 @@ function on_msg_receive (msg)
   end
 
   do_action(msg)
-
-  mark_read(get_receiver(msg), ok_cb, false)
 end
 
 function ok_cb(extra, success, result)
@@ -25,7 +23,7 @@ end
 function on_binlog_replay_end ()
   started = 1
   -- Uncomment the line to enable cron plugins.
-  -- postpone (cron_plugins, false, 5.0)
+  postpone (cron_plugins, false, 60*5.0)
   -- See plugins/ping.lua as an example for cron
 
   _config = load_config()
@@ -58,7 +56,6 @@ function do_lex(msg, text)
       end
     end
   end
-  -- print("Text mutated to " .. text)
   return text
 end
 
@@ -71,7 +68,6 @@ function do_action(msg)
      -- we can match on it. The plugin is resposible for handling
      text = '['..msg.media.type..']'
   end
-  -- print("Received msg", text)
 
   msg.text = do_lex(msg, text)
 
@@ -81,6 +77,7 @@ function do_action(msg)
       -- print("Trying", text, "against", pattern)
       matches = { string.match(text, pattern) }
       if matches[1] then
+        mark_read(get_receiver(msg), ok_cb, false)
         print("  matches", pattern)
         if desc.run ~= nil then
           -- If plugin is for privileged user
@@ -145,15 +142,16 @@ function create_config( )
   -- A simple config with basic plugins and ourserves as priviled user
   config = {
     enabled_plugins = {
-      "9gag", 
-      "echo", 
+      "9gag",
+      "echo",
       "get",
-      "set",
+      "help"
       "images",
       "img_google",
       "location",
       "media",
       "plugins",
+      "set",
       "stats",
       "time",
       "version",
