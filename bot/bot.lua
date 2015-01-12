@@ -145,7 +145,7 @@ function create_config( )
       "9gag",
       "echo",
       "get",
-      "help"
+      "help",
       "images",
       "img_google",
       "location",
