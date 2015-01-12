@@ -32,7 +32,7 @@ return {
    usage = "!google terms",
    patterns = {
       "^!google (.*)$",
-      "^.[g|G]oogle (.*)$"
+      "^%.[g|G]oogle (.*)$"
    },
    run = run
 }
