@@ -69,6 +69,8 @@ If your linux/unix comes with [upstart](http://upstart.ubuntu.com/) you can run 
 $ sed -i "s/yourusername/$(whoami)/g" etc/telegram.conf
 $ sed -i "s_telegrambotpath_$(pwd)_g" etc/telegram.conf
 $ sudo cp etc/telegram.conf /etc/init/
+$ sudo start telegram # To start it
+$ sudo stop telegram # To stop it
 ```
 
 Contact me
