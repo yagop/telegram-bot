@@ -7,7 +7,7 @@ function get_xkcd()
    b = http.request("http://xkcd.com/" .. i .. "/info.0.json")
    local comicjson = json:decode(b)
    local link_image = comicjson.img
-   c = http.request("link_image")
+   c = http.request(link_image)
    local title = comicjson.title
    if link_image:sub(0,2) == '//' then
       link_image = msg.text:sub(3,-1)
