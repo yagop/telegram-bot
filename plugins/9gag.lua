@@ -27,8 +27,8 @@ function run(msg, matches)
 end
 
 return {
-    description = "send random image from 9gag", 
-    usage = "!9gag",
+    description = "9GAG for telegram", 
+    usage = "!9gag: Send random image from 9gag",
     patterns = {"^!9gag$"}, 
     run = run 
 }

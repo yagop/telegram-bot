@@ -34,8 +34,11 @@ function run(msg, matches)
 end
 
 return {
-  description = "Sends you a laughable gif",
-  usage = "",
+  description = "GIFs from telegram with Giphy API",
+  usage = {
+    "!gif (term): Search and sends GIF from Giphy. If no param, sends a trending GIF.",
+    "!giphy (term): Search and sends GIF from Giphy. If no param, sends a trending GIF."
+    },
   patterns = {
     "^!gif$",
     "^!gif (.*)",
