@@ -100,14 +100,17 @@ function run(msg, matches)
 end
 
 return {
-	description = "Enables, disables and reloads plugins", 
-	usage = "!plugins, !plugins enable [plugin], !plugins disable [plugin], !plugins reload",
+	description = "Enables, disables and reloads plugins. Privileged users only.", 
+	usage = {
+		"!plugins: list all plugins", 
+		"!plugins enable [plugin]",
+		"!plugins disable [plugin]",
+		"!plugins reload" },
 	patterns = {
 		"^!plugins$",
 		"^!plugins? (enable) (.*)$",
 		"^!plugins? (disable) (.*)$",
-		"^!plugins? (reload)$"
-		}, 
+		"^!plugins? (reload)$" }, 
 	run = run,
 	privileged = true
 }
