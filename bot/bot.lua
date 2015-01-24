@@ -145,6 +145,8 @@ function create_config( )
       "9gag",
       "echo",
       "get",
+      "giphy",
+      "google",
       "help",
       "images",
       "img_google",
@@ -155,6 +157,7 @@ function create_config( )
       "stats",
       "time",
       "version",
+      "weather",
       "youtube" },
     sudo_users = {our_id}  
   }
