@@ -32,7 +32,7 @@ end
 
 function run(msg, matches)
 	local chat_id = tostring(msg.to.id)
-	local text = save_value(chat_id, msg.text)
+	local text = save_event(chat_id, msg.text)
 	return text
 end
 
