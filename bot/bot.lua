@@ -143,8 +143,7 @@ function create_config( )
   config = {
     enabled_plugins = {
       "newevent",
-      "echo",
-      "get",
+      "whatson",
       "giphy",
       "google",
       "help",
@@ -153,7 +152,6 @@ function create_config( )
       "location",
       "media",
       "plugins",
-      "set",
       "stats",
       "time",
       "version",
