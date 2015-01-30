@@ -1,5 +1,5 @@
--- End an event!
--- Use !endevent eventname
+-- Join an event!
+-- Use !imin eventname
 
 local _file_values = './data/events.lua'
 
@@ -21,44 +21,44 @@ end
 _values = read_file_values()
 
 
-function end_event(chat, text )
-	eventname = string.match(text, "!endevent (.+)")
+function join_event(chat, text,user)
+	eventname = string.match(text, "!imin (.+)")
 	if (eventname == nil) then
-		return "Usage: !endevent eventname"
+		return "Usage: !imin eventname"
 	end
 	if _values[chat] == nil then
 		_values[chat] = {}
 	end
 	if (eventname == nil) then
-		return "Usage: !endevent eventname"
+		return "Usage: !imin eventname"
 	end
 
-	if _values[chat] == nil then
+	if _values[chat][eventname] == nil then
 	  return "Event doesn't exists..."
 	end
 	
-	_values[chat][eventname] = nil
+	_values[chat][eventname][user] = 1
 
 	-- Save values to file
 	serialize_to_file(_values, _file_values)
 
 	
-	return "Event  "..eventname.." ended!"
+	return user.." is in! ["..eventname.."]"
 end
 
 function run(msg, matches)
 	local chat_id = tostring(msg.to.id)
-	local text = end_event(chat_id, msg.text)
+	local text = join_event(chat_id, msg.text,get_name(msg))
 	return text
 end
 
 
 return {
-    description = "End an event", 
+    description = "Join an event", 
     usage = {
-      "!endevent [event name]"},
+      "!imin [event name]"},
     patterns = {
-      "^!endevent (.+)$",
+      "^!imin (.+)$",
     }, 
     run = run 
 }
