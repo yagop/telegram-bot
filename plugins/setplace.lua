@@ -45,7 +45,7 @@ function place_event(chat, text )
 	serialize_to_file(_values, _file_values)
 
 	
-	return "New event  "..eventname.." created!"
+	return "["..eventname.."] Place Set!"
 end
 
 function run(msg, matches)
