@@ -43,7 +43,7 @@ function join_event(chat, text,user)
 	serialize_to_file(_values, _file_values)
 
 	
-	return user.." is in! ["..eventname.."]"
+	return "["..eventname.."] "..user.." is in!"
 end
 
 function run(msg, matches)
