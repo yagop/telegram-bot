@@ -26,7 +26,7 @@ function list_events(chat, text )
 		_values[chat] = {}
 	end
 	local ret = "Events: \n"
-	for event in _values[chat] do
+	for event,users in pairs(t_values[chat]) do
 		ret = ret .. event .. " \n"
 	end
 	
