@@ -144,9 +144,11 @@ function create_config( )
     enabled_plugins = {
       "whatson",
       "whosin",
-      "deets",
       "imin",
       "imout",
+      "deets",
+      "setplace",
+      "setwhen",
       "newevent",
       "endevent",
       "giphy",
