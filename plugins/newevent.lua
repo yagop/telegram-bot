@@ -40,6 +40,10 @@ function save_event(chat, text )
 	end
 	
 	_values[chat][eventname] = {}
+	_values[chat][eventname][attend] = {}
+	_values[chat][eventname][place] = ""
+	_values[chat][eventname][when] = ""
+	_values[chat][eventname][map] = ""
 
 	-- Save values to file
 	serialize_to_file(_values, _file_values)
