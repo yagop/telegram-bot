@@ -22,15 +22,15 @@ _values = read_file_values()
 
 
 function details_event(chat, text,rec)
-	eventname = string.match(text, "!whosin (.+)")
+	eventname = string.match(text, "!deets (.+)")
 	if (eventname == nil) then
-		return "Usage: !whosin eventname"
+		return "Usage: !deets eventname"
 	end
 	if _values[chat] == nil then
 		_values[chat] = {}
 	end
 	if (eventname == nil) then
-		return "Usage: !whosin eventname"
+		return "Usage: !deets eventname"
 	end
 
 	if _values[chat][eventname] == nil then
