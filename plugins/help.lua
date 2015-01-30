@@ -30,37 +30,25 @@ function html_help()
   return text
 end
 
-function telegram_help( )
-  local ret = ""
-  for k, dict in pairs(plugins) do
-    if dict.usage ~= "" then
-      if (type(dict.usage) == "table") then
-        for ku,vu in pairs(dict.usage) do
-          ret = ret..vu.." "
-        end
-      else
-        ret = ret..dict.usage
-      end
-      ret = ret .. " -> " .. dict.description .. "\n"
-    end
-  end
+function event_help( )
+  local ret = "!whatson  -> See what's on! (Lists Events)\n!whosin [event name]  -> See who's in an event\n!imin [event name]  -> Join an event\n!imout [event name]  -> If you're 'out' of an event!\n!newevent [event name]  -> Create a new event\n!endevent [event name]  -> End an event\n!help more -> all commands"
   return ret
 end
 
 function run(msg, matches)
-  if matches[1] == "!help md" then
-    return html_help()
-  else
+  if matches[1] == "!help more" then
     return telegram_help()
+  else
+    return event_help()
   end
 end
 
 return {
     description = "Lists all available commands", 
-    usage = {"!help", "!help md"},
+    usage = {"!help", "!help more"},
     patterns = {
       "^!help$",
-      "^!help md$"
+      "^!help more"
     }, 
     run = run 
 }
