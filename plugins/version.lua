@@ -1,7 +1,8 @@
 
 function run(msg, matches)
   return 'Telegram Bot '.. VERSION .. [[ 
-  Checkout http://git.io/6jdjGg
+  Checkout http://git.io/FXGl
+  Forked from @yagop 
   GNU v2 license.]]
 end
 
