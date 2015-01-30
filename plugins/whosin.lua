@@ -38,7 +38,7 @@ function whosin_event(chat, text)
 	end
 
   	local ret = "["..eventname.."] \n"
-	for user,t in pairs(_values[chat][eventname]) do
+	for user,t in pairs(_values[chat][eventname].attend) do
 	  if t == true then
 	    ret = ret .. " -".. user .. " \n"
 	   end
