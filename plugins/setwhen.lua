@@ -29,8 +29,8 @@ function when_event(chat, text )
 	if _values[chat] == nil then
 		_values[chat] = {}
 	end
-	if (place == nil) then
-		return "Usage: !setplace eventname when"
+	if (when == nil) then
+		return "Usage: !setwhen eventname when"
 	end
 	if _values[chat] == nil then
 		_values[chat] = {}
