@@ -33,7 +33,7 @@ function end_event(chat, text )
 		return "Usage: !endevent eventname"
 	end
 
-	if _values[chat] == nil then
+	if _values[chat][eventname] == nil then
 	  return "Event doesn't exists..."
 	end
 	
