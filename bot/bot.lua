@@ -143,6 +143,7 @@ function create_config( )
   config = {
     enabled_plugins = {
       "whatson",
+      "whosin",
       "imin",
       "newevent",
       "endevent",
