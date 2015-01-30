@@ -144,6 +144,7 @@ function create_config( )
     enabled_plugins = {
       "whatson",
       "whosin",
+      "deets",
       "imin",
       "imout",
       "newevent",
