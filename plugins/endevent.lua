@@ -43,7 +43,7 @@ function end_event(chat, text )
 	serialize_to_file(_values, _file_values)
 
 	
-	return "Event  "..eventname.." ended!"
+	return "Event ["..eventname.."] ended!"
 end
 
 function run(msg, matches)
