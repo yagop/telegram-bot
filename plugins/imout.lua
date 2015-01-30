@@ -54,7 +54,7 @@ end
 
 
 return {
-    description = "If you're "out" of an event!", 
+    description = "If you're 'out' of an event!", 
     usage = {
       "!imout [event name]"},
     patterns = {
