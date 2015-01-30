@@ -37,7 +37,6 @@ function join_event(chat, text,user)
 	  return "Event doesn't exists..."
 	end
 	
-	_values[chat][eventname] = {}
 	_values[chat][eventname].user = true
 
 	-- Save values to file
