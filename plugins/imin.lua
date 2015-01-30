@@ -37,7 +37,7 @@ function join_event(chat, text,user)
 	  return "Event doesn't exists..."
 	end
 	
-	_values[chat][eventname][user] = 1
+	table.insert(_values[chat][eventname], user)
 
 	-- Save values to file
 	serialize_to_file(_values, _file_values)
