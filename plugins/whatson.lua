@@ -25,11 +25,12 @@ function list_events(chat, text )
 	if _values[chat] == nil then
 		_values[chat] = {}
 	end
+	local ret = "Events: \n"
+	for event in _values[chat] do
+		ret = ret .. event .. " \n"
+	end
 	
-	for event in _values[chat]
-
-	
-	return "New event  "..eventname.." created!"
+	return ret
 end
 
 function run(msg, matches)
