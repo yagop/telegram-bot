@@ -3,6 +3,24 @@
 
 local _file_values = './data/events.lua'
 
+
+function read_file_values( )
+  local f = io.open(_file_values, "r+")
+  -- If file doesn't exists
+  if f == nil then
+    -- Create a new empty table
+    print ('Created value file '.._file_values)
+    serialize_to_file({}, _file_values)
+  else
+    print ('Stats loaded: '.._file_values)
+    f:close() 
+  end
+  return loadfile (_file_values)()
+end
+
+_values = read_file_values()
+
+
 function save_event(chat, text )
 	eventname = string.match(text, "!newevent (%a+)")
 	if (eventname == nil) then
