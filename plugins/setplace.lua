@@ -22,7 +22,7 @@ _values = read_file_values()
 
 
 function place_event(chat, text )
-	eventname,place = string.match(text, "!setplace (.+) (.+)")
+	eventname,place = string.match(text, "!setplace (%S+) (.+)")
 	if (eventname == nil) then
 		return "Usage: !setplace eventname location"
 	end
@@ -60,7 +60,7 @@ return {
     usage = {
       "!setplace [event name] [place]"},
     patterns = {
-      "^!setplace (.+) (.+)$",
+      "^!setplace (%S+) (.+)$",
     }, 
     run = run 
 }
