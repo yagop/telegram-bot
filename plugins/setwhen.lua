@@ -45,7 +45,7 @@ function when_event(chat, text )
 	serialize_to_file(_values, _file_values)
 
 	
-	return "New event  "..eventname.." created!"
+	return "["..eventname.."] Date Set!"
 end
 
 function run(msg, matches)
