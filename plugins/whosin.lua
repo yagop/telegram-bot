@@ -37,10 +37,10 @@ function whosin_event(chat, text)
 	  return "Event doesn't exists..."
 	end
 
-  local ret = eventname..": \n"
+  	local ret = eventname..": \n"
 	for user,t in pairs(_values[chat][eventname]) do
 	  if t == true then
-	    ret = ret .. user .. " \n"
+	    ret = ret .. " -".. user .. " \n"
 	   end
 	end
 
