@@ -35,7 +35,7 @@ function save_event(chat, text )
 	if _values[chat] == nil then
 		_values[chat] = {}
 	end
-	if _values[chat][eventname] == nil then
+	if _values[chat][eventname] then
 	  return "Event already exists..."
 	end
 	
