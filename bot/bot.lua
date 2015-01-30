@@ -145,6 +145,7 @@ function create_config( )
       "whatson",
       "whosin",
       "imin",
+      "imout",
       "newevent",
       "endevent",
       "giphy",
