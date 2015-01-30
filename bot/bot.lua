@@ -144,6 +144,7 @@ function create_config( )
     enabled_plugins = {
       "newevent",
       "whatson",
+      "endevent",
       "giphy",
       "google",
       "help",
