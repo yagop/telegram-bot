@@ -21,28 +21,25 @@ end
 _values = read_file_values()
 
 
-function save_event(chat, text )
-	eventname = string.match(text, "!newevent (.+)")
+function place_event(chat, text )
+	eventname,place = string.match(text, "!setplace (.+) (.+)")
 	if (eventname == nil) then
-		return "Usage: !newevent eventname"
+		return "Usage: !setplace eventname location"
 	end
 	if _values[chat] == nil then
 		_values[chat] = {}
 	end
-	if (eventname == nil) then
-		return "Usage: !newevent eventname"
+	if (place == nil) then
+		return "Usage: !setplace eventname location"
 	end
 	if _values[chat] == nil then
 		_values[chat] = {}
 	end
-	if _values[chat][eventname] then
-	  return "Event already exists..."
+	if _values[chat][eventname] == nil then
+	  return "Event doesn't exist..."
 	end
 	
-	_values[chat][eventname] = {}
-	_values[chat][eventname].attend = {}
-	_values[chat][eventname].place = ""
-	_values[chat][eventname].when = ""
+	_values[chat][eventname].place = place 
 
 	-- Save values to file
 	serialize_to_file(_values, _file_values)
@@ -53,17 +50,17 @@ end
 
 function run(msg, matches)
 	local chat_id = tostring(msg.to.id)
-	local text = save_event(chat_id, msg.text)
+	local text = place_event(chat_id, msg.text)
 	return text
 end
 
 
 return {
-    description = "Create a new event", 
+    description = "Sent Event Location", 
     usage = {
-      "!newevent [event name]"},
+      "!setplace [event name] [place]"},
     patterns = {
-      "^!newevent (.+)$",
+      "^!setplace (.+) (.+)$",
     }, 
     run = run 
 }
