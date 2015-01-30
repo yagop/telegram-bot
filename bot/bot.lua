@@ -188,7 +188,7 @@ end
 function load_plugins()
   for k, v in pairs(_config.enabled_plugins) do
     print("Loading plugin", v)
-    t = loadfile("plugins/"..v..'.lua')()
+    t = assert(loadfile("plugins/"..v..'.lua'))()
     table.insert(plugins, t)
   end
 end
