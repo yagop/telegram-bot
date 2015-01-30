@@ -30,6 +30,23 @@ function html_help()
   return text
 end
 
+function telegram_help( )
+  local ret = ""
+  for k, dict in pairs(plugins) do
+    if dict.usage ~= "" then
+      if (type(dict.usage) == "table") then
+        for ku,vu in pairs(dict.usage) do
+          ret = ret..vu.." "
+        end
+      else
+        ret = ret..dict.usage
+      end
+      ret = ret .. " -> " .. dict.description .. "\n"
+    end
+  end
+  return ret
+end
+
 function event_help( )
   local ret = "!whatson  -> See what's on! (Lists Events)\n!whosin [event name]  -> See who's in an event\n!imin [event name]  -> Join an event\n!imout [event name]  -> If you're 'out' of an event!\n!newevent [event name]  -> Create a new event\n!endevent [event name]  -> End an event\n!help more -> all commands"
   return ret
