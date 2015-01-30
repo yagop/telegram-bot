@@ -22,7 +22,7 @@ _values = read_file_values()
 
 
 function when_event(chat, text )
-	eventname,when = string.match(text, "!setwhen (.+) (.+)")
+	eventname,when = string.match(text, "!setwhen (%S+) (.+)")
 	if (eventname == nil) then
 		return "Usage: !setwhen eventname when"
 	end
@@ -60,7 +60,7 @@ return {
     usage = {
       "!setwhen [event name] [when]"},
     patterns = {
-      "^!setwhen (.+) (.+)$",
+      "^!setwhen (%S+) (.+)$",
     }, 
     run = run 
 }
