@@ -3,7 +3,7 @@
 
 local _file_values = './data/events.lua'
 
-function save_value(chat, text )
+function save_event(chat, text )
 	eventname = string.match(text, "!newevent (%a+)")
 	if (eventname == nil) then
 		return "Usage: !newevent eventname"
