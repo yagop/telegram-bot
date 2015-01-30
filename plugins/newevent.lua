@@ -11,14 +11,7 @@ function save_value(chat, text )
 	if _values[chat] == nil then
 		_values[chat] = {}
 	end
-	if _values[chat][eventname] == nil then
-	  return "Event already exists..."
-	end
-	
-	_values[chat][eventname] = {}
 
-	-- Save values to file
-	serialize_to_file(_values, _file_values)
 	
 	return "New event  "..eventname.." created!"
 end
