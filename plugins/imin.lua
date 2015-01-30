@@ -37,7 +37,7 @@ function join_event(chat, text,user)
 	  return "Event doesn't exists..."
 	end
 	
-	_values[chat][eventname][user] = true
+	_values[chat][eventname].user = true
 
 	-- Save values to file
 	serialize_to_file(_values, _file_values)
