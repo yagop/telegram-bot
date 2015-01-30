@@ -37,7 +37,7 @@ function leave_event(chat, text,user)
 	  return "Event doesn't exists..."
 	end
 	
-	_values[chat][eventname][user] = false
+	_values[chat][eventname].attend[user] = false
 
 	-- Save values to file
 	serialize_to_file(_values, _file_values)
