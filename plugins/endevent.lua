@@ -58,7 +58,7 @@ return {
     usage = {
       "!endevent [event name]"},
     patterns = {
-      "^!endevent (.+)$",
+      "^[!|.]endevent (.+)$",
     }, 
     run = run 
 }
