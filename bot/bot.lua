@@ -142,8 +142,9 @@ function create_config( )
   -- A simple config with basic plugins and ourserves as priviled user
   config = {
     enabled_plugins = {
-      "newevent",
       "whatson",
+      "imin",
+      "newevent",
       "endevent",
       "giphy",
       "google",
