@@ -61,12 +61,23 @@ local function get_stats_status( msg )
 	-- vardump(stats)
 	local text = ""
   	local to_id = tostring(msg.to.id)
+	local rank = {}
 
 	for id, user in pairs(_stats[to_id]) do
+		table.insert(rank, user)
+	end
+	table.sort(rank, function(a, b) 
+			if a.msg_num and b.msg_num then
+				return a.msg_num > b.msg_num
+			end
+		end
+	)
+	for id, user in pairs(rank) do
+		print(">> ", id, user.name)
 		if user.last_name == nil then
-			text = text..user.name.." ["..id.."]: "..user.msg_num.."\n"
+			text = text..user.name..": "..user.msg_num.."\n"
 		else
-			text = text..user.name.." "..user.last_name.." ["..id.."]: "..user.msg_num.."\n"
+			text = text..user.name.." "..user.last_name..": "..user.msg_num.."\n"
 		end
 	end
 	print("usuarios: "..text)
@@ -75,7 +86,7 @@ end
 
 local function run(msg, matches)
 	if matches[1] == "stats" then -- Hack
-    return get_stats_status(msg)
+    		return get_stats_status(msg)
 	else 
 		print ("update stats")
 		update_user_stats(msg)
@@ -86,7 +97,7 @@ end
 _stats = read_file_stats()
 
 return {
-    description = "Numer of messages by user", 
+    description = "Number of messages by user", 
     usage = "!stats",
     patterns = {
       ".*",
