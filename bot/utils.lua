@@ -31,6 +31,11 @@ function string:split(sep)
   return fields
 end
 
+-- Removes spaces
+function string.trim(s)
+  return s:gsub("^%s*(.-)%s*$", "%1")
+end
+
 function download_to_file( url , noremove )
   print("url to download: "..url)
   local ltn12 = require "ltn12"
