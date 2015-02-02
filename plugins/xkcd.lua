@@ -1,18 +1,19 @@
 
 function get_xkcd()
-   first_url = http.request("http://xkcd.com/info.0.json")
-   local xcomicinfo = json:decode(first_url)  
-   math.randomseed(os.time())
-   i = math.random(1,xcomicinfo.num) 
-   b = http.request("http://xkcd.com/" .. i .. "/info.0.json")
-   local comicjson = json:decode(b)
-   local link_image = comicjson.img
-   c = http.request(link_image)
-   local title = comicjson.title
-   if link_image:sub(0,2) == '//' then
-      link_image = msg.text:sub(3,-1)
-   end
-   return link_image, title
+  -- Get the latest num
+  local res,code  = https.request("http://xkcd.com/info.0.json")
+  if code ~= 200 then return "HTTP ERROR" end
+  local data = json:decode(res)
+  math.randomseed(os.time())
+  i = math.random(1, data.num) -- Latest
+  local res,code  = http.request("http://xkcd.com/"..i.."/info.0.json")
+  if code ~= 200 then return "HTTP ERROR" end
+  local data = json:decode(res)
+  local link_image = data.img
+  if link_image:sub(0,2) == '//' then
+    link_image = msg.text:sub(3,-1)
+  end
+  return link_image, data.title
 end
 
 function send_title(cb_extra, success, result)
@@ -30,9 +31,8 @@ function run(msg, matches)
 end
 
 return {
-    description = "send random comic image from xkcd", 
+    description = "Send random comic image from xkcd", 
     usage = "!xkcd",
     patterns = {"^!xkcd$"}, 
     run = run 
 }
-
