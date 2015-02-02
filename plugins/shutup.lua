@@ -7,8 +7,8 @@ end
 
 function run(msg, matches)
    seconds = string.match(msg.text, "!shutup (%d+)")
-   send_msg(get_receiver(msg), "Zzz ðŸ˜´", ok_cb, false)
-   delay_s(seconds)
+   shutup = os.time() + seconds
+   return "Zzz í ½"
 end
 
 return {
