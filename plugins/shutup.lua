@@ -8,7 +8,7 @@ end
 function run(msg, matches)
    seconds = string.match(msg.text, "!shutup (%d+)")
    shutup = os.time() + seconds
-   return "Zzz í ½"
+   return "Zzz ðŸ˜´"
 end
 
 return {
