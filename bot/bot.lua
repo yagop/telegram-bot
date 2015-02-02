@@ -154,6 +154,7 @@ function create_config( )
       "giphy",
       "google",
       "help",
+      "wiki",
       "images",
       "img_google",
       "location",
