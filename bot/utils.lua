@@ -42,8 +42,7 @@ function download_to_file( url , noremove )
   local respbody = {}
   one, c, h = http.request{url=url, sink=ltn12.sink.table(respbody), redirect=true}
   htype = h["content-type"]
-  vardump(c)
-  print("content-type: "..htype)
+
   if htype == "image/jpeg" then
     file_name = string.random(5)..".jpg"
     file_path = "/tmp/"..file_name
@@ -190,4 +189,9 @@ end
 -- Retruns true if the string is empty
 function string:isempty()
   return self == nil or self == ''
+end
+
+
+function string.starts(String, Start)
+   return Start == string.sub(String,1,string.len(Start))
 end
