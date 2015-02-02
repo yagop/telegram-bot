@@ -15,12 +15,15 @@ function getGoogleImage(text)
 end
 
 function run(msg, matches)
-  local receiver = get_receiver(msg)
-  local text = msg.text:sub(6,-1)
-  local url = getGoogleImage(text)
-  local file_path = download_to_file(url)
-  print(file_path)
-  send_photo(receiver, file_path, ok_cb, false)
+  if os.time() > lastimg + ratelimit then
+    local receiver = get_receiver(msg)
+    local text = msg.text:sub(6,-1)
+    local url = getGoogleImage(text)
+    local file_path = download_to_file(url)
+    print(file_path)
+    send_photo(receiver, file_path, ok_cb, false)
+    lastimg =  os.time()
+  end
   return nil
 end
 
