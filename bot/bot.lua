@@ -219,3 +219,4 @@ end
 our_id = 87976719
 now = os.time()
 shutup = os.time()
+ratelimit = 0
