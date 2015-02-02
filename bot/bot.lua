@@ -13,8 +13,10 @@ function on_msg_receive (msg)
   if msg_valid(msg) == false then
     return
   end
-
-  do_action(msg)
+  if os.time() > shutup then
+    shutup = os.time()
+    do_action(msg)
+  end
 end
 
 function ok_cb(extra, success, result)
@@ -216,3 +218,4 @@ end
 -- Start and load values
 our_id = 87976719
 now = os.time()
+shutup = os.time()
