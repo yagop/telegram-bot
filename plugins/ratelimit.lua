@@ -1,19 +1,15 @@
-function delay_s(delay)
-   delay = delay or 1
-   local time_to = os.time() + delay
-   while os.time() < time_to do end
-end
+
 
 function run(msg, matches)
-   seconds = string.match(msg.text, "!shutup (%d+)")
-   shutup = os.time() + seconds
-   return "Zzz 😴"
+   limit = string.match(msg.text, "!ratelimit (%d+)")
+   ratelimit = limit
+   return "Ratelimit set: "..limit.."s"
 end
 
 return {
-    description = "shut the bot up", 
-    usage = "!shutup seconds",
-    patterns = {"^!shutup (%d+)$"}, 
+    description = "set rate limit for img and gif", 
+    usage = "!ratelimit seconds",
+    patterns = {"^!ratelimit (%d+)$"}, 
     run = run 
 }
 
