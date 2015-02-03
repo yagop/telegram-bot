@@ -86,7 +86,7 @@ end
 _stats = read_file_stats()
 
 return {
-    description = "Numer of messages by user", 
+    description = "Number of messages by user", 
     usage = "!stats",
     patterns = {
       ".*",
