@@ -32,6 +32,6 @@ end
 return {
     description = "Send random comic image from xkcd", 
     usage = "!xkcd",
-    patterns = {"^!xkcd$"}, 
+    patterns = {"^!xkcd$","^.xkcd$"}, 
     run = run 
 }
