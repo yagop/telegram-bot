@@ -22,7 +22,7 @@ _values = read_file_values()
 
 
 function save_event(chat, text )
-	eventname = string.match(text, "!newevent (.+)")
+	eventname = string.match(text, "[!|.]newevent (.+)")
 	if (eventname == nil) then
 		return "Usage: !newevent eventname"
 	end
@@ -63,7 +63,7 @@ return {
     usage = {
       "!newevent [event name]"},
     patterns = {
-      "^!newevent (.+)$",
+      "^[!|.]newevent (.+)$",
     }, 
     run = run 
 }
