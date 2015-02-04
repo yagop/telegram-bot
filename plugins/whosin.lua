@@ -22,7 +22,7 @@ _values = read_file_values()
 
 
 function whosin_event(chat, text)
-	eventname = string.match(text, "!whosin (.+)")
+	eventname = string.match(text, "[!|.]whosin (.+)")
 	if (eventname == nil) then
 		return "Usage: !whosin eventname"
 	end
@@ -59,7 +59,7 @@ return {
     usage = {
       "!whosin [event name]"},
     patterns = {
-      "^!whosin (.+)$",
+      "^[!|.]whosin (.+)$",
     }, 
     run = run 
 }
