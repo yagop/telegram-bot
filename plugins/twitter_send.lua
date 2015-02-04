@@ -16,16 +16,16 @@ local client = OAuth.new(consumer_key, consumer_secret, {
 
 function run(msg, matches)
     if consumer_key:isempty() then
-        return "Twitter Consumer Key is empty, write it in plugins/twitter.lua"
+        return "Twitter Consumer Key is empty, write it in plugins/twitter_send.lua"
     end
     if consumer_secret:isempty() then
-        return "Twitter Consumer Secret is empty, write it in plugins/twitter.lua"
+        return "Twitter Consumer Secret is empty, write it in plugins/twitter_send.lua"
     end
     if access_token:isempty() then
-        return "Twitter Access Token is empty, write it in plugins/twitter.lua"
+        return "Twitter Access Token is empty, write it in plugins/twitter_send.lua"
     end
     if access_token_secret:isempty() then
-        return "Twitter Access Token Secret is empty, write it in plugins/twitter.lua"
+        return "Twitter Access Token Secret is empty, write it in plugins/twitter_send.lua"
     end
 
     if not is_sudo(msg) then
@@ -44,7 +44,7 @@ end
 
 return {
     description = "Sends a tweet", 
-    usage = "!tw [text]",
+    usage = "!tw [text]: Sends the Tweet with the configured accout.",
     patterns = {"^!tw (.+)"}, 
     run = run
 }

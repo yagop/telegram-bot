@@ -30,18 +30,23 @@ function html_help()
   return text
 end
 
+function has_usage_data(dict)
+  if (dict.usage == nil or dict.usage == '') then
+    return false
+  end
+  return true
+end
+
 function telegram_help( )
   local ret = ""
   for k, dict in pairs(plugins) do
-    if dict.usage ~= "" then
-      if (type(dict.usage) == "table") then
-        for ku,vu in pairs(dict.usage) do
-          ret = ret..vu.." "
-        end
-      else
-        ret = ret..dict.usage
+    if (type(dict.usage) == "table") then
+      for ku,usage in pairs(dict.usage) do
+        ret = ret..usage..'\n'
       end
-      ret = ret .. " -> " .. dict.description .. "\n"
+      ret = ret..'\n'
+    elseif has_usage_data(dict) then -- Is not empty
+      ret = ret..dict.usage..'\n\n'
     end
   end
   return ret
@@ -56,8 +61,11 @@ function run(msg, matches)
 end
 
 return {
-    description = "Lists all available commands", 
-    usage = {"!help", "!help md"},
+    description = "Help plugin. Get info from other plugins.  ", 
+    usage = {
+      "!help: Show all the help",
+      "!help md: Generate a GitHub Markdown table"
+    },
     patterns = {
       "^!help$",
       "^!help md$"

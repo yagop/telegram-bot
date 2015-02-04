@@ -7,8 +7,10 @@ end
 
 return {
     description = "Shows bot version", 
-    usage = "!version",
-    patterns = {"^!version$"}, 
+    usage = "!version: Shows bot version",
+    patterns = {
+      "^!version$"
+    }, 
     run = run 
 }
 

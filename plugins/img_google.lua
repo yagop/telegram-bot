@@ -25,8 +25,8 @@ function run(msg, matches)
 end
 
 return {
-    description = "search image with Google API and sends it", 
-    usage = "!img [topic]",
+    description = "Search image with Google API and sends it.", 
+    usage = "!img [term]: Random search an image with Google API.",
     patterns = {"^!img (.*)$"}, 
     run = run 
 }

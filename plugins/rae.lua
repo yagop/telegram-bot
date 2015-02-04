@@ -41,7 +41,7 @@ end
 
 return {
   description = "Spanish dictionary", 
-  usage = "!rae [word]",
+  usage = "!rae [word]: Search that word in Spanish dictionary. Powered by https://github.com/javierhonduco/dulcinea",
   patterns = {"^!rae (.*)$"}, 
   run = run 
 }
