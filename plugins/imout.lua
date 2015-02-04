@@ -22,7 +22,7 @@ _values = read_file_values()
 
 
 function leave_event(chat, text,user)
-	eventname = string.match(text, "!imout (.+)")
+	eventname = string.match(text, "[!|.]imout (.+)")
 	if (eventname == nil) then
 		return "Usage: !imout eventname"
 	end
@@ -59,7 +59,7 @@ return {
     usage = {
       "!imout [event name]"},
     patterns = {
-      "^!imout (.+)$",
+      "^[!|.]imout (.+)$",
     }, 
     run = run 
 }
