@@ -32,9 +32,9 @@ function save_event(chat, text )
 	if (eventname == nil) then
 		return "Usage: !newevent eventname"
 	end
-	if _values[chat] == nil then
-		_values[chat] = {}
-	end
+	
+	eventname = string.lower(eventname)
+	
 	if _values[chat][eventname] then
 	  return "Event already exists..."
 	end
