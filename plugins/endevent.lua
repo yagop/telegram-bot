@@ -22,7 +22,7 @@ _values = read_file_values()
 
 
 function end_event(chat, text )
-	eventname = string.match(text, "!endevent (.+)")
+	eventname = string.match(text, "[!|.]endevent (.+)")
 	if (eventname == nil) then
 		return "Usage: !endevent eventname"
 	end
