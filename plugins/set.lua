@@ -23,8 +23,8 @@ function run(msg, matches)
 end
 
 return {
-    description = "Set value", 
-    usage = "!set [value_name] [data]",
+    description = "Plugin for saving values. get.lua plugin is necesary to retrieve them.", 
+    usage = "!set [value_name] [data]: Saves the data with the value_name name.",
     patterns = {"^!set (%a+) (.+)$"}, 
     run = run 
 }

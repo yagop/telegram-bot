@@ -72,11 +72,11 @@ function lex(msg, text)
 end
 
 return {
-    description = "retrieves variables saved with !set", 
-    usage = "!get (value_name)",
+    description = "Retrieves variables saved with !set", 
+    usage = "!get (value_name): Returns the value_name value.",
     patterns = {
       "^!get (%a+)$",
-      "^!get$"}, 
+      "^!get$"},
     run = run,
     lex = lex
 }

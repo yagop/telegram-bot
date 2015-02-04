@@ -102,8 +102,8 @@ end
 _stats = read_file_stats()
 
 return {
-    description = "Number of messages by user", 
-    usage = "!stats",
+    description = "Plugin to update user stats.", 
+    usage = "!stats: Returns a list of Username [telegram_id]: msg_num",
     patterns = {
       ".*",
     	"^!(stats)"
