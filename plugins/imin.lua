@@ -22,7 +22,7 @@ _values = read_file_values()
 
 
 function join_event(chat, text,user)
-	eventname = string.match(text, "!imin (.+)")
+	eventname = string.match(text, "[!|.]imin (.+)")
 	if (eventname == nil) then
 		return "Usage: !imin eventname"
 	end
@@ -32,6 +32,8 @@ function join_event(chat, text,user)
 	if (eventname == nil) then
 		return "Usage: !imin eventname"
 	end
+	
+	eventname = string.lower(eventname)
 
 	if _values[chat][eventname] == nil then
 	  return "Event doesn't exists..."
@@ -58,7 +60,7 @@ return {
     usage = {
       "!imin [event name]"},
     patterns = {
-      "^!imin (.+)$",
+      "^[!|.]imin (.+)$",
     }, 
     run = run 
 }
