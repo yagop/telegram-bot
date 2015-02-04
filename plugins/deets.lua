@@ -22,7 +22,7 @@ _values = read_file_values()
 
 
 function details_event(chat, text,rec)
-	eventname = string.match(text, "!deets (.+)")
+	eventname = string.match(text, "[!|.]deets (.+)")
 	if (eventname == nil) then
 		return "Usage: !deets eventname"
 	end
@@ -117,7 +117,7 @@ return {
     usage = {
       "!deets [event name]"},
     patterns = {
-      "^!deets (.+)$",
+      "^[!|.]deets (.+)$",
     }, 
     run = run 
 }
