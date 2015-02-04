@@ -32,7 +32,8 @@ function leave_event(chat, text,user)
 	if (eventname == nil) then
 		return "Usage: !imout eventname"
 	end
-
+	
+	eventname = string.lower(eventname)
 	if _values[chat][eventname] == nil then
 	  return "Event doesn't exists..."
 	end
