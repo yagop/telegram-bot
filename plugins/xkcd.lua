@@ -20,7 +20,7 @@ end
 function get_xkcd_random()
   local last = get_last_id()
   math.randomseed(os.time())
-  i = math.random(1, data.num)
+  i = math.random(1, last)
   return get_xkcd(i)
 end
 
