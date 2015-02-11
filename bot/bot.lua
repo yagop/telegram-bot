@@ -5,7 +5,7 @@ json = (loadfile "./libs/JSON.lua")()
 serpent = (loadfile "./libs/serpent.lua")()
 require("./bot/utils")
 
-VERSION = '0.8.5'
+VERSION = '0.8.6'
 
 function on_msg_receive (msg)
   vardump(msg)
@@ -63,11 +63,17 @@ end
 function do_action(msg)
   local receiver = get_receiver(msg)
   local text = msg.text
+
   if msg.text == nil then
-     -- Not a text message, make text the same as what tg shows so
-     -- we can match on it. The plugin is resposible for handling
-     text = '['..msg.media.type..']'
+    -- Not a text message, make text the same as what tg shows so
+    -- we can match on it. The plugin is resposible for handling
+    if msg.media ~= nil then
+      text = '['..msg.media.type..']'
+    end
   end
+
+  -- We can't do anything
+  if msg.text == nil return false end
 
   msg.text = do_lex(msg, text)
 
