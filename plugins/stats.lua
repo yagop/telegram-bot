@@ -54,49 +54,49 @@ end
 
 
 local function save_stats()
-	-- Save stats to file
-	serialize_to_file(_stats, _file_stats)
+  -- Save stats to file
+  serialize_to_file(_stats, _file_stats)
 end
 
 local function get_stats_status( msg )
-	-- vardump(stats)
-	local text = ""
+  -- vardump(stats)
+  local text = ""
   local to_id = tostring(msg.to.id)
-	local rank = {}
+  local rank = {}
 
-	for id, user in pairs(_stats[to_id]) do
-		table.insert(rank, user)
-	end
+  for id, user in pairs(_stats[to_id]) do
+    table.insert(rank, user)
+  end
 
-	table.sort(rank, function(a, b) 
-			if a.msg_num and b.msg_num then
-				return a.msg_num > b.msg_num
-			end
-		end
-	)
+  table.sort(rank, function(a, b) 
+      if a.msg_num and b.msg_num then
+        return a.msg_num > b.msg_num
+      end
+    end
+  )
 
-	for id, user in pairs(rank) do
+  for id, user in pairs(rank) do
     -- Previous versions didn't save that
     user_id = user.user_id or ''
-		print(">> ", id, user.name)
-		if user.last_name == nil then
-			text = text..user.name.." ["..user_id.."]: "..user.msg_num.."\n"
-		else
-			text = text..user.name.." "..user.last_name.." ["..user_id.."]: "..user.msg_num.."\n"
-		end
-	end
-	print("usuarios: "..text)
-	return text
+    print(">> ", id, user.name)
+    if user.last_name == nil then
+      text = text..user.name.." ["..user_id.."]: "..user.msg_num.."\n"
+    else
+      text = text..user.name.." "..user.last_name.." ["..user_id.."]: "..user.msg_num.."\n"
+    end
+  end
+  print("usuarios: "..text)
+  return text
 end
 
 local function run(msg, matches)
-	if matches[1] == "stats" then -- Hack
-    		return get_stats_status(msg)
-	else 
-		print ("update stats")
-		update_user_stats(msg)
+  if matches[1] == "stats" then -- Hack
+        return get_stats_status(msg)
+  else 
+    print ("update stats")
+    update_user_stats(msg)
     save_stats()
-	end
+  end
 end
 
 _stats = read_file_stats()
