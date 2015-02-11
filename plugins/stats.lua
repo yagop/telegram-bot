@@ -102,13 +102,13 @@ end
 _stats = read_file_stats()
 
 return {
-    description = "Plugin to update user stats.", 
-    usage = "!stats: Returns a list of Username [telegram_id]: msg_num",
-    patterns = {
-      ".*",
-    	"^!(stats)"
-    	}, 
-    run = run 
+  description = "Plugin to update user stats.", 
+  usage = "!stats: Returns a list of Username [telegram_id]: msg_num",
+  patterns = {
+    ".*",
+    "^!(stats)"
+    }, 
+  run = run 
 }
 
 end
