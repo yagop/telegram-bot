@@ -73,7 +73,7 @@ function do_action(msg)
   end
 
   -- We can't do anything
-  if msg.text == nil return false end
+  if msg.text == nil then return false end
 
   msg.text = do_lex(msg, text)
 
