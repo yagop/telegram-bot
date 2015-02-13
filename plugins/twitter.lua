@@ -47,8 +47,8 @@ function run(msg, matches)
   
   -- remove images
   local images = {}
-  if response.entities.media then
-    for k, v in pairs(response.entities.media) do
+  if response.extended_entities.media then
+    for k, v in pairs(response.extended_entities.media) do
         local url = v.url
         local pic = v.media_url
         text = text:gsub(url, "")
@@ -62,6 +62,7 @@ function run(msg, matches)
   for k, v in pairs(images) do
     local file = download_to_file(v)
     send_photo(receiver, file, ok_cb, false)
+    delay_s(1)
   end
   
   return nil
