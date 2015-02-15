@@ -36,12 +36,15 @@ end
 function msg_valid(msg)
   -- Dont process outgoing messages
   if msg.out then
+    print("Not valid, msg from us")
     return false
   end
   if msg.date < now then
+    print("Not valid, old msg")
     return false
   end
   if msg.unread == 0 then
+    print("Not valid, readed")
     return false
   end
 end
@@ -221,3 +224,4 @@ end
 -- Start and load values
 our_id = 0
 now = os.time()
+math.randomseed(now)
