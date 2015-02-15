@@ -22,4 +22,3 @@ return {
     patterns = {"^!gps ([^,]*)[,%s]([^,]*)$"}, 
     run = run 
 }
-
