@@ -195,10 +195,11 @@ function _send_photo(receiver, file_path, cb_function, cb_extra)
 end
 
 -- Download the image and send to receiver, it will be deleted.
-function send_photo_from_url(receiver, url)
+-- cb_function and cb_extra are optionals callback
+function send_photo_from_url(receiver, url, cb_function, cb_extra)
   local file_path = download_to_file(url, false)
   print("File path: "..file_path)
-  _send_photo(receiver, file_path)
+  _send_photo(receiver, file_path, cb_function, cb_extra)
 end
 
 --  Send multimple images asynchronous.
