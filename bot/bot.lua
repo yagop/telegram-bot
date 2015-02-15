@@ -5,7 +5,7 @@ json = (loadfile "./libs/JSON.lua")()
 serpent = (loadfile "./libs/serpent.lua")()
 require("./bot/utils")
 
-VERSION = '0.8.6'
+VERSION = '0.9.0'
 
 function on_msg_receive (msg)
   vardump(msg)
