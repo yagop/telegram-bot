@@ -59,14 +59,10 @@ function run(msg, matches)
   -- send the parts 
   local receiver = get_receiver(msg)
   send_msg(receiver, header .. "\n" .. text, ok_cb, false)
-  for k, v in pairs(images) do
-    local file = download_to_file(v)
-    send_photo(receiver, file, ok_cb, false)
-    delay_s(1)
-  end
-  
+  send_photos_from_url(receiver, images)
   return nil
 end
+ 
 
 return {
     description = "When user sends twitter URL, send text and images to origin. Requieres OAuth Key.", 

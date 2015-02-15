@@ -22,7 +22,7 @@ function run(msg, matches)
   local receiver = get_receiver(msg)
   url, title = get_9GAG()
   file_path = download_to_file(url)
-  send_photo(receiver, file_path, send_title, {receiver, title})
+  _send_photo(receiver, file_path, send_title, {receiver, title})
   return false
 end
 
