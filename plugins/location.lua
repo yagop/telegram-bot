@@ -12,12 +12,6 @@ api_key = nil
 
 base_api = "https://maps.googleapis.com/maps/api"
 
-function delay_s(delay)
-   delay = delay or 1
-   local time_to = os.time() + delay
-   while os.time() < time_to do end
-end
-
 function get_staticmap(area)
    local api        = base_api .. "/staticmap?"
 
@@ -45,18 +39,12 @@ end
 function run(msg, matches)
    local receiver	= get_receiver(msg)
    local lat,lng,url	= get_staticmap(matches[1])
-   
-   local file_path      = download_to_file(url)
 
    -- Send the actual location, is a google maps link
    send_location(receiver, lat, lng, ok_cb, false)
   
    -- Send a picture of the map, which takes scale into account
-   send_photo(receiver, file_path, ok_cb, false)
-   delay_s(2)
-   
-    -- Clean up after some time
-   postpone(rmtmp_cb, file_path, 20.0)
+   send_photo_from_url(receiver, url)
 
    -- Return a link to the google maps stuff is now not needed anymore
    return nil
