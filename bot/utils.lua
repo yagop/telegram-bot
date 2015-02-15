@@ -258,3 +258,23 @@ function rmtmp_cb(cb_extra, success, result)
   -- Finaly call the callback
   cb_function(cb_extra, success, result)
 end
+
+-- Send document to user and delete it when finished.
+-- cb_function and cb_extra are optionals callback
+function _send_document(receiver, file_path, cb_function, cb_extra)
+  local cb_extra = {
+    file_path = file_path,
+    cb_function = cb_function or ok_cb,
+    cb_extra = cb_extra or false
+  }
+  -- Call to remove with optional callback
+  send_document(receiver, file_path, rmtmp_cb, cb_extra)
+end
+
+-- Download the image and send to receiver, it will be deleted.
+-- cb_function and cb_extra are optionals callback
+function send_document_from_url(receiver, url, cb_function, cb_extra)
+  local file_path = download_to_file(url, false)
+  print("File path: "..file_path)
+  _send_document(receiver, file_path, cb_function, cb_extra)
+end
