@@ -219,6 +219,16 @@ function send_photo_from_url(receiver, url, cb_function, cb_extra)
   _send_photo(receiver, file_path, cb_function, cb_extra)
 end
 
+-- Same as send_photo_from_url but as callback function
+function send_photo_from_url_callback(cb_extra, success, result)
+  local receiver = cb_extra.receiver
+  local url = cb_extra.url
+  
+  local file_path = download_to_file(url, false)
+  print("File path: "..file_path)
+  _send_photo(receiver, file_path, cb_function, cb_extra)
+end
+
 --  Send multimple images asynchronous.
 -- param urls must be a table.
 function send_photos_from_url(receiver, urls)
