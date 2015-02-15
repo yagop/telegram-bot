@@ -3,9 +3,8 @@
 
 function get_random_top()
   local api_key = "dc6zaTOxFJmzC" -- public beta key
-  b = http.request("http://api.giphy.com/v1/gifs/trending?api_key="..api_key)
+  local b = http.request("http://api.giphy.com/v1/gifs/trending?api_key="..api_key)
   local images = json:decode(b).data
-  math.randomseed(os.time())
   local i = math.random(0,#images)
   return images[i].images.downsized.url
 end
@@ -28,8 +27,8 @@ function run(msg, matches)
     gif_url = search(matches[1])
   end
 
-  file = download_to_file(gif_url)
-  send_document(get_receiver(msg), file, ok_cb, false)
+  local receiver = get_receiver(msg)
+  send_document_from_url(receiver, gif_url)
   return "preparing to make you laugh"
 end
 
