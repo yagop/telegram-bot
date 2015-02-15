@@ -1,3 +1,4 @@
+local mimetype = (loadfile "./libs/mimetype.lua")()
 local ltn12 = require "ltn12"
 
 function get_receiver(msg)
@@ -37,8 +38,24 @@ function string.trim(s)
   return s:gsub("^%s*(.-)%s*$", "%1")
 end
 
+function get_http_file_name(url, headers)
+  -- Everything after the last /
+  local file_name = url:match("([^/]+)$")
+  -- Possible headers names
+  local content_type = headers["content-type"] 
+  content_type = content_type or headers["Content-type"]
+  content_type = content_type or h["Content-Type"]
+  
+  local extension = mimetype.get_mime_extension(content_type)
+  if extension then
+    file_name = file_name.."."..extension
+  end
+  return file_name
+end
+
 --  Saves file to /tmp/. If file_name isn't provided, 
--- will get the text after the last "/" for filename.
+-- will get the text after the last "/" for filename 
+-- and content-type for extension
 function download_to_file(url, file_name)
   print("url to download: "..url)
 
@@ -50,10 +67,10 @@ function download_to_file(url, file_name)
   }
 
   local one, c, h = http.request(options)
-  
-  -- Everything after the last /
-  local file_name = url:match("([^/]+)$") 
+
+  local file_name = get_http_file_name(url, h)
   local file_path = "/tmp/"..file_name
+  print("Saved to: "..file_path)
 
   file = io.open(file_path, "w+")
   file:write(table.concat(respbody))
@@ -249,7 +266,7 @@ end
 -- Callback to remove a file
 function rmtmp_cb(cb_extra, success, result)
   local file_path = cb_extra.file_path
-  local cb_function = cb_extra.cb_function
+  local cb_function = cb_extra.cb_function or ok_cb
   local cb_extra = cb_extra.cb_extra
 
   if file_path ~= nil then
