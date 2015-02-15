@@ -8,7 +8,7 @@ function read_file_values( )
     print ('Created value file '.._file_values)
     serialize_to_file({}, _file_values)
   else
-    print ('Stats loaded: '.._file_values)
+    print ('Values loaded: '.._file_values)
     f:close() 
   end
   return loadfile (_file_values)()
