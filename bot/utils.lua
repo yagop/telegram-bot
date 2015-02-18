@@ -84,6 +84,14 @@ function vardump(value, depth, key)
   local linePrefix = ""
   local spaces = ""
   
+  -- print("++++++++++ --> " .. _config.debug)
+
+  if _config.debug ~= nil then
+    if _config.debug == false then
+      return ""
+    end
+  end
+  
   if key ~= nil then
     linePrefix = "["..key.."] = "
   end
