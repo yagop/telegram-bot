@@ -314,3 +314,14 @@ function send_document_from_url(receiver, url, cb_function, cb_extra)
   print("File path: "..file_path)
   _send_document(receiver, file_path, cb_function, cb_extra)
 end
+
+-- http://stackoverflow.com/a/14377694/156869
+-- get length of an array
+function table.map_length(t)
+    local c = 0
+    for k,v in pairs(t) do
+         c = c+1
+    end
+    return c
+end
+
