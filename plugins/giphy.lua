@@ -13,6 +13,7 @@ function search(text)
   local api_key = "dc6zaTOxFJmzC" -- public beta key
   b = http.request("http://api.giphy.com/v1/gifs/search?q="..text.."&api_key="..api_key)
   local images = json:decode(b).data
+  if #images == 0 then return nil end -- No images
   math.randomseed(os.time())
   local i = math.random(0,#images)
   return images[i].images.downsized.url
@@ -27,9 +28,13 @@ function run(msg, matches)
     gif_url = search(matches[1])
   end
 
+  if not gif_url then 
+    return "Error: GIF not found"
+  end
+
   local receiver = get_receiver(msg)
   send_document_from_url(receiver, gif_url)
-  return "preparing to make you laugh"
+  return "Preparing to make you laugh"
 end
 
 return {
