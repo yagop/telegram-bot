@@ -15,14 +15,166 @@ Multimedia
 Bot Commands
 ------------
 <table>
-<thead>
-<tr>
-<td><strong>Name</strong></td>
-<td><strong>Description</strong></td>
-<td><strong>Usage</strong></td>
-</tr>
-</thead>
-<tbody><tr><td>9gag.lua</td><td>9GAG for telegram</td><td>!9gag: Send random image from 9gag</td></tr><tr><td>bitfinex.lua</td><td>Bitfinex commands</td><td>!bitfinex symbols: Get a list of valid symbol IDs and the pair details.<br>!bitfinex ticker (pair): Gives innermost bid and asks and information on the most recent trade, as well as high, low and volume of the last 24 hours.<br>!bitfinex stats (pair): Various statistics about the requested pairs.<br>!bitfinex book|orderbook (pair): Get the order book. Limited to 10 bids an 10 asks.<br>!bitfinex trades (pair): Get a list of trades for the given symbol. Limited to 20.<br>!bitfinex lends (currency): Get a list of the most recent swaps: total amount lent and Flash Return Rate (in % by 365 days). Limited to 20.<br></td></tr><tr><td>btc.lua</td><td>Bitcoin global average market value (in EUR or USD)</td><td>!btc [EUR|USD] [amount]</td></tr><tr><td>echo.lua</td><td>Simplest plugin ever!</td><td>!echo [whatever]: echoes the msg</td></tr><tr><td>eur.lua</td><td>EURUSD market value</td><td>!eur [USD]</td></tr><tr><td>fortunes_uc3m.lua</td><td>Fortunes from Universidad Carlos III</td><td>!uc3m</td></tr><tr><td>get.lua</td><td>Retrieves variables saved with !set</td><td>!get (value_name): Returns the value_name value.</td></tr><tr><td>giphy.lua</td><td>GIFs from telegram with Giphy API</td><td>!gif (term): Search and sends GIF from Giphy. If no param, sends a trending GIF.<br>!giphy (term): Search and sends GIF from Giphy. If no param, sends a trending GIF.<br></td></tr><tr><td>google.lua</td><td>Searches Google and send results</td><td>!google [terms]: Searches Google and send results</td></tr><tr><td>gps.lua</td><td>generates a map showing the given GPS coordinates</td><td>!gps latitude,longitude: generates a map showing the given GPS coordinates</td></tr><tr><td>hashrate.lua</td><td>Bitcoin Mining Calculator</td><td>!hashrate: data for 1 TH/s<br>!hashrate [number]: number of TH/s<br></td></tr><tr><td>hello.lua</td><td>Says hello to someone</td><td>say hello to [name]</td></tr><tr><td>help.lua</td><td>Help plugin. Get info from other plugins. </td><td>!help: Show all the help<br>!help md: Generate a GitHub Markdown table<br></td></tr><tr><td>images.lua</td><td>When user sends image URL (ends with png, jpg, jpeg) download and send it to origin.</td><td></td></tr><tr><td>imdb.lua</td><td>Imdb plugin for telegram</td><td>!imdb [movie]</td></tr><tr><td>img_google.lua</td><td>Search image with Google API and sends it.</td><td>!img [term]: Random search an image with Google API.</td></tr><tr><td>invite.lua</td><td>Invite other user to the chat group</td><td>!invite name [user_name]<br>!invite id [user_id]<br></td></tr><tr><td>location.lua</td><td>Gets information about a location, maplink and overview</td><td>!loc (location): Gets information about a location, maplink and overview</td></tr><tr><td>media.lua</td><td>When user sends media URL (ends with gif, mp4, pdf, etc.) download and send it to origin.</td><td></td></tr><tr><td>ping.lua</td><td>If domain is offline, send msg to peer</td><td></td></tr><tr><td>plugins.lua</td><td>Plugin to manage other plugins. Enable, disable or reload.</td><td>!plugins: list all plugins<br>!plugins enable [plugin]: enable plugin<br>!plugins disable [plugin]: disable plugin<br>!plugins reload: reloads all plugins<br></td></tr><tr><td>quandl.lua</td><td>Gold and Oil Price</td><td>!gold<br>!oil<br></td></tr><tr><td>quotes.lua</td><td>Quote plugin, you can create and retrieves random quotes</td><td>!addquote [msg]<br>!quote<br></td></tr><tr><td>rae.lua</td><td>Spanish dictionary</td><td>!rae [word]: Search that word in Spanish dictionary. Powered by https://github.com/javierhonduco/dulcinea</td></tr><tr><td>set.lua</td><td>Plugin for saving values. get.lua plugin is necesary to retrieve them.</td><td>!set [value_name] [data]: Saves the data with the value_name name.</td></tr><tr><td>stats.lua</td><td>Plugin to update user stats.</td><td>!stats: Returns a list of Username [telegram_id]: msg_num</td></tr><tr><td>time.lua</td><td>Displays the local time in an area</td><td>!time [area]: Displays the local time in that area</td></tr><tr><td>twitter.lua</td><td>When user sends twitter URL, send text and images to origin. Requieres OAuth Key.</td><td></td></tr><tr><td>twitter_send.lua</td><td>Sends a tweet</td><td>!tw [text]: Sends the Tweet with the configured accout.</td></tr><tr><td>version.lua</td><td>Shows bot version</td><td>!version: Shows bot version</td></tr><tr><td>weather.lua</td><td>weather in that city (Madrid is default)</td><td>!weather (city)</td></tr><tr><td>xkcd.lua</td><td>Send comic images from xkcd</td><td>!xkcd (id): Send an xkcd image and tigle. If not id, send a random one<br></td></tr><tr><td>youtube.lua</td><td>Sends YouTube info and image.</td><td></td></tr></tbody></table>
+   <thead>
+      <tr>
+         <td><strong>Name</strong></td>
+         <td><strong>Description</strong></td>
+         <td><strong>Usage</strong></td>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+         <td>9gag.lua</td>
+         <td>9GAG for telegram</td>
+         <td>!9gag: Send random image from 9gag</td>
+      </tr>
+      <tr>
+         <td>btc.lua</td>
+         <td>Bitcoin global average market value (in EUR or USD)</td>
+         <td>!btc [EUR|USD] [amount]</td>
+      </tr>
+      <tr>
+         <td>echo.lua</td>
+         <td>Simplest plugin ever!</td>
+         <td>!echo [whatever]: echoes the msg</td>
+      </tr>
+      <tr>
+         <td>eur.lua</td>
+         <td>EURUSD market value</td>
+         <td>!eur [USD]</td>
+      </tr>
+      <tr>
+         <td>fortunes_uc3m.lua</td>
+         <td>Fortunes from Universidad Carlos III</td>
+         <td>!uc3m</td>
+      </tr>
+      <tr>
+         <td>get.lua</td>
+         <td>Retrieves variables saved with !set</td>
+         <td>!get (value_name): Returns the value_name value.</td>
+      </tr>
+      <tr>
+         <td>giphy.lua</td>
+         <td>GIFs from telegram with Giphy API</td>
+         <td>!gif (term): Search and sends GIF from Giphy. If no param, sends a trending GIF.<br>!giphy (term): Search and sends GIF from Giphy. If no param, sends a trending GIF.<br></td>
+      </tr>
+      <tr>
+         <td>google.lua</td>
+         <td>Searches Google and send results</td>
+         <td>!google [terms]: Searches Google and send results</td>
+      </tr>
+      <tr>
+         <td>gps.lua</td>
+         <td>generates a map showing the given GPS coordinates</td>
+         <td>!gps latitude,longitude: generates a map showing the given GPS coordinates</td>
+      </tr>
+      <tr>
+         <td>hello.lua</td>
+         <td>Says hello to someone</td>
+         <td>say hello to [name]</td>
+      </tr>
+      <tr>
+         <td>help.lua</td>
+         <td>Help plugin. Get info from other plugins. </td>
+         <td>!help: Show all the help<br>!help md: Generate a GitHub Markdown table<br></td>
+      </tr>
+      <tr>
+         <td>images.lua</td>
+         <td>When user sends image URL (ends with png, jpg, jpeg) download and send it to origin.</td>
+         <td></td>
+      </tr>
+      <tr>
+         <td>imdb.lua</td>
+         <td>Imdb plugin for telegram</td>
+         <td>!imdb [movie]</td>
+      </tr>
+      <tr>
+         <td>img_google.lua</td>
+         <td>Search image with Google API and sends it.</td>
+         <td>!img [term]: Random search an image with Google API.</td>
+      </tr>
+      <tr>
+         <td>invite.lua</td>
+         <td>Invite other user to the chat group</td>
+         <td>!invite name [user_name]<br>!invite id [user_id]<br></td>
+      </tr>
+      <tr>
+         <td>location.lua</td>
+         <td>Gets information about a location, maplink and overview</td>
+         <td>!loc (location): Gets information about a location, maplink and overview</td>
+      </tr>
+      <tr>
+         <td>media.lua</td>
+         <td>When user sends media URL (ends with gif, mp4, pdf, etc.) download and send it to origin.</td>
+         <td></td>
+      </tr>
+      <tr>
+         <td>ping.lua</td>
+         <td>If domain is offline, send msg to peer</td>
+         <td></td>
+      </tr>
+      <tr>
+         <td>plugins.lua</td>
+         <td>Plugin to manage other plugins. Enable, disable or reload.</td>
+         <td>!plugins: list all plugins<br>!plugins enable [plugin]: enable plugin<br>!plugins disable [plugin]: disable plugin<br>!plugins reload: reloads all plugins<br></td>
+      </tr>
+      <tr>
+         <td>quotes.lua</td>
+         <td>Quote plugin, you can create and retrieves random quotes</td>
+         <td>!addquote [msg]<br>!quote<br></td>
+      </tr>
+      <tr>
+         <td>rae.lua</td>
+         <td>Spanish dictionary</td>
+         <td>!rae [word]: Search that word in Spanish dictionary. Powered by https://github.com/javierhonduco/dulcinea</td>
+      </tr>
+      <tr>
+         <td>set.lua</td>
+         <td>Plugin for saving values. get.lua plugin is necesary to retrieve them.</td>
+         <td>!set [value_name] [data]: Saves the data with the value_name name.</td>
+      </tr>
+      <tr>
+         <td>stats.lua</td>
+         <td>Plugin to update user stats.</td>
+         <td>!stats: Returns a list of Username [telegram_id]: msg_num</td>
+      </tr>
+      <tr>
+         <td>time.lua</td>
+         <td>Displays the local time in an area</td>
+         <td>!time [area]: Displays the local time in that area</td>
+      </tr>
+      <tr>
+         <td>twitter.lua</td>
+         <td>When user sends twitter URL, send text and images to origin. Requieres OAuth Key.</td>
+         <td></td>
+      </tr>
+      <tr>
+         <td>twitter_send.lua</td>
+         <td>Sends a tweet</td>
+         <td>!tw [text]: Sends the Tweet with the configured accout.</td>
+      </tr>
+      <tr>
+         <td>version.lua</td>
+         <td>Shows bot version</td>
+         <td>!version: Shows bot version</td>
+      </tr>
+      <tr>
+         <td>weather.lua</td>
+         <td>weather in that city (Madrid is default)</td>
+         <td>!weather (city)</td>
+      </tr>
+      <tr>
+         <td>xkcd.lua</td>
+         <td>Send comic images from xkcd</td>
+         <td>!xkcd (id): Send an xkcd image and tigle. If not id, send a random one<br></td>
+      </tr>
+      <tr>
+         <td>youtube.lua</td>
+         <td>Sends YouTube info and image.</td>
+         <td></td>
+      </tr>
+   </tbody>
+</table>
 
 Installation
 ------------
