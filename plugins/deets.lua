@@ -54,6 +54,9 @@ function details_event(chat, text,rec)
 	end
 	
 	if _values[chat][eventname].place ~= "" then
+		if_values[chat][eventname].place == "fun house" or _values[chat][eventname].place == "funhouse" then
+			_values[chat][eventname].place = "12 asquith st mt claremont"
+		end
 		local receiver	= rec
 		local lat,lng,url	= get_staticmap(_values[chat][eventname].place)
 		local file_path      = download_to_file(url)
