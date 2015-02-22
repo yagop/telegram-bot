@@ -191,6 +191,11 @@ function string:isempty()
   return self == nil or self == ''
 end
 
+-- Retruns true if the string is blank
+function string:isblank()
+  self = self:trim()
+  return self:isempty()
+end
 
 function string.starts(String, Start)
    return Start == string.sub(String,1,string.len(Start))
