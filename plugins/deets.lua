@@ -54,11 +54,15 @@ function details_event(chat, text,rec)
 	end
 	
 	if _values[chat][eventname].place ~= "" then
+		local location = _values[chat][eventname].place
 		if _values[chat][eventname].place == "fun house" or _values[chat][eventname].place == "funhouse" then
 			_values[chat][eventname].place = "12 asquith st mt claremont"
 		end
+		if location == "Food Party House" or location == "food party house" or location == "FPH" or location == "fph" then
+			location = "50 McDonald St, Como"
+		end
 		local receiver	= rec
-		local lat,lng,url	= get_staticmap(_values[chat][eventname].place)
+		local lat,lng,url	= get_staticmap(location)
 		local file_path      = download_to_file(url)
 		-- Send the actual location, is a google maps link
 		send_location(receiver, lat, lng, ok_cb, false)
