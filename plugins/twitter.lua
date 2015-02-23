@@ -47,7 +47,7 @@ function run(msg, matches)
   
   -- remove images
   local images = {}
-  if response.extended_entities.media then
+  if response.extended_entities and response.extended_entities.media then
     for k, v in pairs(response.extended_entities.media) do
         local url = v.url
         local pic = v.media_url
