@@ -22,7 +22,7 @@ function run(msg, matches)
          JSON = assert(loadfile "libs/JSON.lua")()
          local tt = JSON:decode(res)
          today = "Tuesday"
-         tt.remove(0)
+         table.remove(tt,1)
          print(tt)
          text = "Today\n\n"
          for day,hours in pairs(tt) do
