@@ -19,7 +19,7 @@ function run(msg, matches)
       print(res)
       print(code)
       if code == 200 then 
-         JSON = assert(loadfile "../lib/JSON.lua")()
+         JSON = assert(loadfile "..\lib\JSON.lua")()
          local tt = JSON:decode(res)
          print(tt)
          text = "Today\n\n"
