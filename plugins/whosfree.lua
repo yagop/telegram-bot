@@ -41,8 +41,7 @@ function run(msg, matches)
       text = text .. "Free now:\n"..res.."\n\n via TITP (rockym93.net)"
      end
      return text
-   end
-   if day == "today" or day == "Today" then
+   else
       print("test")
       local res, code = http.request("http://www.rockym93.net/code/titp2/timetable.json")
       print(res)
@@ -50,21 +49,24 @@ function run(msg, matches)
       if code == 200 then 
          JSON = assert(loadfile "libs/JSON.lua")()
          local tt = JSON:decode(res)
-         today = format_time(os.time(), "%A", "+08:00")
+         if day == "today" or day == "Today" then
+            day = format_time(os.time(), "%A", "+08:00")
+         end
          tt["users"] = nil
          print(tt)
-         text = today.. "\n"
+         text = day .. "\n"
          for day,hours in pairs(tt) do
             if day == today then
                print(day)
                for i=8,18 do
                   text = text..tostring(i) .. ": " .. table.concat(hours[tostring(i)], ", ") .. "\n"
                end
+                text = text .. "\n via TITP (rockym93.net)"
+            return text
             end
          end
       end
-      text = text .. "\n via TITP (rockym93.net)"
-      return text
+     
    end
 end
 
