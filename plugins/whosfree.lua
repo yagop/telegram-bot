@@ -1,6 +1,6 @@
 
 function run(msg, matches)
-   day = string.match(text, "[!|.]whosfree (.+)")
+   day = string.match(msg.text, "[!|.]whosfree (.+)")
    text = ""
    -- Do the request
    if day == nil then
