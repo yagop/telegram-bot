@@ -1,66 +1,22 @@
-require("./plugins/google")
 
-function firstresult(results)
-  return results[1][2]
-end
-
-function wikiapilink(wikiurl)
-  local wikipattern="^http://en.wikipedia.org/wiki/(.*)$"
-  local matches = { string.match(wikiurl, wikipattern) }
-  local queryterm=matches[1]
-  local apilink = "http://en.wikipedia.org/w/index.php?action=raw&title="..queryterm
-  return apilink
-end
-
-
-function getwikifromapi(apilink)
+function whosfree()
   -- Do the request
-  local res, code = https.request(apilink)
+  local res, code = https.request(http://www.rockym93.net/code/titp2/titp_now.py)
   if code ~=200 then return "An error occured" end
-  local data = res
-  local wikitext=data
-  return wikitext
+  return "Free now:\n"..res.."\n\n via TITP (rockym93.net)"
 end
 
-function plaintext(wikitext)
-  local plaintext=string.gsub(wikitext,"{{Infobox.-\n}}\n","")
-  plaintext=string.gsub(plaintext,"{{.-}}","")
-  plaintext=string.gsub(plaintext,"[%[%|%]%]]","")
-  plaintext=string.gsub(plaintext,"<ref.->.-</ref>","")
-  local firstsectionindex=string.find(plaintext,"==")
-  if firstsectionindex~=nil then
-    plaintext=string.sub(plaintext,1,firstsectionindex-1)
-  end
-  return plaintext
-end
-
-function formatwikiforsending(wikitext,url)
-  -- local stringtosend=title.."\n==="
-  local stringtosend=plaintext(wikitext).."\n"
-  stringtosend=stringtosend.."- "..url
-  return stringtosend
-end
-
-
-function scrapewiki(results)
-  local url=firstresult(results)
-  local tosend=formatwikiforsending(getwikifromapi(wikiapilink(url)),url)
-  return tosend
-end
 
 function run(msg, matches)
-  vardump(matches)
-  local results = googlethat(matches[1].." site:en.wikipedia.org")
-  return scrapewiki(results)
+  return whosfree()
 end
 
 
 return {
-  description = "Gives you the wikipedia article you are looking for",
-  usage = "!wiki terms",
+  description = "Who's currently free (via TITP (rockym93))",
+  usage = "!whosfree",
   patterns = {
-    "^!wiki (.*)$",
-    "^%.[w|W]iki (.*)$"
+    "^[.|!]whosfree$",
     },
     run = run
   }
