@@ -21,11 +21,19 @@ function run(msg, matches)
       if code == 200 then 
          JSON = assert(loadfile "libs/JSON.lua")()
          local tt = JSON:decode(res)
-         
+         today = "Tuesday"
          print(tt)
          text = "Today\n\n"
-         for day,users in pairs(tt) do
-            text = text .. day .. users .. "\n"
+         for day,hours in pairs(tt) do
+            if day == today then
+               for hour, users in pairs(hours) do
+                  text = text .. hour
+                  for user in users do
+                     text = text .. user .. " "
+                  end
+                  text = text .. "\n"
+               end
+            end
          end
       end
          
