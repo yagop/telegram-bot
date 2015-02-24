@@ -55,9 +55,9 @@ function run(msg, matches)
          tt["users"] = nil
          print(tt)
          text = day .. "\n"
-         for day,hours in pairs(tt) do
-            if day == today then
-               print(day)
+         for d,hours in pairs(tt) do
+            if d == day then
+               print(d)
                for i=8,18 do
                   text = text..tostring(i) .. ": " .. table.concat(hours[tostring(i)], ", ") .. "\n"
                end
