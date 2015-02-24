@@ -154,6 +154,7 @@ function create_config( )
       "newevent",
       "endevent",
       "whosfree",
+      "freetoday",
       "giphy",
       "google",
       "help",
