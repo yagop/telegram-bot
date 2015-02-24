@@ -31,10 +31,7 @@ function run(msg, matches)
                for hour, users in pairs(hours) do
                   print(hour)
                   print(users)
-                  text = text .. hour
-                  for user in users do
-                     text = text .. user .. " "
-                  end
+                  text = text .. hour .. table.concat(users, ", ")
                   text = text .. "\n"
                end
             end
