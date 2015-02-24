@@ -19,8 +19,7 @@ function run(msg, matches)
       print(res)
       print(code)
       if code == 200 then 
-         local tt = JSON:decode(res) 
-         tt.remove(0)
+         local tt = JSON:decode(res)
          text = "Today\n\n"
          for day,users in pairs(tt) then
             text = text .. day .. users.."\n"
