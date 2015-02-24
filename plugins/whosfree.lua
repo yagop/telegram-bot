@@ -15,7 +15,7 @@ return {
   description = "Who's currently free (via TITP (rockym93))",
   usage = "!whosfree",
   patterns = {
-    "^!whosfree$",
+    "^[!.]whosfree$",
     },
     run = run
   }
