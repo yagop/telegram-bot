@@ -22,6 +22,7 @@ function run(msg, matches)
          local tt = JSON:decode(res)
          print(tt)
          text = "Today\n\n"
+      end
          
       return text
    end
