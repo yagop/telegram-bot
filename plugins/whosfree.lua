@@ -27,7 +27,10 @@ function run(msg, matches)
          text = "Today\n\n"
          for day,hours in pairs(tt) do
             if day == today then
+               print(day)
                for hour, users in pairs(hours) do
+                  print(hour)
+                  print(users)
                   text = text .. hour
                   for user in users do
                      text = text .. user .. " "
