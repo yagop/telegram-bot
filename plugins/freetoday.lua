@@ -8,7 +8,11 @@ function run(msg, matches)
   if code == 200 then 
    local tt = JSON:decode(res) 
    tt.remove(0)
-   return "Free now:\n"..res.."\n\n via TITP (rockym93.net)"
+   text = "Today\n\n"
+   for day,users in pairs(tt) then
+      text = text .. day .. users.."\n"
+   end
+   return text
   end
 end
 
@@ -17,7 +21,7 @@ return {
   description = "Who's currently free (via TITP (rockym93))",
   usage = "!whosfree",
   patterns = {
-    "^[!|.]whosfree$",
+    "^[!|.]free today$",
     },
     run = run
   }
