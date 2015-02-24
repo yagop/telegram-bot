@@ -21,10 +21,10 @@ function run(msg, matches)
       if code == 200 then 
          JSON = assert(loadfile "libs/JSON.lua")()
          local tt = JSON:decode(res)
-         today = os.date("%A") .. "\n"
+         today = os.date("%A") 
          tt["users"] = nil
          print(tt)
-         text = today
+         text = today.. "\n"
          for day,hours in pairs(tt) do
             if day == today then
                print(day)
