@@ -153,6 +153,7 @@ function create_config( )
       "setwhen",
       "newevent",
       "endevent",
+      "whosfree",
       "giphy",
       "google",
       "help",
