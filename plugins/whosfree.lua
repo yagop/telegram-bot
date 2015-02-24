@@ -18,6 +18,12 @@ function run(msg, matches)
       local res, code = http.request("http://www.rockym93.net/code/titp2/timetable.json")
       print(res)
       print(code)
+      if code == 200 then 
+         local tt = JSON:decode(res)
+         print(tt)
+         text = "Today\n\n"
+         
+      return text
    end
 end
 
