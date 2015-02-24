@@ -18,8 +18,8 @@ end
 
 
 return {
-  description = "Who's currently free (via TITP (rockym93))",
-  usage = "!whosfree",
+  description = "Who's  free today (via TITP (rockym93))",
+  usage = "!free today",
   patterns = {
     "^[!|.]free today$",
     },
