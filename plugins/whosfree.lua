@@ -24,7 +24,7 @@ function run(msg, matches)
          
          print(tt)
          text = "Today\n\n"
-         for day,users in pairs(tt) then do
+         for day,users in pairs(tt) do
             text = text .. day .. users .. "\n"
          end
       end
