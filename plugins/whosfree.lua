@@ -36,7 +36,7 @@ return {
   usage = "!whosfree",
   patterns = {
     "^[!|.]whosfree$",
-    "^[!|.]whosfree (.+)"$
+    "^[!|.]whosfree (.+)$"
     },
     run = run
   }
