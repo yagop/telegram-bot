@@ -21,7 +21,7 @@ function run(msg, matches)
       if code == 200 then 
          JSON = assert(loadfile "libs/JSON.lua")()
          local tt = JSON:decode(res)
-         today = os.date("%A")
+         today = os.date("%A") .. "\n"
          tt["users"] = nil
          print(tt)
          text = today
@@ -34,7 +34,7 @@ function run(msg, matches)
             end
          end
       end
-         
+      text = text .. "\n via TITP (rockym93.net)"
       return text
    end
 end
