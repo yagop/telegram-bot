@@ -28,12 +28,8 @@ function run(msg, matches)
          for day,hours in pairs(tt) do
             if day == today then
                print(day)
-               table.sort(hours)
-               for hour, users in pairs(hours) do
-                  print(hour)
-                  print(users)
-                  text = text .. hour .. table.concat(users, ", ")
-                  text = text .. "\n"
+               for i=8,18 do
+                  text = text..tostring(i) .. ": " .. table.concat(hours[tostring(i)], ", ") .. "\n"
                end
             end
          end
