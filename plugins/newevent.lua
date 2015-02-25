@@ -42,6 +42,7 @@ function save_event(chat, text )
 	_values[chat][eventname] = {}
 	_values[chat][eventname].attend = {}
 	_values[chat][eventname].place = ""
+	_values[chat][eventname].what = ""
 	_values[chat][eventname].when = ""
 
 	-- Save values to file
