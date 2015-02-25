@@ -38,8 +38,9 @@ function details_event(chat, text,rec)
 	end
 
   	local ret = "["..eventname.."] \n"
-	 ret = ret .. "When: " .. _values[chat][eventname].when .."\n"
-  	ret = ret .. "Place: ".._values[chat][eventname].place.."\n"
+  	ret = ret .. "What: " .. _values[chat][eventname].what .."\n"
+	ret = ret .. "When: " .. _values[chat][eventname].when .."\n"
+  	ret = ret .. "Where: ".._values[chat][eventname].place.."\n"
   	ret = ret .. "\n\nIN:\n"
 	for user,t in pairs(_values[chat][eventname].attend) do
 	  if t == true then
