@@ -22,15 +22,15 @@ _values = read_file_values()
 
 
 function place_event(chat, text )
-	eventname,place = string.match(text, "!setwhere (%S+) (.+)")
+	eventname,what = string.match(text, "!setwhat (%S+) (.+)")
 	if (eventname == nil) then
-		return "Usage: !setwhere eventname location"
+		return "Usage: !setwhat eventname description"
 	end
 	if _values[chat] == nil then
 		_values[chat] = {}
 	end
 	if (place == nil) then
-		return "Usage: !setwhere eventname location"
+		return "Usage: !setwhat eventname description"
 	end
 	if _values[chat] == nil then
 		_values[chat] = {}
@@ -39,13 +39,13 @@ function place_event(chat, text )
 	  return "Event doesn't exist..."
 	end
 	
-	_values[chat][eventname].place = place 
+	_values[chat][eventname].what = what 
 
 	-- Save values to file
 	serialize_to_file(_values, _file_values)
 
 	
-	return "["..eventname.."] Place Set!"
+	return "["..eventname.."] description set!"
 end
 
 function run(msg, matches)
@@ -56,11 +56,11 @@ end
 
 
 return {
-    description = "Set Event Location", 
+    description = "Set Event Description", 
     usage = {
-      "!setwhere [event name] [place]"},
+      "!setwhat [event name] [description]"},
     patterns = {
-      "^!setwhere (%S+) (.+)$",
+      "^!setwhat (%S+) (.+)$",
     }, 
     run = run 
 }
