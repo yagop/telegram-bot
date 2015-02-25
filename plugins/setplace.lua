@@ -56,7 +56,7 @@ end
 
 
 return {
-    description = "Sent Event Location", 
+    description = "Set Event Location", 
     usage = {
       "!setplace [event name] [place]"},
     patterns = {
