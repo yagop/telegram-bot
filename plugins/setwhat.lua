@@ -29,7 +29,7 @@ function place_event(chat, text )
 	if _values[chat] == nil then
 		_values[chat] = {}
 	end
-	if (place == nil) then
+	if (what == nil) then
 		return "Usage: !setwhat eventname description"
 	end
 	if _values[chat] == nil then
