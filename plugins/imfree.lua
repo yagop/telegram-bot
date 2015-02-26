@@ -8,7 +8,7 @@ function run(msg, matches)
 
   if code == 200 then
     local res, code = http.request("http://www.rockym93.net/code/titp2/titp_now.py")
-    if code==200
+    if code==200 then
       text = user .. "is free for the hour!\n\n Also (supposedly) free now:\n"..res .."\n\nvia TITP (rockym93.net)"
     end
   end
