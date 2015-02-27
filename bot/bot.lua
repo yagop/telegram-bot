@@ -170,6 +170,7 @@ function create_config( )
       "location",
       "media",
       "plugins",
+      "channels",
       "set",
       "stats",
       "time",
