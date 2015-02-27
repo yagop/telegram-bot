@@ -15,7 +15,10 @@ function get_random_top()
 end
 
 function search(text)
-  local res, code = http.request(BASE_URL.."/gifs/search?q="..text.."&api_key="..API_KEY)
+  text = URL.escape(text)
+  local url = BASE_URL.."/gifs/search?q="..text.."&api_key="..API_KEY
+  print(url)
+  local res, code = http.request(url)
   if code ~= 200 then return nil end
   local images = json:decode(res).data
   if #images == 0 then return nil end -- No images
