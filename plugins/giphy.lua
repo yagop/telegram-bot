@@ -16,6 +16,7 @@ end
 
 function search(text)
   local res, code = http.request(BASE_URL.."/gifs/search?q="..text.."&api_key="..API_KEY)
+  if code ~= 200 then return nil end
   local images = json:decode(res).data
   if #images == 0 then return nil end -- No images
   local i = math.random(0,#images)
