@@ -67,8 +67,9 @@ function download_to_file(url, file_name)
   }
 
   local one, c, h = http.request(options)
-
-  local file_name = get_http_file_name(url, h)
+  
+  file_name = file_name or get_http_file_name(url, h)
+  
   local file_path = "/tmp/"..file_name
   print("Saved to: "..file_path)
 
