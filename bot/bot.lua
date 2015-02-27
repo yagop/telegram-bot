@@ -47,6 +47,10 @@ function msg_valid(msg)
     print("Not valid, readed")
     return false
   end
+  if is_disabled(msg) then
+    print("Disabled channel")
+    return false
+  end
 end
 
 function do_lex(msg, text)

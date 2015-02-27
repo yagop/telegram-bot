@@ -146,6 +146,20 @@ function is_sudo(msg)
    return var
 end
 
+function is_disabled(msg)
+  local var = false
+  if msg.text == "!channel enable" then
+    return var
+  end
+  -- Check users id in config 
+  for v,channel in pairs(_config.disabled_channels) do 
+    if channel == msg.to.id then 
+      var = true 
+    end
+  end
+  return var
+end
+
 -- Returns the name of the sender
 function get_name(msg)
    local name = msg.from.first_name
