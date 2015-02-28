@@ -33,9 +33,15 @@ function string:split(sep)
   return fields
 end
 
--- Removes spaces
+-- DEPRECATED
 function string.trim(s)
+  print("string.trim(s) is DEPRECATED use string:trim() instead")
   return s:gsub("^%s*(.-)%s*$", "%1")
+end
+
+-- Removes spaces
+function string:trim()
+  return self:gsub("^%s*(.-)%s*$", "%1")
 end
 
 function get_http_file_name(url, headers)
@@ -153,24 +159,25 @@ function run_command(str)
   return result
 end
 
+-- User has priviledges
 function is_sudo(msg)
-   local var = false
-   -- Check users id in config 
-   for v,user in pairs(_config.sudo_users) do 
-      if user == msg.from.id then 
-         var = true 
-      end
-   end
-   return var
+  local var = false
+  -- Check users id in config 
+  for v,user in pairs(_config.sudo_users) do 
+    if user == msg.from.id then 
+      var = true 
+    end
+  end
+  return var
 end
 
 -- Returns the name of the sender
 function get_name(msg)
-   local name = msg.from.first_name
-   if name == nil then
-      name = msg.from.id
-   end
-   return name
+  local name = msg.from.first_name
+  if name == nil then
+    name = msg.from.id
+  end
+  return name
 end
 
 -- Returns at table of lua files inside plugins
@@ -220,7 +227,7 @@ end
 
 -- DEPRECATED!!!!!
 function string.starts(String, Start)
-  print "string.starts(String, Start) is DEPRECATED use string:starts(text) instead"
+  print("string.starts(String, Start) is DEPRECATED use string:starts(text) instead")
   return Start == string.sub(String,1,string.len(Start))
 end
 
