@@ -69,10 +69,22 @@ function download_to_file(url, file_name)
     redirect = true
   }
 
-  local one, c, h = http.request(options)
-  
-  file_name = file_name or get_http_file_name(url, h)
-  
+  -- nil, code, headers, status
+  local response = nil
+
+  if url:starts('https') then
+    options.redirect = false
+    response = {https.request(options)}
+  else
+    response = {http.request(options)}
+  end
+
+  local code = response[2]
+  local headers = response[3]
+  local status = response[4]
+
+  file_name = file_name or get_http_file_name(url, headers)
+    
   local file_path = "/tmp/"..file_name
   print("Saved to: "..file_path)
 
@@ -204,9 +216,15 @@ function string:isblank()
   return self:isempty()
 end
 
--- Returns true if String starts with Start
+-- DEPRECATED!!!!!
 function string.starts(String, Start)
-   return Start == string.sub(String,1,string.len(Start))
+  print "string.starts(String, Start) is DEPRECATED use string:starts(text) instead"
+  return Start == string.sub(String,1,string.len(Start))
+end
+
+-- Returns true if String starts with Start
+function string:starts(text)
+  return text == string.sub(self,1,string.len(text))
 end
 
 -- Send image to user and delete it when finished.
