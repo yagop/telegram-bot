@@ -83,6 +83,8 @@ function download_to_file(url, file_name)
   local headers = response[3]
   local status = response[4]
 
+  if code ~= 200 then return nil end
+
   file_name = file_name or get_http_file_name(url, headers)
     
   local file_path = "/tmp/"..file_name
@@ -242,9 +244,18 @@ end
 -- Download the image and send to receiver, it will be deleted.
 -- cb_function and cb_extra are optionals callback
 function send_photo_from_url(receiver, url, cb_function, cb_extra)
+  -- If callback not provided
+  cb_function = cb_function or ok_cb
+  cb_extra = cb_extra or false
+  
   local file_path = download_to_file(url, false)
-  print("File path: "..file_path)
-  _send_photo(receiver, file_path, cb_function, cb_extra)
+  if not file_path then -- Error
+    local text = 'Error downloading the image'
+    send_msg(receiver, text, cb_function, cb_extra)
+  else
+    print("File path: "..file_path)
+    _send_photo(receiver, file_path, cb_function, cb_extra)
+  end
 end
 
 -- Same as send_photo_from_url but as callback function
@@ -253,8 +264,13 @@ function send_photo_from_url_callback(cb_extra, success, result)
   local url = cb_extra.url
   
   local file_path = download_to_file(url, false)
-  print("File path: "..file_path)
-  _send_photo(receiver, file_path, cb_function, cb_extra)
+  if not file_path then -- Error
+    local text = 'Error downloading the image'
+    send_msg(receiver, text, ok_cb, false)
+  else
+    print("File path: "..file_path)
+    _send_photo(receiver, file_path, ok_cb, false)
+  end
 end
 
 --  Send multimple images asynchronous.
