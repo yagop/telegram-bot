@@ -36,8 +36,13 @@ end
 function msg_valid(msg)
   -- Dont process outgoing messages
   if msg.out then
-    print("Not valid, msg from us")
-    return false
+    if msg.text:sub(1, 1) == "%" then
+      msg.text = msg.text:sub(2, msg.text:len())
+      return true
+    else 
+      print("Not valid, msg from us")
+      return false
+    end
   end
   if msg.date < now then
     print("Not valid, old msg")
