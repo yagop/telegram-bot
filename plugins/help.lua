@@ -61,14 +61,14 @@ function run(msg, matches)
 end
 
 return {
-    description = "Help plugin. Get info from other plugins.  ", 
-    usage = {
-      "!help: Show all the help",
-      "!help md: Generate a GitHub Markdown table"
-    },
-    patterns = {
-      "^!help$",
-      "^!help md$"
-    }, 
-    run = run 
+  description = "Help plugin. Get info from other plugins.  ", 
+  usage = {
+    "!help: Show all the help",
+    "!help md: Generate a GitHub Markdown table"
+  },
+  patterns = {
+    "^!help$",
+    "^!help md$"
+  }, 
+  run = run 
 }
