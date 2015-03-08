@@ -1,7 +1,7 @@
 do
 
 function getRandomButts(attempt)
-  attempt = attempt or 0;
+  attempt = attempt or 0
   attempt = attempt + 1
 
   local res,status = http.request("http://api.obutts.ru/noise/1")
@@ -11,15 +11,15 @@ function getRandomButts(attempt)
 
   -- The OpenBoobs API sometimes returns an empty array
   if not data and attempt < 10 then 
-    print('Cannot get that boobs, trying another ones...')
-    return getRandomBoobs(attempt)
+    print('Cannot get that butts, trying another ones...')
+    return getRandomButts(attempt)
   end
 
   return 'http://media.obutts.ru/' .. data.preview
 end
 
 function getRandomBoobs(attempt)
-  attempt = attempt or 0;
+  attempt = attempt or 0
   attempt = attempt + 1
 
   local res,status = http.request("http://api.oboobs.ru/noise/1")
@@ -39,11 +39,11 @@ end
 function run(msg, matches)
   local url = nil
   
-  if matches[1] == "^!boobs" then
+  if matches[1] == "!boobs" then
     url = getRandomBoobs()
   end
 
-  if matches[1] == "!buts" then
+  if matches[1] == "!butts" then
     url = getRandomButts()
   end
 
@@ -51,7 +51,7 @@ function run(msg, matches)
     local receiver = get_receiver(msg)
     send_photo_from_url(receiver, url)
   else
-    return 'Error getting boobs for you, please try again later.' 
+    return 'Error getting boobs/butts for you, please try again later.' 
   end
 end
 
@@ -59,8 +59,8 @@ return {
   description = "Gets a random boobs pic", 
   usage = "!boobs",
   patterns = {
-    "^!boobs",
-    "^!buts"
+    "^!boobs$",
+    "^!butts$"
   }, 
   run = run 
 }
