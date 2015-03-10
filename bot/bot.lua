@@ -39,7 +39,7 @@ function msg_valid(msg)
     print("Not valid, msg from us")
     return false
   end
-  if msg.date < now then
+  if msg.date < (now - 60) then
     print("Not valid, old msg")
     return false
   end
@@ -87,7 +87,7 @@ function do_action(msg)
       -- print("Trying", text, "against", pattern)
       matches = { string.match(text, pattern) }
       if matches[1] then
-        mark_read(get_receiver(msg), ok_cb, false)
+        mark_read(receiver, ok_cb, false)
         print("  matches", pattern)
         if desc.run ~= nil then
           -- If plugin is for privileged user
