@@ -1,6 +1,6 @@
 require("./bot/utils")
 
-VERSION = '0.9.4'
+VERSION = '0.9.5'
 
 function on_msg_receive (msg)
   vardump(msg)
