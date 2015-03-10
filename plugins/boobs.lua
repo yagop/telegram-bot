@@ -56,8 +56,11 @@ function run(msg, matches)
 end
 
 return {
-  description = "Gets a random boobs pic", 
-  usage = "!boobs",
+  description = "Gets a random boobs or butts pic", 
+  usage = {
+    "!boobs",
+    "!butts"
+  },
   patterns = {
     "^!boobs$",
     "^!butts$"
