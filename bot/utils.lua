@@ -1,5 +1,10 @@
-local mimetype = (loadfile "./libs/mimetype.lua")()
-local ltn12 = require "ltn12"
+http = require "socket.http"
+https = require "ssl.https"
+ltn12 = require "ltn12"
+URL = require "socket.url"
+json = (loadfile "./libs/JSON.lua")()
+serpent = (loadfile "./libs/serpent.lua")()
+mimetype = (loadfile "./libs/mimetype.lua")()
 
 function get_receiver(msg)
   if msg.to.type == 'user' then

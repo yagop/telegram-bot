@@ -1,8 +1,3 @@
-http = require("socket.http")
-https = require("ssl.https")
-URL = require("socket.url")
-json = (loadfile "./libs/JSON.lua")()
-serpent = (loadfile "./libs/serpent.lua")()
 require("./bot/utils")
 
 VERSION = '0.9.4'
