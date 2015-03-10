@@ -34,7 +34,7 @@ function msg_valid(msg)
     print("Not valid, msg from us")
     return false
   end
-  if msg.date < (now - 60) then
+  if msg.date < now then
     print("Not valid, old msg")
     return false
   end
