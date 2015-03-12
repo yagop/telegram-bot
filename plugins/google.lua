@@ -22,17 +22,17 @@ function stringlinks(results)
 end
 
 function run(msg, matches)
-   vardump(matches)
-   local results = googlethat(matches[1])
-   return stringlinks(results)
+  vardump(matches)
+  local results = googlethat(matches[1])
+  return stringlinks(results)
 end
 
 return {
-   description = "Searches Google and send results",
-   usage = "!google [terms]: Searches Google and send results",
-   patterns = {
-      "^!google (.*)$",
-      "^%.[g|G]oogle (.*)$"
-   },
-   run = run
+  description = "Searches Google and send results",
+  usage = "!google [terms]: Searches Google and send results",
+  patterns = {
+    "^!google (.*)$",
+    "^%.[g|G]oogle (.*)$"
+  },
+  run = run
 }

@@ -1,11 +1,6 @@
-http = require("socket.http")
-https = require("ssl.https")
-URL = require("socket.url")
-json = (loadfile "./libs/JSON.lua")()
-serpent = (loadfile "./libs/serpent.lua")()
 require("./bot/utils")
 
-VERSION = '0.9.3'
+VERSION = '0.9.5'
 
 function on_msg_receive (msg)
   vardump(msg)
@@ -91,7 +86,7 @@ function do_action(msg)
       -- print("Trying", text, "against", pattern)
       matches = { string.match(text, pattern) }
       if matches[1] then
-        mark_read(get_receiver(msg), ok_cb, false)
+        mark_read(receiver, ok_cb, false)
         print("  matches", pattern)
         if desc.run ~= nil then
           -- If plugin is for privileged user
