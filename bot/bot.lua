@@ -80,7 +80,7 @@ function do_action(msg)
     -- print("Trying module", name)
     for k, pattern in pairs(desc.patterns) do
       -- print("Trying", text, "against", pattern)
-      matches = { string.match(text, pattern) }
+      matches = { string.match(text:lower(), pattern) }
       if matches[1] then
         mark_read(receiver, ok_cb, false)
         print("  matches", pattern)
