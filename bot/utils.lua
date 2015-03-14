@@ -365,3 +365,22 @@ function send_document_from_url(receiver, url, cb_function, cb_extra)
   print("File path: "..file_path)
   _send_document(receiver, file_path, cb_function, cb_extra)
 end
+
+-- Parameters in ?a=1&b=2 style
+function format_http_params(params, is_get)
+  local str = ''
+  -- If is get add ? to the beginning
+  if is_get then str = '?' end
+  local first = true -- Frist param
+  for k,v in pairs (params) do
+    if v then -- nil value
+      if first then
+        first = false
+        str = str..k.. "="..v
+      else
+        str = str.."&"..k.. "="..v
+      end
+    end
+  end
+  return str
+end
