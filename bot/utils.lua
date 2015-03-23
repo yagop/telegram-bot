@@ -7,6 +7,25 @@ function get_receiver(msg)
   end
 end
 
+-- Parameters in ?a=1&b=2 style
+function format_http_params(params, is_get)
+  local str = ''
+  -- If is get add ? to the beginning
+  if is_get then str = '?' end
+  local first = true -- Frist param
+  for k,v in pairs (params) do
+    if v then -- nil value
+      if first then
+        first = false
+        str = str..k.. "="..v
+      else
+        str = str.."&"..k.. "="..v
+      end
+    end
+  end
+  return str
+end
+
 function is_chat_msg( msg )
   if msg.to.type == 'chat' then
     return true
