@@ -21,7 +21,7 @@ end
 _values = read_file_values()
 
 
-function place_event(chat, text )
+function what_event(chat, text )
 	eventname,what = string.match(text, "!setwhat (%S+) (.+)")
 	if (eventname == nil) then
 		return "Usage: !setwhat eventname description"
@@ -50,7 +50,7 @@ end
 
 function run(msg, matches)
 	local chat_id = tostring(msg.to.id)
-	local text = place_event(chat_id, msg.text)
+	local text = what_event(chat_id, msg.text)
 	return text
 end
 
