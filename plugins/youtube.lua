@@ -31,8 +31,8 @@ return {
   description = "Sends YouTube info and image.", 
   usage = "",
   patterns = {
-    "youtu.be/([A-Za-z0-9-]+)",
-    "youtube.com/watch%?v=([A-Za-z0-9-]+)",
+    "youtu.be/([_A-Za-z0-9-]+)",
+    "youtube.com/watch%?v=([_A-Za-z0-9-]+)",
   },
   run = run 
 }
