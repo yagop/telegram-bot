@@ -11,7 +11,7 @@ function get_yt_data (yt_code)
   return data
 end
 
-function send_youtube_data(data, receiver, link)
+function send_youtube_data_1(data, receiver, link)
   local title = data.title
   local description = data.description
   local uploader = data.uploader
