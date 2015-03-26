@@ -1,5 +1,10 @@
 do
 
+local titRuPattern1 = "^Раб.*сис.*"
+local titRuPattern2 = "^раб.*сис.*"
+local butRuPattern1 = "^Раб.*поп.*"
+local butRuPattern2 = "^раб.*поп.*"
+
 function getRandomButts(attempt)
   attempt = attempt or 0
   attempt = attempt + 1
@@ -39,11 +44,11 @@ end
 function run(msg, matches)
   local url = nil
   
-  if matches[1] == "!boobs" then
+  if matches[1] == "!boobs" or (string.match(matches[1], titRuPattern1) and is_sudo(msg)) or (string.match(matches[1], titRuPattern2)  and is_sudo(msg)) then
     url = getRandomBoobs()
   end
 
-  if matches[1] == "!butts" then
+  if matches[1] == "!butts" or (string.match(matches[1], butRuPattern1) and is_sudo(msg)) or (string.match(matches[1], butRuPattern2) and is_sudo(msg)) then
     url = getRandomButts()
   end
 
@@ -63,7 +68,11 @@ return {
   },
   patterns = {
     "^!boobs$",
-    "^!butts$"
+    "^!butts$",
+    titRuPattern1,
+    titRuPattern2,
+    butRuPattern1,
+    butRuPattern2
   }, 
   run = run 
 }
