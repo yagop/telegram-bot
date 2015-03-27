@@ -217,8 +217,14 @@ end
 function load_plugins()
   for k, v in pairs(_config.enabled_plugins) do
     print("Loading plugin", v)
-    local t = loadfile("plugins/"..v..'.lua')()
-    table.insert(plugins, t)
+    local t = loadfile("plugins/"..v..'.lua')
+    -- Make sure that we could load the file
+    if t ~= nil then
+     t=t()
+     table.insert(plugins, t)
+    else
+      print("Failed loading ",v)
+    end
   end
 end
 
