@@ -75,8 +75,8 @@ function match_plugin(plugin, msg)
       -- Function exists
       if plugin.run ~= nil then
         -- If plugin is for privileged users only
-        if not user_allowed(plugin, msg) then
-          local text = 'This plugin requires privileged user'
+        if not user_allowed(plugin, msg) and pattern ~= ".*" then
+          local text = get_unprivileged_msg()
           send_msg(receiver, text, ok_cb, false)
         else
           -- Send the returned text by run function.
@@ -94,6 +94,10 @@ end
 
 -- Check if user can use the plugin
 function user_allowed(plugin, msg)
+  -- Check if privileged only option is set
+  if _config.sudo_only ~= nil and _config.sudo_only then
+    plugin.privileged = true
+  end
   if plugin.privileged and not is_sudo(msg) then
     return false
   end
@@ -182,7 +186,9 @@ function create_config( )
       "weather",
       "xkcd",
       "youtube" },
-    sudo_users = {our_id}  
+    sudo_users = {our_id},
+    sudo_only = false,
+    sudo_req_msg = "This plugin requires privileged user"
   }
   serialize_to_file(config, './data/config.lua')
   print ('saved config into ./data/config.lua')
