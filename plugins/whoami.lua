@@ -12,4 +12,3 @@ return {
     patterns = {"^!whoami$"}, 
     run = run 
 }
-
