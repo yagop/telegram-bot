@@ -179,6 +179,17 @@ function is_sudo(msg)
   return var
 end
 
+-- Returns unpriviledged message
+function get_unprivileged_msg()
+  local var = 'This plugin requires privileged user';
+  -- dont let unprivleged users know that there is a telegram-bot
+  -- zero len msg -> zero iterations, no msg
+  if _config.sudo_req_msg ~= nil then
+    var = _config.sudo_req_msg
+  end
+  return var
+end
+
 -- Returns the name of the sender
 function get_name(msg)
   local name = msg.from.first_name
