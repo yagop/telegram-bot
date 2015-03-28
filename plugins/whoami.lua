@@ -1,9 +1,7 @@
 
 function run(msg, matches)
 
-  	if is_sudo(msg) then
-		return get_receiver(msg)
-	end
+	return get_receiver(msg)
 end
 
 return {
