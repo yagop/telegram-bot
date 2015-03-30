@@ -27,7 +27,7 @@ function run(msg, matches)
 		"Весьма сомнительно :\\"
 	}
 
-	return string.format(">%s: %s \n%s", get_name(msg), matches[1], answers[math.random(0, #answers)])
+	return string.format(">%s: %s \n%s", get_name(msg), matches[1], answers[math.random(1, #answers)])
 end
 
 return {

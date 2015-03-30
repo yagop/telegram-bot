@@ -14,7 +14,7 @@ function send_youtube_data(data, receiver)
   local title = data.title
   local description = data.description
   local uploader = data.uploader
-  local text = title..' (by '..uploader..')\n'
+  local text = title..'\n(by '..uploader..')'
   local image_url = data.thumbnail.hqDefault
   local cb_extra = {receiver=receiver, url=image_url}
   send_msg(receiver, text, nil, cb_extra)
