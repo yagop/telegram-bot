@@ -1,15 +1,15 @@
+do
 
 function get_9GAG()
-   b = http.request("http://api-9gag.herokuapp.com/")
-   local gag = json:decode(b)
-   math.randomseed(os.time())
-   i = math.random(#gag) -- random max json table size (# is an operator o.O)
-   local link_image = gag[i].src
-   local title = gag[i].title
-   if link_image:sub(0,2) == '//' then
-      link_image = msg.text:sub(3,-1)
-   end
-   return link_image, title
+  local b = http.request("http://api-9gag.herokuapp.com/")
+  local gag = json:decode(b)
+  local i = math.random(#gag) -- random max json table size (# is an operator o.O)
+  local link_image = gag[i].src
+  local title = gag[i].title
+  if link_image:sub(0,2) == '//' then
+    link_image = msg.text:sub(3,-1)
+  end
+  return link_image, title
 end
 
 function send_title(cb_extra, success, result)
@@ -27,9 +27,10 @@ function run(msg, matches)
 end
 
 return {
-    description = "9GAG for telegram", 
-    usage = "!9gag: Send random image from 9gag",
-    patterns = {"^!9gag$"}, 
-    run = run 
+  description = "9GAG for telegram",
+  usage = "!9gag: Send random image from 9gag",
+  patterns = {"^!9gag$"},
+  run = run
 }
 
+end

@@ -1,8 +1,8 @@
 do
 
 function run(msg, matches)
-  file = download_to_file(matches[1])
-  send_document(get_receiver(msg), file, ok_cb, false)
+  local file = download_to_file(matches[1])
+  local send_document(get_receiver(msg), file, ok_cb, false)
 end
 
 return {

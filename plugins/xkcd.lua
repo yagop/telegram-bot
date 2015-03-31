@@ -1,3 +1,5 @@
+do
+
 function get_last_id()
   local res,code  = https.request("http://xkcd.com/info.0.json")
   if code ~= 200 then return "HTTP ERROR" end
@@ -19,8 +21,7 @@ end
 
 function get_xkcd_random()
   local last = get_last_id()
-  math.randomseed(os.time())
-  i = math.random(1, last)
+  local i = math.random(1, last)
   return get_xkcd(i)
 end
 
@@ -43,12 +44,14 @@ function run(msg, matches)
 end
 
 return {
-    description = "Send comic images from xkcd", 
-    usage = {"!xkcd (id): Send an xkcd image and title. If not id, send a random one"},
-    patterns = {
-      "^!xkcd$",
-      "^!xkcd (%d+)",
-      "xkcd.com/(%d+)"
-    }, 
-    run = run 
+  description = "Send comic images from xkcd", 
+  usage = {"!xkcd (id): Send an xkcd image and title. If not id, send a random one"},
+  patterns = {
+    "^!xkcd$",
+    "^!xkcd (%d+)",
+    "xkcd.com/(%d+)"
+  }, 
+  run = run 
 }
+
+end
