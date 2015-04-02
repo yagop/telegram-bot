@@ -2,7 +2,7 @@ do
 
 function run(msg, matches)
   local file = download_to_file(matches[1])
-  local send_document(get_receiver(msg), file, ok_cb, false)
+  send_document(get_receiver(msg), file, ok_cb, false)
 end
 
 return {
