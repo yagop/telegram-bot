@@ -212,7 +212,7 @@ function load_plugins()
   for k, v in pairs(_config.enabled_plugins) do
     print("Loading plugin", v)
     local t = loadfile("plugins/"..v..'.lua')()
-    table.insert(plugins, t)
+    plugins[v] = t
   end
 end
 
