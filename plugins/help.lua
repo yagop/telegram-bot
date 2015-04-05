@@ -1,5 +1,7 @@
+do
+
 -- Generate an HTML table for GitHub
-function html_help()
+local function html_help()
   local text = [[<table>
     <thead>
       <tr>
@@ -30,14 +32,16 @@ function html_help()
   return text
 end
 
-function has_usage_data(dict)
+-- Returns true if is not empty
+local function has_usage_data(dict)
   if (dict.usage == nil or dict.usage == '') then
     return false
   end
   return true
 end
 
-function plugin_help(name)
+-- Get commands for that plugin
+local function plugin_help(name)
   local plugin = plugins[name]
   if not plugin then return nil end
 
@@ -54,7 +58,7 @@ function plugin_help(name)
 end
 
 -- !help command
-function telegram_help()
+local function telegram_help()
   local text = "Plugin list: \n\n"
   -- Plugins names
   for name in pairs(plugins) do
@@ -66,7 +70,7 @@ function telegram_help()
 end
 
 -- !help all command
-function help_all()
+local function help_all()
   local ret = ""
   for name in pairs(plugins) do
     ret = ret .. plugin_help(name)
@@ -74,7 +78,7 @@ function help_all()
   return ret
 end
 
-function run(msg, matches)
+local function run(msg, matches)
   if matches[1] == "!help" then
     return telegram_help()
   elseif matches[1] == "!help all" then
@@ -102,3 +106,5 @@ return {
   }, 
   run = run 
 }
+
+end
