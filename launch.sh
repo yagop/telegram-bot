@@ -56,7 +56,6 @@ install() {
 }
 
 if [ "$1" = "install" ]; then
-  update
   install
 elif [ "$1" = "update" ]; then
   update
