@@ -1,4 +1,6 @@
-function enable_plugin( filename )
+do
+
+local function enable_plugin( filename )
 	-- Check if plugin is enabled
 	if plugin_enabled(filename) then
 		return 'Plugin '..filename..' is enabled'
@@ -15,7 +17,7 @@ function enable_plugin( filename )
 	end
 end
 
-function disable_plugin( name )
+local function disable_plugin( name )
 	-- Check if plugins exists
 	if not plugin_exists(name) then
 		return 'Plugin '..name..' does not exists'
@@ -31,14 +33,14 @@ function disable_plugin( name )
 	return reload_plugins(true)		
 end
 
-function reload_plugins( )
+local function reload_plugins( )
 	plugins = {}
 	load_plugins()
 	return list_plugins(true)
 end
 
 -- Retruns the key (index) in the config.enabled_plugins table
-function plugin_enabled( name )
+local function plugin_enabled( name )
 	for k,v in pairs(_config.enabled_plugins) do
 		if name == v then
 			return k
@@ -49,7 +51,7 @@ function plugin_enabled( name )
 end
 
 -- Returns true if file exists in plugins folder
-function plugin_exists( name )
+local function plugin_exists( name )
   for k,v in pairs(plugins_names()) do
     if name..'.lua' == v then
       return true
@@ -58,7 +60,7 @@ function plugin_exists( name )
   return false
 end
 
-function list_plugins(only_enabled)
+local function list_plugins(only_enabled)
 	local text = ''
 	for k, v in pairs( plugins_names( )) do
 		--  ✔ enabled, ❌ disabled
@@ -78,7 +80,7 @@ function list_plugins(only_enabled)
 	return text
 end
 
-function run(msg, matches)
+local function run(msg, matches)
 	-- Show the available plugins 
 	if matches[1] == '!plugins' then
 		return list_plugins()
@@ -114,3 +116,5 @@ return {
 	run = run,
 	privileged = true
 }
+
+end
