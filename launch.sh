@@ -44,6 +44,8 @@ install_rocks() {
 }
 
 install() {
+  git pull
+  git submodule update --init --recursive
   cd tg && ./configure && make
   RET=$?; if [ $RET -ne 0 ];
     then echo "Error. Exiting."; exit $RET;
