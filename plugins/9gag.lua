@@ -1,9 +1,12 @@
 do
 
-function get_9GAG()
-  local b = http.request("http://api-9gag.herokuapp.com/")
+local function get_9GAG()
+  local url = "http://api-9gag.herokuapp.com/"
+  local b,c = http.request(url)
+  if c ~= 200 then return nil end
   local gag = json:decode(b)
-  local i = math.random(#gag) -- random max json table size (# is an operator o.O)
+  -- random max json table size
+  local i = math.random(#gag)
   local link_image = gag[i].src
   local title = gag[i].title
   if link_image:sub(0,2) == '//' then
@@ -12,16 +15,16 @@ function get_9GAG()
   return link_image, title
 end
 
-function send_title(cb_extra, success, result)
+local function send_title(cb_extra, success, result)
   if success then
     send_msg(cb_extra[1], cb_extra[2], ok_cb, false)
   end
 end
 
-function run(msg, matches)
+local function run(msg, matches)
   local receiver = get_receiver(msg)
-  url, title = get_9GAG()
-  file_path = download_to_file(url)
+  local url, title = get_9GAG()
+  local file_path = download_to_file(url)
   _send_photo(receiver, file_path, send_title, {receiver, title})
   return false
 end
