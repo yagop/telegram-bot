@@ -1,6 +1,7 @@
+do
 
 function getEURUSD(usd)
-  b = http.request("http://webrates.truefx.com/rates/connect.html?c=EUR/USD&f=csv&s=n")
+  local b = http.request("http://webrates.truefx.com/rates/connect.html?c=EUR/USD&f=csv&s=n")
   local rates = b:split(", ")
   local symbol = rates[1]
   local timestamp = rates[2]
@@ -31,3 +32,4 @@ return {
     run = run 
 }
 
+end

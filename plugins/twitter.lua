@@ -39,9 +39,9 @@ function run(msg, matches)
   -- replace short URLs
   if response.entities.url then
     for k, v in pairs(response.entities.urls) do 
-        local short = v.url
-        local long = v.expanded_url
-        text = text:gsub(short, long)
+      local short = v.url
+      local long = v.expanded_url
+      text = text:gsub(short, long)
     end
   end
   
@@ -49,10 +49,10 @@ function run(msg, matches)
   local images = {}
   if response.extended_entities and response.extended_entities.media then
     for k, v in pairs(response.extended_entities.media) do
-        local url = v.url
-        local pic = v.media_url
-        text = text:gsub(url, "")
-        table.insert(images, pic)
+      local url = v.url
+      local pic = v.media_url
+      text = text:gsub(url, "")
+      table.insert(images, pic)
     end
   end
 
@@ -65,8 +65,10 @@ end
  
 
 return {
-    description = "When user sends twitter URL, send text and images to origin. Requieres OAuth Key.", 
-    usage = "",
-    patterns = {"https://twitter.com/[^/]+/status/([0-9]+)"}, 
-    run = run 
+  description = "When user sends twitter URL, send text and images to origin. Requieres OAuth Key.", 
+  usage = "",
+  patterns = {
+    "https://twitter.com/[^/]+/status/([0-9]+)"
+  }, 
+  run = run 
 }

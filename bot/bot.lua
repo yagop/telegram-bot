@@ -1,6 +1,6 @@
 require("./bot/utils")
 
-VERSION = '0.10.0'
+VERSION = '0.10.1'
 
 -- This function is called when tg receive a msg
 function on_msg_receive (msg)
@@ -212,7 +212,7 @@ function load_plugins()
   for k, v in pairs(_config.enabled_plugins) do
     print("Loading plugin", v)
     local t = loadfile("plugins/"..v..'.lua')()
-    table.insert(plugins, t)
+    plugins[v] = t
   end
 end
 

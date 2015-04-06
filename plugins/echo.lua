@@ -19,4 +19,3 @@ return {
     patterns = {"^!echo (%d) (.*)$"}, 
     run = run 
 }
-

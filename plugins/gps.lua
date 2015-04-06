@@ -1,3 +1,5 @@
+do
+
 function run(msg, matches)
   local lat = matches[1]
   local lon = matches[2]
@@ -17,8 +19,10 @@ function run(msg, matches)
 end
 
 return {
-    description = "generates a map showing the given GPS coordinates", 
-    usage = "!gps latitude,longitude: generates a map showing the given GPS coordinates",
-    patterns = {"^!gps ([^,]*)[,%s]([^,]*)$"}, 
-    run = run 
+  description = "generates a map showing the given GPS coordinates", 
+  usage = "!gps latitude,longitude: generates a map showing the given GPS coordinates",
+  patterns = {"^!gps ([^,]*)[,%s]([^,]*)$"}, 
+  run = run 
 }
+
+end
