@@ -60,13 +60,13 @@ if [ "$1" = "install" ]; then
 elif [ "$1" = "update" ]; then
   update
 else
-  if [ ! -f ./tg/telegram.h ]; then
+  if [ ! -f $THIS_DIR/tg/telegram.h ]; then
     echo "tg not found"
     echo "Run $0 install"
     exit 1
   fi
 
-  if [ ! -f ./tg/bin/telegram-cli ]; then
+  if [ ! -f $THIS_DIR/tg/bin/telegram-cli ]; then
     echo "tg binary not found"
     echo "Run $0 install"
     exit 1
@@ -75,5 +75,5 @@ else
   PREFIX="$THIS_DIR/.luarocks"
   export LUA_CPATH=";;${PREFIX}/lib/lua/5.2/?.so"
   export LUA_PATH=";;${PREFIX}/share/lua/5.2/?.lua;${PREFIX}/share/lua/5.2/?/init.lua"
-  ./tg/bin/telegram-cli -k tg/tg-server.pub -s ./bot/bot.lua -l 1
+  $THIS_DIR/tg/bin/telegram-cli -k $THIS_DIR/tg/tg-server.pub -s $THIS_DIR/bot/bot.lua -l 1
 fi
