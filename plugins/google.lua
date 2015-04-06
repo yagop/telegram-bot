@@ -16,7 +16,7 @@ end
 function stringlinks(results)
   local stringresults=""
   for key,val in ipairs(results) do
-    stringresults=stringresults..val[1].." - "..val[2].."\n"
+    stringresults=stringresults..val[1].."\n"..val[2].."\n"
   end
   return stringresults
 end
