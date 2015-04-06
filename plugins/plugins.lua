@@ -1,44 +1,5 @@
 do
 
-local function enable_plugin( filename )
-	-- Check if plugin is enabled
-	if plugin_enabled(filename) then
-		return 'Plugin '..filename..' is enabled'
-	end
-	-- Checks if plugin exists
-	if plugin_exists(filename) then
-		-- Add to the config table
-		table.insert(_config.enabled_plugins, filename)
-		save_config()
-		-- Reload the plugins
-		return reload_plugins( )
-	else
-		return 'Plugin '..filename..' does not exists'
-	end
-end
-
-local function disable_plugin( name )
-	-- Check if plugins exists
-	if not plugin_exists(name) then
-		return 'Plugin '..name..' does not exists'
-	end
-	local k = plugin_enabled(name)
-	-- Check if plugin is enabled
-	if not k then
-		return 'Plugin '..name..' not enabled'
-	end
-	-- Disable and reload
-	table.remove(_config.enabled_plugins, k)
-	save_config( )
-	return reload_plugins(true)		
-end
-
-local function reload_plugins( )
-	plugins = {}
-	load_plugins()
-	return list_plugins(true)
-end
-
 -- Retruns the key (index) in the config.enabled_plugins table
 local function plugin_enabled( name )
 	for k,v in pairs(_config.enabled_plugins) do
@@ -78,6 +39,46 @@ local function list_plugins(only_enabled)
 		end
 	end
 	return text
+end
+
+local function reload_plugins( )
+	plugins = {}
+	load_plugins()
+	return list_plugins(true)
+end
+
+
+local function enable_plugin( filename )
+	-- Check if plugin is enabled
+	if plugin_enabled(filename) then
+		return 'Plugin '..filename..' is enabled'
+	end
+	-- Checks if plugin exists
+	if plugin_exists(filename) then
+		-- Add to the config table
+		table.insert(_config.enabled_plugins, filename)
+		save_config()
+		-- Reload the plugins
+		return reload_plugins( )
+	else
+		return 'Plugin '..filename..' does not exists'
+	end
+end
+
+local function disable_plugin( name )
+	-- Check if plugins exists
+	if not plugin_exists(name) then
+		return 'Plugin '..name..' does not exists'
+	end
+	local k = plugin_enabled(name)
+	-- Check if plugin is enabled
+	if not k then
+		return 'Plugin '..name..' not enabled'
+	end
+	-- Disable and reload
+	table.remove(_config.enabled_plugins, k)
+	save_config( )
+	return reload_plugins(true)		
 end
 
 local function run(msg, matches)
