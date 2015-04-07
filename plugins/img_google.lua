@@ -11,16 +11,30 @@ function getGoogleImage(text)
     return nil
   end
 
-  -- Google response Ok
-  local i = math.random(#google.responseData.results) -- Random image from results
-  return google.responseData.results[i].url
+  local data = google.responseData
 
+  if not data or not data.results then
+    return nil
+  end
+
+  if #data.results == 0 then
+    return nil
+  end
+
+  -- Random image from table
+  local i = math.random(#data.results)
+  return data.results[i].url
 end
 
 function run(msg, matches)
   local receiver = get_receiver(msg)
-  local text = msg.text:sub(6,-1)
+  local text = matches[1]
   local url = getGoogleImage(text)
+  
+  if not url then
+    return "Error: Image not found"
+  end
+
   print("Image URL: ", url)
   send_photo_from_url(receiver, url)
 end
