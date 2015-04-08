@@ -16,7 +16,10 @@ function send_youtube_data(data, receiver)
   local uploader = data.uploader
   local text = title..' ('..uploader..')\n'..description
   local image_url = data.thumbnail.hqDefault
-  local cb_extra = {receiver=receiver, url=image_url}
+  local cb_extra = {
+    receiver = receiver,
+    url = image_url
+  }
   send_msg(receiver, text, send_photo_from_url_callback, cb_extra)
 end
 
@@ -31,8 +34,8 @@ return {
   description = "Sends YouTube info and image.", 
   usage = "",
   patterns = {
-    "youtu.be/([A-Za-z0-9-]+)",
-    "youtube.com/watch%?v=([A-Za-z0-9-]+)",
+    "youtu.be/([_A-Za-z0-9-]+)",
+    "youtube.com/watch%?v=([_A-Za-z0-9-]+)",
   },
   run = run 
 }

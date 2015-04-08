@@ -105,8 +105,8 @@ return {
   description = "Plugin to update user stats.", 
   usage = "!stats: Returns a list of Username [telegram_id]: msg_num",
   patterns = {
-    ".*",
-    "^!(stats)"
+    "^!(stats)",
+    ".*"
     }, 
   run = run 
 }

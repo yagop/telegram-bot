@@ -6,24 +6,40 @@ do
 local BASE_URL = 'http://api.giphy.com/v1'
 local API_KEY = 'dc6zaTOxFJmzC' -- public beta key
 
-function get_random_top()
-  local res, code = http.request(BASE_URL.."/gifs/trending?api_key="..API_KEY)
-  if code ~= 200 then return nil end
-  local images = json:decode(res).data
+function get_image(response)
+  local images = json:decode(response).data
+  if #images == 0 then return nil end -- No images
   local i = math.random(0,#images)
-  return images[i].images.downsized.url
+  local image =  images[i] -- A random one
+
+  if image.images.downsized then
+    return image.images.downsized.url
+  end
+
+  if image.images.original then
+    return image.original.url
+  end
+
+  return nil
+end
+
+function get_random_top()
+  local url = BASE_URL.."/gifs/trending?api_key="..API_KEY
+  local response, code = http.request(url)
+  if code ~= 200 then return nil end
+  return get_image(response)
 end
 
 function search(text)
-  local res, code = http.request(BASE_URL.."/gifs/search?q="..text.."&api_key="..API_KEY)
-  local images = json:decode(res).data
-  if #images == 0 then return nil end -- No images
-  local i = math.random(0,#images)
-  return images[i].images.downsized.url
+  text = URL.escape(text)
+  local url = BASE_URL.."/gifs/search?q="..text.."&api_key="..API_KEY
+  local response, code = http.request(url)
+  if code ~= 200 then return nil end
+  return get_image(response)
 end
 
 function run(msg, matches)
-  local gif_url = ''
+  local gif_url = nil
   
   -- If no search data, a random trending GIF will be sended
   if matches[1] == "!gif" or matches[1] == "!giphy" then
