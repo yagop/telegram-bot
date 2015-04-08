@@ -2,6 +2,7 @@ telegram-bot
 ============
 
 [![Build Status](https://travis-ci.org/nerdclub-tfg/telegram-bot.svg)](https://travis-ci.org/nerdclub-tfg/telegram-bot)
+
 A Telegram Bot based on plugins using [tg](https://github.com/vysheng/tg).
 
 Multimedia
