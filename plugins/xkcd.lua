@@ -15,7 +15,7 @@ function get_xkcd(id)
   if link_image:sub(0,2) == '//' then
     link_image = msg.text:sub(3,-1)
   end
-  return link_image, data.title
+  return link_image, data.title, data.alt
 end
 
 
@@ -27,31 +27,32 @@ end
 
 function send_title(cb_extra, success, result)
   if success then
-    send_msg(cb_extra[1], cb_extra[2], ok_cb, false)
+    local message = cb_extra[2] .. "\n" .. cb_extra[3]
+    send_msg(cb_extra[1], message, ok_cb, false)
   end
 end
 
 function run(msg, matches)
   local receiver = get_receiver(msg)
   if matches[1] == "!xkcd" then
-    url, title = get_xkcd_random()
+    url, title, alt = get_xkcd_random()
   else
-    url, title = get_xkcd(matches[1])
+    url, title, alt = get_xkcd(matches[1])
   end
   file_path = download_to_file(url)
-  send_photo(receiver, file_path, send_title, {receiver, title})
+  send_photo(receiver, file_path, send_title, {receiver, title, alt})
   return false
 end
 
 return {
-  description = "Send comic images from xkcd", 
+  description = "Send comic images from xkcd",
   usage = {"!xkcd (id): Send an xkcd image and title. If not id, send a random one"},
   patterns = {
     "^!xkcd$",
     "^!xkcd (%d+)",
     "xkcd.com/(%d+)"
-  }, 
-  run = run 
+  },
+  run = run
 }
 
 end
