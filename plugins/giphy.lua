@@ -9,7 +9,7 @@ local API_KEY = 'dc6zaTOxFJmzC' -- public beta key
 function get_image(response)
   local images = json:decode(response).data
   if #images == 0 then return nil end -- No images
-  local i = math.random(1,#images)
+  local i = math.random(#images)
   local image =  images[i] -- A random one
 
   if image.images.downsized then
