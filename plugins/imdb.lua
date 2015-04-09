@@ -16,7 +16,7 @@ function imdb(movie)
     local r = json:decode(response)
     r['Url'] = "http://imdb.com/title/" .. r.imdbID
     local t = ""
-    for k, v in pairs(r) do t = t .. k .. ": " .. v .. ", " end
+    for k, v in pairs(r) do t = t .. k .. ": " .. v .. ".\n" end
     return t:sub(1, -3)
   end
   return nil
