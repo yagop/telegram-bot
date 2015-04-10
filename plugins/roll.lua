@@ -1,11 +1,5 @@
 do
 
-function justWords(str)
-  local t = {}
-  local function helper(word) table.insert(t, word) return "" end
-  if not str:gsub("[%p%w]+", helper):find"%S" then return t end
-end
-
 local ROLL_USAGE = "!roll d<sides>|<count> d<sides>"
 local DEFAULT_SIDES = 100
 local DEFAULT_NUMBER_OF_DICE = 1
