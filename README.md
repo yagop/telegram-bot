@@ -335,6 +335,17 @@ Bot Commands
     </tr>
     <tr>
       <td>
+        roll.lua
+      </td>
+      <td>
+        Roll dice
+      </td>
+      <td>
+        !roll d<sides>|<count> d<sides> 
+      </td>
+    </tr>
+    <tr>
+      <td>
         set.lua
       </td>
       <td>
