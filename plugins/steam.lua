@@ -29,12 +29,16 @@ function send_steam_data(data, receiver)
 --  local title = data.name
   local description = string.sub(unescape(data.about_the_game:gsub("%b<>", "")), 1, DESC_LENTH) .. '...'
   local title = data.name
-  local price = "$"..data.package_groups[1].subs[1].price_in_cents_with_discount/100
-  local percent_savings = data.package_groups[1].subs[1].percent_savings_text
-  if percent_savings == "" then 
-    percent_savings = "0%" 
+  local price = "$"..(data.price_overview.initial/100)
+  local sale_price = "$"..(data.price_overview.final/100)
+  local percent_savings = data.price_overview.discount_percent
+  local price_display = price 
+
+  if percent_savings ~= 0 then 
+    price_display = price.." -> "..sale_price.." ("..percent_savings.."%)" 
   end
-  local text = title..' '..price..' ('..percent_savings..')\n'..description
+
+  local text = title..' '..price_display..'\n'..description
   local image_url = data.screenshots[1].path_full
   local cb_extra = {
     receiver = receiver,
