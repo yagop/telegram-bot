@@ -357,6 +357,14 @@ Bot Commands
     </tr>
     <tr>
       <td>
+        steam.lua
+      </td>
+      <td>
+        Displays preview of store infomration/pricing/screenshot.
+      </td>
+    </tr>
+    <tr>
+      <td>
         time.lua
       </td>
       <td>
