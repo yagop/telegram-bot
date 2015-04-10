@@ -26,7 +26,6 @@ end
 
 
 function send_steam_data(data, receiver)
---  local title = data.name
   local description = string.sub(unescape(data.about_the_game:gsub("%b<>", "")), 1, DESC_LENTH) .. '...'
   local title = data.name
   local price = "$"..(data.price_overview.initial/100)
@@ -39,7 +38,7 @@ function send_steam_data(data, receiver)
   end
 
   local text = title..' '..price_display..'\n'..description
-  local image_url = data.screenshots[1].path_full
+  local image_url = data.header_image
   local cb_extra = {
     receiver = receiver,
     url = image_url
