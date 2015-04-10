@@ -310,6 +310,17 @@ Bot Commands
     </tr>
     <tr>
       <td>
+        rockpaperscissors.lua
+      </td>
+      <td>
+        Rock, Paper, Scissors generator. Settle your telegram arguments like pros.
+      </td>
+      <td>
+        !rps
+      </td>
+    </tr>
+    <tr>
+      <td>
         quotes.lua
       </td>
       <td>
