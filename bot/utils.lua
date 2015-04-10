@@ -57,8 +57,6 @@ function get_http_file_name(url, headers)
   local file_name = url:match("([^/]+)$")
   -- Possible headers names
   local content_type = headers["content-type"] 
-  content_type = content_type or headers["Content-type"]
-  content_type = content_type or h["Content-Type"]
   
   local extension = nil
   if content_type then
