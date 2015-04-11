@@ -362,6 +362,8 @@ Bot Commands
       <td>
         Displays preview of store infomration/pricing/screenshot.
       </td>
+      <td>
+      </td>
     </tr>
     <tr>
       <td>
