@@ -4,6 +4,7 @@ telegram-bot
 [![](https://travis-ci.org/yagop/telegram-bot.svg?branch=master)](https://travis-ci.org/yagop/telegram-bot) 
 
 A Telegram Bot based on plugins using [tg](https://github.com/vysheng/tg).
+Test it on [telegram.me/yago_bot](https://telegram.me/yago_bot)
 
 Multimedia
 ----------
