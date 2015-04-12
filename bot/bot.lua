@@ -34,14 +34,18 @@ function msg_valid(msg)
     print("Not valid, msg from us")
     return false
   end
+  
+  -- Before bot was started
   if msg.date < now then
     print("Not valid, old msg")
     return false
   end
+  
   if msg.unread == 0 then
     print("Not valid, readed")
     return false
   end
+
   return true
 end
 
@@ -158,6 +162,7 @@ function create_config( )
       "location",
       "media",
       "plugins",
+      "channels",
       "set",
       "stats",
       "time",
@@ -165,7 +170,8 @@ function create_config( )
       "weather",
       "xkcd",
       "youtube" },
-    sudo_users = {our_id}  
+    sudo_users = {our_id},
+    disabled_channels = {}
   }
   serialize_to_file(config, './data/config.lua')
   print ('saved config into ./data/config.lua')
