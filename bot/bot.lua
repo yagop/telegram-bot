@@ -47,7 +47,7 @@ function msg_valid(msg)
     print("Disabled channel")
     return false
   end
-  
+
   return true
 end
 
