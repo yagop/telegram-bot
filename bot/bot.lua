@@ -1,6 +1,6 @@
 require("./bot/utils")
 
-VERSION = '0.11.1'
+VERSION = '0.11.2'
 
 -- This function is called when tg receive a msg
 function on_msg_receive (msg)
