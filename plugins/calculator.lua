@@ -9,7 +9,7 @@ return {
   description = "A simple calculator plugin.",
   usage = "!calc [expression]: calculates the mathematical expression",
   patterns = {
-    "^!calc (.*)$"
+    "^!calc ([%w%+%-%*%(%) ^%.%%/]+)$"
   },
   run = run
 }
