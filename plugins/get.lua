@@ -62,19 +62,21 @@ end
 
 function lex(msg)
 
-  local text = msg.text
-  local chat_id = tostring(msg.to.id)
-  local s, e = text:find("%$%a+")
+  if msg.text then
+    local text = msg.text
+    local chat_id = tostring(msg.to.id)
+    local s, e = text:find("%$%a+")
 
-  if s then
-    local var = text:sub(s + 1, e)
-    local value = fetch_value(chat_id, var)
-    
-    if (value == nil) then
-      value = "(unknown value " .. var .. ")"
+    if s then
+      local var = text:sub(s + 1, e)
+      local value = fetch_value(chat_id, var)
+      
+      if (value == nil) then
+        value = "(unknown value " .. var .. ")"
+      end
+
+      msg.text = text:sub(0, s - 1) .. value .. text:sub(e + 1)
     end
-
-    msg.text = text:sub(0, s - 1) .. value .. text:sub(e + 1)
   end
 
   return msg
@@ -87,6 +89,6 @@ return {
       "^!get (%a+)$",
       "^!get$"},
     run = run,
-    lex = lex
+    pre_process = lex
 }
 
