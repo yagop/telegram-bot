@@ -382,3 +382,59 @@ function format_http_params(params, is_get)
   end
   return str
 end
+
+-- Check if user can use the plugin and warns user
+-- Returns true if user was warned and false if not warned (is allowed)
+function warns_user_not_allowed(plugin, msg)
+  if not user_allowed(plugin, msg) then
+    local text = 'This plugin requires privileged user'
+    local receiver = get_receiver(msg)
+    send_msg(receiver, text, ok_cb, false)
+    return true
+  else
+    return false
+  end
+end
+
+-- Check if user can use the plugin
+function user_allowed(plugin, msg)
+  if plugin.privileged and not is_sudo(msg) then
+    return false
+  end
+  return true
+end
+
+-- Same as send_large_msg_callback but frienly params
+function send_large_msg(destination, text)
+  local cb_extra = {
+    destination = destination,
+    text = text
+  }
+  send_large_msg_callback(cb_extra, true)
+end
+
+-- If text is longer than 4096 chars, send multiple msg.
+-- https://core.telegram.org/method/messages.sendMessage
+function send_large_msg_callback(cb_extra, success, result)
+  local text_max = 4096
+
+  local destination = cb_extra.destination
+  local text = cb_extra.text
+  local text_len = string.len(text)
+  local num_msg = math.ceil(text_len / text_max)
+
+  if num_msg <= 1 then
+    send_msg(destination, text, ok_cb, false)
+  else
+
+    local my_text = string.sub(text, 1, 4096)
+    local rest = string.sub(text, 4096, text_len)
+
+    local cb_extra = {
+      destination = destination,
+      text = rest
+    }
+
+    send_msg(destination, my_text, send_large_msg_callback, cb_extra)
+  end
+end

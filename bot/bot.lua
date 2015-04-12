@@ -4,10 +4,12 @@ VERSION = '0.10.1'
 
 -- This function is called when tg receive a msg
 function on_msg_receive (msg)
+  local receiver = get_receiver(msg)
   -- vardump(msg)
   if msg_valid(msg) then
     msg = pre_process_msg(msg)
     match_plugins(msg)
+    mark_read(receiver, ok_cb, false)
   end
 end
 
@@ -62,42 +64,42 @@ function match_plugins(msg)
   end
 end
 
+-- Returns a table whith matches or nil
+function match_pattern(pattern, text)
+  local matches = { string.match(text, pattern) }
+  if next(matches) then
+    return matches
+  end
+  -- nil
+end
+
 function match_plugin(plugin, msg)
   local receiver = get_receiver(msg)
 
   -- Go over patterns. If one matches is enought.
   for k, pattern in pairs(plugin.patterns) do
-    -- print(msg.text, pattern)
-    matches = { string.match(msg.text, pattern) }
-    if matches[1] then
-      mark_read(receiver, ok_cb, false)
-      print("  matches", pattern)
+    local matches = match_pattern(pattern, msg.text)
+    if matches then
+      print("msg matches: ", pattern)
       -- Function exists
-      if plugin.run ~= nil then
+      if plugin.run then
         -- If plugin is for privileged users only
-        if not user_allowed(plugin, msg) then
-          local text = 'This plugin requires privileged user'
-          send_msg(receiver, text, ok_cb, false)
-        else
-          -- Send the returned text by run function.
-          result = plugin.run(msg, matches)
-          if result ~= nil then
-            _send_msg(receiver, result)
+        if not warns_user_not_allowed(plugin, msg) then
+          local result = plugin.run(msg, matches)
+          if result then
+            send_large_msg(receiver, result)
           end
         end
       end
-      -- One matches
+      -- One patterns matches
       return
     end
   end
 end
 
--- Check if user can use the plugin
-function user_allowed(plugin, msg)
-  if plugin.privileged and not is_sudo(msg) then
-    return false
-  end
-  return true
+-- DEPRECATED, use send_large_msg(destination, text)
+function _send_msg(destination, text)
+  send_large_msg(destination, text)
 end
 
 --Apply lex and other text.
@@ -114,22 +116,6 @@ function pre_process_msg(msg)
   msg = do_lex(msg)
 
   return msg
-end
-
--- If text is longer than 4096 chars, send multiple msg.
--- https://core.telegram.org/method/messages.sendMessage
-function _send_msg( destination, text)
-  local msg_text_max = 4096
-  local len = string.len(text)
-  local iterations = math.ceil(len / msg_text_max)
-
-  for i = 1, iterations, 1 do
-    local inital_c = i * msg_text_max - msg_text_max
-    local final_c = i * msg_text_max
-    -- dont worry about if text length < msg_text_max
-    local text_msg = string.sub(text,inital_c,final_c)
-    send_msg(destination, text_msg, ok_cb, false)
-  end
 end
 
 -- Save the content of _config to config.lua
