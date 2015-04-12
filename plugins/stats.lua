@@ -91,7 +91,7 @@ end
 
 local function run(msg, matches)
   if matches[1] == "stats" then
-    if msg.to.type == 'chat' then
+    if msg.to.type == 'chat' or is_sudo(msg) then
       return get_stats_status(msg)
     else
       return 'Stats works only chats'
