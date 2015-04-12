@@ -441,9 +441,11 @@ end
 
 -- Returns a table with matches or nil
 function match_pattern(pattern, text)
-  local matches = { string.match(text, pattern) }
-  if next(matches) then
-    return matches
+  if text then
+    local matches = { string.match(text, pattern) }
+    if next(matches) then
+      return matches
+    end
   end
   -- nil
 end
