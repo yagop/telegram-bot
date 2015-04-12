@@ -98,7 +98,6 @@ local function run(msg, matches)
     end
   else 
     update_user_stats(msg)
-    save_stats()
   end
 end
 
@@ -111,7 +110,8 @@ return {
     "^!(stats)",
     ".*"
     }, 
-  run = run 
+  run = run,
+  cron = save_stats
 }
 
 end
