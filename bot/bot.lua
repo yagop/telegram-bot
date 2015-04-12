@@ -1,6 +1,6 @@
 require("./bot/utils")
 
-VERSION = '0.11.0'
+VERSION = '0.11.1'
 
 -- This function is called when tg receive a msg
 function on_msg_receive (msg)
@@ -59,11 +59,11 @@ end
 -- Go over enabled plugins patterns.
 function match_plugins(msg)
   for name, plugin in pairs(plugins) do
-    match_plugin(plugin, msg)
+    match_plugin(plugin, name, msg)
   end
 end
 
--- Returns a table whith matches or nil
+-- Returns a table with matches or nil
 function match_pattern(pattern, text)
   local matches = { string.match(text, pattern) }
   if next(matches) then
@@ -72,7 +72,26 @@ function match_pattern(pattern, text)
   -- nil
 end
 
-function match_plugin(plugin, msg)
+-- Check if plugin is on _config.disabled_plugin_on_chat table
+local function is_plugin_disabled_on_chat(plugin_name, receiver)
+  local disabled_chats = _config.disabled_plugin_on_chat
+  -- Table exists and chat has disabled plugins
+  if disabled_chats and disabled_chats[receiver] then
+    -- Checks if plugin is disabled on this chat
+    for disabled_plugin,disabled in pairs(disabled_chats[receiver]) do
+      print(disabled_plugin)
+      if disabled_plugin == plugin_name and disabled then
+        local warning = 'Plugin '..disabled_plugin..' is disabled on this chat'
+        print(warning)
+        send_msg(receiver, warning, ok_cb, false)
+        return true
+      end
+    end
+  end
+  return false
+end
+
+function match_plugin(plugin, plugin_name, msg)
   local receiver = get_receiver(msg)
 
   -- Go over patterns. If one matches is enought.
@@ -80,6 +99,10 @@ function match_plugin(plugin, msg)
     local matches = match_pattern(pattern, msg.text)
     if matches then
       print("msg matches: ", pattern)
+
+      if is_plugin_disabled_on_chat(plugin_name, receiver) then
+        return nil
+      end
       -- Function exists
       if plugin.run then
         -- If plugin is for privileged users only
