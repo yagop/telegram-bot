@@ -63,15 +63,6 @@ function match_plugins(msg)
   end
 end
 
--- Returns a table with matches or nil
-function match_pattern(pattern, text)
-  local matches = { string.match(text, pattern) }
-  if next(matches) then
-    return matches
-  end
-  -- nil
-end
-
 -- Check if plugin is on _config.disabled_plugin_on_chat table
 local function is_plugin_disabled_on_chat(plugin_name, receiver)
   local disabled_chats = _config.disabled_plugin_on_chat
