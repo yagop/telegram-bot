@@ -42,6 +42,12 @@ function msg_valid(msg)
     print("Not valid, readed")
     return false
   end
+
+  if is_disabled(msg) then
+    print("Disabled channel")
+    return false
+  end
+  
   return true
 end
 
@@ -158,6 +164,7 @@ function create_config( )
       "location",
       "media",
       "plugins",
+      "channels",
       "set",
       "stats",
       "time",
@@ -165,7 +172,8 @@ function create_config( )
       "weather",
       "xkcd",
       "youtube" },
-    sudo_users = {our_id}  
+    sudo_users = {our_id},
+    disabled_channels = {}
   }
   serialize_to_file(config, './data/config.lua')
   print ('saved config into ./data/config.lua')
