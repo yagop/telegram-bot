@@ -45,12 +45,11 @@ function msg_valid(msg)
   return true
 end
 
-
-function do_lex(msg)
-  -- Plugins which implements lex.
-  for name, plugin in pairs(plugins) do
-    if plugin.lex ~= nil then
-      msg = plugin.lex(msg)
+-- Apply plugin.pre_process function
+function pre_process_msg(msg)
+  for name,plugin in pairs(plugins) do
+    if plugin.pre_process then
+      msg = plugin.pre_process(msg)
     end
   end
 
@@ -100,22 +99,6 @@ end
 -- DEPRECATED, use send_large_msg(destination, text)
 function _send_msg(destination, text)
   send_large_msg(destination, text)
-end
-
---Apply lex and other text.
-function pre_process_msg(msg)
-
-  if msg.text == nil then
-    -- Not a text message, make text the same as what tg shows so
-    -- we can match on it. Maybe a plugin activated my media type.
-    if msg.media ~= nil then
-      msg.text = '['..msg.media.type..']'
-    end
-  end
-
-  msg = do_lex(msg)
-
-  return msg
 end
 
 -- Save the content of _config to config.lua
