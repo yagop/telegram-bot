@@ -31,7 +31,7 @@ local function disable_channel( receiver )
 		_config.disabled_channels = {}
 	end
 	
-	_config.disabled_channels[receiver] = false
+	_config.disabled_channels[receiver] = true
 
 	save_config()
 	return "Channel disabled"

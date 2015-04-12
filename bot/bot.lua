@@ -34,17 +34,15 @@ function msg_valid(msg)
     print("Not valid, msg from us")
     return false
   end
+  
+  -- Before bot was started
   if msg.date < now then
     print("Not valid, old msg")
     return false
   end
+  
   if msg.unread == 0 then
     print("Not valid, readed")
-    return false
-  end
-
-  if is_disabled(msg) then
-    print("Disabled channel")
     return false
   end
 
