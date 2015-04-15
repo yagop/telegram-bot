@@ -1,16 +1,10 @@
 function run(msg, matches)
-
-	-- local g = require "./plugins/google"
-	-- local query = "site:pornhub.com+viewkey+" .. matches[1]
-	-- local new_matches = {query}
-
-	-- return g.run(msg, new_matches)
 	local results = findPorn(matches[1])
 	return results-- build_result(results)
 end
 
 function findPorn(query)
-	local api        = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=site:pornhub.com+viewkey+" .. query:gsub(" ", "+")
+	local api = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=site:pornhub.com+viewkey+" .. query:gsub(" ", "+")
 
 	-- Do the request
 	local res, code = https.request(api)
@@ -18,8 +12,6 @@ function findPorn(query)
 	if code ~=200 then return nil end
 	local data = json:decode(res)
 	local results = data.responseData.results
-
-
 
 	math.randomseed( os.time() )
 	math.random(#results)

@@ -90,12 +90,16 @@ local function get_stats_status( msg )
 end
 
 local function run(msg, matches)
-  if matches[1] == "stats" then -- Hack
-        return get_stats_status(msg)
-  else 
-    print ("update stats")
-    update_user_stats(msg)
-    save_stats()
+  if string.match(get_receiver(msg), "chat.*") or is_sudo(msg) then
+    if matches[1] == "stats" then -- Hack
+          return get_stats_status(msg)
+    else 
+      print ("update stats")
+      update_user_stats(msg)
+      save_stats()
+    end
+  else
+    return nil
   end
 end
 
