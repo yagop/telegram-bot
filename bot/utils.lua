@@ -212,12 +212,18 @@ function file_exists(name)
 end
 
 -- Save into file the data serialized for lua.
-function serialize_to_file(data, file)
+-- Set uglify true to minify the file.
+function serialize_to_file(data, file, uglify)
   file = io.open(file, 'w+')
-  local serialized = serpent.block(data, {
-    comment = false,
-    name = "_"
-  })
+  local serialized
+  if not uglify then
+    serialized = serpent.block(data, {
+        comment = false,
+        name = '_'
+      })
+  else
+    serialized = serpent.dump(data)
+  end
   file:write(serialized)
   file:close()
 end
