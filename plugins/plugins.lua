@@ -114,6 +114,7 @@ local function reenable_plugin_on_chat(receiver, plugin)
   end
 
   _config.disabled_plugin_on_chat[receiver][plugin] = false
+  save_config()
   return 'Plugin '..plugin..' is enabled again'
 end
 
@@ -169,9 +170,9 @@ return {
     "^!plugins$",
     "^!plugins? (enable) ([%w_%.%-]+)$",
     "^!plugins? (disable) ([%w_%.%-]+)$",
-    "^!plugins? (disable) ([%w_%.%-]+) (chat)",
     "^!plugins? (enable) ([%w_%.%-]+) (chat)",
-    "^!plugins? (reload)$" }, 
+    "^!plugins? (disable) ([%w_%.%-]+) (chat)",
+    "^!plugins? (reload)$" },
   run = run,
   privileged = true
 }
