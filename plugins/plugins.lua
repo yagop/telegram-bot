@@ -48,20 +48,22 @@ local function reload_plugins( )
 end
 
 
-local function enable_plugin( filename )
+local function enable_plugin( plugin_name )
+  print('checking if '..plugin_name..' exists')
   -- Check if plugin is enabled
-  if plugin_enabled(filename) then
-    return 'Plugin '..filename..' is enabled'
+  if plugin_enabled(plugin_name) then
+    return 'Plugin '..plugin_name..' is enabled'
   end
   -- Checks if plugin exists
-  if plugin_exists(filename) then
+  if plugin_exists(plugin_name) then
     -- Add to the config table
-    table.insert(_config.enabled_plugins, filename)
+    table.insert(_config.enabled_plugins, plugin_name)
+    print(plugin_name..' added to _config table')
     save_config()
     -- Reload the plugins
     return reload_plugins( )
   else
-    return 'Plugin '..filename..' does not exists'
+    return 'Plugin '..plugin_name..' does not exists'
   end
 end
 
@@ -134,8 +136,9 @@ local function run(msg, matches)
 
   -- Enable a plugin
   if matches[1] == 'enable' then
+    local plugin_name = matches[2]
     print("enable: "..matches[2])
-    return enable_plugin(matches[2])
+    return enable_plugin(plugin_name)
   end
 
   -- Disable a plugin on a chat
