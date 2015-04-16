@@ -55,8 +55,13 @@ function string:trim()
 end
 
 function get_http_file_name(url, headers)
-  -- Everything after the last /
-  local file_name = url:match("([^/]+)$")
+  -- Eg: fooo.var
+  local file_name = url:match("[^%w]+([%.%w]+)$")
+  -- Any delimited aphanumeric on the url
+  file_name = file_name or url:match("[^%w]+(%w+)[^%w]+$")
+  -- Random name, hope content-type works
+  file_name = file_name or str:random(5)
+
   -- Possible headers names
   local content_type = headers["content-type"] 
   
