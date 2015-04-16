@@ -1,6 +1,6 @@
 local _file_values = './data/values.lua'
 
-function read_file_values( )
+local function read_file_values( )
   local f = io.open(_file_values, "r+")
   -- If file doesn't exists
   if f == nil then
@@ -16,7 +16,7 @@ end
 
 _values = read_file_values()
 
-function fetch_value(chat, value_name)
+local function fetch_value(chat, value_name)
   -- Chat non exists
   if _values[chat] == nil then
     return nil
@@ -30,7 +30,7 @@ function fetch_value(chat, value_name)
   return value
 end
 
-function get_value(chat, value_name)
+local function get_value(chat, value_name)
 
   -- If chat values is empty
   if (_values[chat] == nil) then
@@ -52,7 +52,7 @@ function get_value(chat, value_name)
   return value_name.." = "..value
 end
 
-function run(msg, matches)
+local function run(msg, matches)
   local chat_id = tostring(msg.to.id)
   if matches[1] == "!get" then
     return get_value(chat_id, nil)
@@ -60,7 +60,7 @@ function run(msg, matches)
    return get_value(chat_id, matches[1])
 end
 
-function lex(msg)
+local function lex(msg)
 
   if msg.text then
     local text = msg.text
@@ -91,4 +91,3 @@ return {
     run = run,
     pre_process = lex
 }
-
