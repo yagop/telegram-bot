@@ -65,6 +65,23 @@ Bot Commands
     </tr>
     <tr>
       <td>
+        dan.lua
+      </td>
+      <td>
+        Gets a random fresh or popular image from Danbooru
+      </td>
+      <td>
+        !dan - random fresh image. :underage:
+        <br>
+        !dand - random daily popular image. :underage:
+        <br>
+        !danw - random weekly popular image. :underage:
+        <br>
+        !danm - random monthly popular image. :underage:
+      </td>
+    </tr>
+    <tr>
+      <td>
         btc.lua
       </td>
       <td>
