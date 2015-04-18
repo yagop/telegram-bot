@@ -3,3 +3,4 @@ data/
 bot/config.lua
 /telegram-bot.sublime-workspace
 *.sublime-project
+.luarocks

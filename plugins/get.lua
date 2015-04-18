@@ -1,6 +1,6 @@
 local _file_values = './data/values.lua'
 
-function read_file_values( )
+local function read_file_values( )
   local f = io.open(_file_values, "r+")
   -- If file doesn't exists
   if f == nil then
@@ -16,7 +16,7 @@ end
 
 _values = read_file_values()
 
-function fetch_value(chat, value_name)
+local function fetch_value(chat, value_name)
   -- Chat non exists
   if _values[chat] == nil then
     return nil
@@ -30,7 +30,7 @@ function fetch_value(chat, value_name)
   return value
 end
 
-function get_value(chat, value_name)
+local function get_value(chat, value_name)
 
   -- If chat values is empty
   if (_values[chat] == nil) then
@@ -52,7 +52,7 @@ function get_value(chat, value_name)
   return value_name.." = "..value
 end
 
-function run(msg, matches)
+local function run(msg, matches)
   local chat_id = tostring(msg.to.id)
   if matches[1] == "!get" then
     return get_value(chat_id, nil)
@@ -60,21 +60,23 @@ function run(msg, matches)
    return get_value(chat_id, matches[1])
 end
 
-function lex(msg)
+local function lex(msg)
 
-  local text = msg.text
-  local chat_id = tostring(msg.to.id)
-  local s, e = text:find("%$%a+")
+  if msg.text then
+    local text = msg.text
+    local chat_id = tostring(msg.to.id)
+    local s, e = text:find("%$%a+")
 
-  if s then
-    local var = text:sub(s + 1, e)
-    local value = fetch_value(chat_id, var)
-    
-    if (value == nil) then
-      value = "(unknown value " .. var .. ")"
+    if s then
+      local var = text:sub(s + 1, e)
+      local value = fetch_value(chat_id, var)
+      
+      if (value == nil) then
+        value = "(unknown value " .. var .. ")"
+      end
+
+      msg.text = text:sub(0, s - 1) .. value .. text:sub(e + 1)
     end
-
-    msg.text = text:sub(0, s - 1) .. value .. text:sub(e + 1)
   end
 
   return msg
@@ -87,6 +89,5 @@ return {
       "^!get (%a+)$",
       "^!get$"},
     run = run,
-    lex = lex
+    pre_process = lex
 }
-

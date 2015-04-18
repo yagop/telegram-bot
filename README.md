@@ -4,6 +4,7 @@ telegram-bot
 [![](https://travis-ci.org/yagop/telegram-bot.svg?branch=master)](https://travis-ci.org/yagop/telegram-bot) 
 
 A Telegram Bot based on plugins using [tg](https://github.com/vysheng/tg).
+Test it on [telegram.me/yago_bot](https://telegram.me/yago_bot)
 
 Multimedia
 ----------
@@ -353,6 +354,16 @@ Bot Commands
       </td>
       <td>
         !stats: Returns a list of Username [telegram_id]: msg_num
+      </td>
+    </tr>
+    <tr>
+      <td>
+        steam.lua
+      </td>
+      <td>
+        Displays preview of store infomration/pricing/screenshot.
+      </td>
+      <td>
       </td>
     </tr>
     <tr>
