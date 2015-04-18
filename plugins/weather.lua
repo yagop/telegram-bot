@@ -9,7 +9,7 @@ function get_weather(location)
   print("Weather returns", weather)
   local city = weather.name
   local country = weather.sys.country
-  local temp =  city .. ' (' .. country .. ') '
+  local temp =  city .. ' (' .. country .. ')\n'
   temp = temp .. 'Temp: ' .. weather.main.temp .. '°C'
   local conditions = 'Conditions: ' .. weather.weather[1].description
   
@@ -43,7 +43,7 @@ function get_weather(location)
   elseif weather.wind.deg > 348.75 and weather.wind.deg <= 11.25  then wind = wind .. 'N'
   end
 
-  wind = wind .. ' ' .. weather.wind.speed .. "m/s"
+  wind = wind .. ' ' .. weather.wind.speed .. " m/s"
 
   return temp .. '\n' .. conditions .. '\n' .. wind
 end
