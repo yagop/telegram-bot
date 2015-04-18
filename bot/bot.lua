@@ -1,10 +1,16 @@
 require("./bot/utils")
 
-VERSION = '0.11.3'
+VERSION = '0.11.4'
 
 -- This function is called when tg receive a msg
 function on_msg_receive (msg)
+  
+  if not started then
+    return
+  end
+
   local receiver = get_receiver(msg)
+
   -- vardump(msg)
   if msg_valid(msg) then
     msg = pre_process_msg(msg)
@@ -17,7 +23,7 @@ function ok_cb(extra, success, result)
 end
 
 function on_binlog_replay_end()
-  started = 1
+  started = true
   postpone (cron_plugins, false, 60*5.0)
   -- See plugins/ping.lua as an example for cron
 
@@ -31,18 +37,23 @@ end
 function msg_valid(msg)
   -- Dont process outgoing messages
   if msg.out then
-    print("Not valid, msg from us")
+    print("Not valid: msg from us")
     return false
   end
   
   -- Before bot was started
   if msg.date < now then
-    print("Not valid, old msg")
+    print("Not valid: old msg")
     return false
   end
   
   if msg.unread == 0 then
-    print("Not valid, readed")
+    print("Not valid: readed")
+    return false
+  end
+
+  if msg.service then
+    print("Not valid: service")
     return false
   end
 
@@ -222,3 +233,4 @@ end
 our_id = 0
 now = os.time()
 math.randomseed(now)
+started = false
