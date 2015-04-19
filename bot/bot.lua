@@ -37,23 +37,33 @@ end
 function msg_valid(msg)
   -- Dont process outgoing messages
   if msg.out then
-    print("Not valid: msg from us")
+    print('\27[36mNot valid: msg from us\27[39m')
     return false
   end
-  
+
   -- Before bot was started
   if msg.date < now then
-    print("Not valid: old msg")
+    print('\27[36mNot valid: old msg\27[39m')
     return false
   end
-  
+
   if msg.unread == 0 then
-    print("Not valid: readed")
+    print('\27[36mNot valid: readed\27[39m')
     return false
   end
 
   if msg.service then
-    print("Not valid: service")
+    print('\27[36mNot valid: service\27[39m')
+    return false
+  end
+
+  if not msg.to.id then
+    print('\27[36mNot valid: To id not provided\27[39m')
+    return false
+  end
+
+  if not msg.from.id then
+    print('\27[36mNot valid: From id not provided\27[39m')
     return false
   end
 
