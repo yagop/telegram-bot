@@ -462,3 +462,18 @@ function match_pattern(pattern, text)
   end
   -- nil
 end
+
+-- Function to read data from files
+function load_from_file(file)
+  local f = io.open(file, "r+")
+  -- If file doesn't exists
+  if f == nil then
+    -- Create a new empty table
+    serialize_to_file({}, file)
+    print ('Created file', file)
+  else
+    print ('Data loaded from file', file)
+    f:close() 
+  end
+  return loadfile (file)()
+end
