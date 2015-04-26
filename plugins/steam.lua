@@ -2,10 +2,10 @@
 
 do
 
-local BASE_URL = 'http://store.steampowered.com/api/appdetails/?appids='
+local BASE_URL = 'http://store.steampowered.com/api/appdetails/'
 local DESC_LENTH = 200
 
-function unescape(str)
+local function unescape(str)
   str = string.gsub( str, '&lt;', '<' )
   str = string.gsub( str, '&gt;', '>' )
   str = string.gsub( str, '&quot;', '"' )
@@ -16,28 +16,40 @@ function unescape(str)
   return str
 end
 
-function get_steam_data (appid)
-  local url = BASE_URL..appid
+local function get_steam_data (appid)
+  local url = BASE_URL
+  url = url..'?appids='..appid
+  url = url..'&cc=us'
   local res,code  = http.request(url)
   if code ~= 200 then return nil end
   local data = json:decode(res)[appid].data
   return data
 end
 
+local function price_info (data)
+  local price = '' -- If no data is empty
 
-function send_steam_data(data, receiver)
-  local description = string.sub(unescape(data.about_the_game:gsub("%b<>", "")), 1, DESC_LENTH) .. '...'
-  local title = data.name
-  local price = "$"..(data.price_overview.initial/100)
-  local sale_price = "$"..(data.price_overview.final/100)
-  local percent_savings = data.price_overview.discount_percent
-  local price_display = price 
-
-  if percent_savings ~= 0 then 
-    price_display = price.." -> "..sale_price.." ("..percent_savings.."%)" 
+  if data then
+    local initial = data.initial
+    local final = data.final or data.initial
+    local min = math.min(data.initial, data.final)
+    price = tostring(min/100)
+    if data.discount_percent and initial ~= final then
+      price = price..data.currency..' ('..data.discount_percent..'% OFF)'
+    end
+    price = price..' (US)'
   end
 
-  local text = title..' '..price_display..'\n'..description
+  return price
+end
+
+
+local function send_steam_data(data, receiver)
+  local description = string.sub(unescape(data.about_the_game:gsub("%b<>", "")), 1, DESC_LENTH) .. '...'
+  local title = data.name
+  local price = price_info(data.price_overview)
+
+  local text = title..' '..price..'\n'..description
   local image_url = data.header_image
   local cb_extra = {
     receiver = receiver,
@@ -47,7 +59,7 @@ function send_steam_data(data, receiver)
 end
 
 
-function run(msg, matches)
+local function run(msg, matches)
   local appid = matches[1]
   local data = get_steam_data(appid)
   local receiver = get_receiver(msg)
