@@ -335,6 +335,18 @@ Bot Commands
     </tr>
     <tr>
       <td>
+        random.lua
+      </td>
+      <td>
+        Random integer number
+      </td>
+      <td>
+        !random [lower upper]
+        !random: Random number between 1 and 6 (six-sided die)
+      </td>
+    </tr>
+    <tr>
+      <td>
         set.lua
       </td>
       <td>
