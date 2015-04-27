@@ -1,5 +1,5 @@
 
-function run(msg, matches)
+local function run(msg, matches)
   return matches[1]
 end
 

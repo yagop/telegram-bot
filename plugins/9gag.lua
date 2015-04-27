@@ -24,8 +24,7 @@ end
 local function run(msg, matches)
   local receiver = get_receiver(msg)
   local url, title = get_9GAG()
-  local file_path = download_to_file(url)
-  _send_photo(receiver, file_path, send_title, {receiver, title})
+  send_photo_from_url(receiver, url, send_title, {receiver, title})
   return false
 end
 

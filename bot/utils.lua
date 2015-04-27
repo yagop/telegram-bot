@@ -6,6 +6,8 @@ json = (loadfile "./libs/JSON.lua")()
 serpent = (loadfile "./libs/serpent.lua")()
 mimetype = (loadfile "./libs/mimetype.lua")()
 
+http.TIMEOUT = 10
+
 function get_receiver(msg)
   if msg.to.type == 'user' then
     return 'user#id'..msg.from.id
@@ -53,12 +55,15 @@ function string:trim()
 end
 
 function get_http_file_name(url, headers)
-  -- Everything after the last /
-  local file_name = url:match("([^/]+)$")
+  -- Eg: fooo.var
+  local file_name = url:match("[^%w]+([%.%w]+)$")
+  -- Any delimited aphanumeric on the url
+  file_name = file_name or url:match("[^%w]+(%w+)[^%w]+$")
+  -- Random name, hope content-type works
+  file_name = file_name or str:random(5)
+
   -- Possible headers names
   local content_type = headers["content-type"] 
-  content_type = content_type or headers["Content-type"]
-  content_type = content_type or h["Content-Type"]
   
   local extension = nil
   if content_type then
@@ -111,50 +116,16 @@ function download_to_file(url, file_name)
   return file_path
 end
 
-
-function vardump(value, depth, key)
-  local linePrefix = ""
-  local spaces = ""
-  
-  if key ~= nil then
-    linePrefix = "["..key.."] = "
-  end
-  
-  if depth == nil then
-    depth = 0
-  else
-    depth = depth + 1
-    for i=1, depth do spaces = spaces .. "  " end
-  end
-  
-  if type(value) == 'table' then
-    mTable = getmetatable(value)
-    if mTable == nil then
-      print(spaces ..linePrefix.."(table) ")
-    else
-      print(spaces .."(metatable) ")
-        value = mTable
-    end		
-    for tableKey, tableValue in pairs(value) do
-      vardump(tableValue, depth, tableKey)
-    end
-  elseif type(value)	== 'function' or 
-      type(value)	== 'thread' or 
-      type(value)	== 'userdata' or
-      value		== nil
-  then
-    print(spaces..tostring(value))
-  else
-    print(spaces..linePrefix.."("..type(value)..") "..tostring(value))
-  end
+function vardump(value)
+  print(serpent.block(value, {comment=false}))
 end
 
 -- taken from http://stackoverflow.com/a/11130774/3163199
 function scandir(directory)
   local i, t, popen = 0, {}, io.popen
   for filename in popen('ls -a "'..directory..'"'):lines() do
-      i = i + 1
-      t[i] = filename
+    i = i + 1
+    t[i] = filename
   end
   return t
 end
@@ -212,12 +183,18 @@ function file_exists(name)
 end
 
 -- Save into file the data serialized for lua.
-function serialize_to_file(data, file)
+-- Set uglify true to minify the file.
+function serialize_to_file(data, file, uglify)
   file = io.open(file, 'w+')
-  local serialized = serpent.block(data, {
-    comment = false,
-    name = "_"
-  })
+  local serialized
+  if not uglify then
+    serialized = serpent.block(data, {
+        comment = false,
+        name = '_'
+      })
+  else
+    serialized = serpent.dump(data)
+  end
   file:write(serialized)
   file:close()
 end
@@ -383,4 +360,86 @@ function format_http_params(params, is_get)
     end
   end
   return str
+end
+
+-- Check if user can use the plugin and warns user
+-- Returns true if user was warned and false if not warned (is allowed)
+function warns_user_not_allowed(plugin, msg)
+  if not user_allowed(plugin, msg) then
+    local text = 'This plugin requires privileged user'
+    local receiver = get_receiver(msg)
+    send_msg(receiver, text, ok_cb, false)
+    return true
+  else
+    return false
+  end
+end
+
+-- Check if user can use the plugin
+function user_allowed(plugin, msg)
+  if plugin.privileged and not is_sudo(msg) then
+    return false
+  end
+  return true
+end
+
+-- Same as send_large_msg_callback but frienly params
+function send_large_msg(destination, text)
+  local cb_extra = {
+    destination = destination,
+    text = text
+  }
+  send_large_msg_callback(cb_extra, true)
+end
+
+-- If text is longer than 4096 chars, send multiple msg.
+-- https://core.telegram.org/method/messages.sendMessage
+function send_large_msg_callback(cb_extra, success, result)
+  local text_max = 4096
+
+  local destination = cb_extra.destination
+  local text = cb_extra.text
+  local text_len = string.len(text)
+  local num_msg = math.ceil(text_len / text_max)
+
+  if num_msg <= 1 then
+    send_msg(destination, text, ok_cb, false)
+  else
+
+    local my_text = string.sub(text, 1, 4096)
+    local rest = string.sub(text, 4096, text_len)
+
+    local cb_extra = {
+      destination = destination,
+      text = rest
+    }
+
+    send_msg(destination, my_text, send_large_msg_callback, cb_extra)
+  end
+end
+
+-- Returns a table with matches or nil
+function match_pattern(pattern, text)
+  if text then
+    local matches = { string.match(text, pattern) }
+    if next(matches) then
+      return matches
+    end
+  end
+  -- nil
+end
+
+-- Function to read data from files
+function load_from_file(file)
+  local f = io.open(file, "r+")
+  -- If file doesn't exists
+  if f == nil then
+    -- Create a new empty table
+    serialize_to_file({}, file)
+    print ('Created file', file)
+  else
+    print ('Data loaded from file', file)
+    f:close() 
+  end
+  return loadfile (file)()
 end

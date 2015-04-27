@@ -1,6 +1,6 @@
 do
   
-function get_fortunes_uc3m()
+local function get_fortunes_uc3m()
   local i = math.random(0,178) -- max 178
   local web = "http://www.gul.es/fortunes/f"..i
   local b, c, h = http.request(web)
@@ -8,7 +8,7 @@ function get_fortunes_uc3m()
 end
 
 
-function run(msg, matches)
+local function run(msg, matches)
   return get_fortunes_uc3m()
 end
 

@@ -335,6 +335,7 @@ Bot Commands
     </tr>
     <tr>
       <td>
+<<<<<<< HEAD
         random.lua
       </td>
       <td>
@@ -343,6 +344,15 @@ Bot Commands
       <td>
         !random [lower upper]
         !random: Random number between 1 and 6 (six-sided die)
+=======
+        roll.lua
+      </td>
+      <td>
+        Roll dice
+      </td>
+      <td>
+        !roll d<sides>|<count> d<sides> 
+>>>>>>> 689b8115e36afed93aa2dd775cfa744490d59b59
       </td>
     </tr>
     <tr>
@@ -365,6 +375,16 @@ Bot Commands
       </td>
       <td>
         !stats: Returns a list of Username [telegram_id]: msg_num
+      </td>
+    </tr>
+    <tr>
+      <td>
+        steam.lua
+      </td>
+      <td>
+        Displays preview of store infomration/pricing/screenshot.
+      </td>
+      <td>
       </td>
     </tr>
     <tr>
