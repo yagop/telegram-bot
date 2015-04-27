@@ -335,7 +335,6 @@ Bot Commands
     </tr>
     <tr>
       <td>
-<<<<<<< HEAD
         random.lua
       </td>
       <td>
@@ -344,7 +343,10 @@ Bot Commands
       <td>
         !random [lower upper]
         !random: Random number between 1 and 6 (six-sided die)
-=======
+      </td>
+    </tr>
+    <tr>
+      <td>
         roll.lua
       </td>
       <td>
@@ -352,7 +354,6 @@ Bot Commands
       </td>
       <td>
         !roll d<sides>|<count> d<sides> 
->>>>>>> 689b8115e36afed93aa2dd775cfa744490d59b59
       </td>
     </tr>
     <tr>
