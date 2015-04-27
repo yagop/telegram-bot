@@ -31,8 +31,8 @@ end
 
 return {
   description = "Check if a website is up or not.",
-  usage = "/isup <site>: Checks if a website is up or not",
-  patterns = {"^/isup (.*)$"},
+  usage = "!isup <website>: Checks if a website is up or not",
+  patterns = {"^!isup (.*)$"},
   run = run
 }
 
