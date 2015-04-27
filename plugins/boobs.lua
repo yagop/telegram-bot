@@ -1,6 +1,7 @@
 do
 
-function getRandomButts(attempt)
+-- Recursive function
+local function getRandomButts(attempt)
   attempt = attempt or 0
   attempt = attempt + 1
 
@@ -10,7 +11,7 @@ function getRandomButts(attempt)
   local data = json:decode(res)[1]
 
   -- The OpenBoobs API sometimes returns an empty array
-  if not data and attempt < 10 then 
+  if not data and attempt <= 3 then
     print('Cannot get that butts, trying another ones...')
     return getRandomButts(attempt)
   end
@@ -18,7 +19,7 @@ function getRandomButts(attempt)
   return 'http://media.obutts.ru/' .. data.preview
 end
 
-function getRandomBoobs(attempt)
+local function getRandomBoobs(attempt)
   attempt = attempt or 0
   attempt = attempt + 1
 
@@ -36,7 +37,7 @@ function getRandomBoobs(attempt)
   return 'http://media.oboobs.ru/' .. data.preview
 end
 
-function run(msg, matches)
+local function run(msg, matches)
   local url = nil
   
   if matches[1] == "!boobs" then

@@ -90,12 +90,14 @@ local function get_stats_status( msg )
 end
 
 local function run(msg, matches)
-  if matches[1] == "stats" then -- Hack
-        return get_stats_status(msg)
+  if matches[1] == "stats" then
+    if msg.to.type == 'chat' or is_sudo(msg) then
+      return get_stats_status(msg)
+    else
+      return 'Stats works only chats'
+    end
   else 
-    print ("update stats")
     update_user_stats(msg)
-    save_stats()
   end
 end
 
@@ -108,7 +110,8 @@ return {
     "^!(stats)",
     ".*"
     }, 
-  run = run 
+  run = run,
+  cron = save_stats
 }
 
 end

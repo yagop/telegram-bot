@@ -72,9 +72,8 @@ else
     echo "Run $0 install"
     exit 1
   fi
-  
-  PREFIX="$THIS_DIR/.luarocks"
-  export LUA_CPATH=";;${PREFIX}/lib/lua/5.2/?.so"
-  export LUA_PATH=";;${PREFIX}/share/lua/5.2/?.lua;${PREFIX}/share/lua/5.2/?/init.lua"
-  ./tg/bin/telegram-cli -k ./tg/tg-server.pub -s ./bot/bot.lua -l 1
+
+  LUA_PATH=";;.luarocks/share/lua/5.2/?.lua;.luarocks/share/lua/5.2/?/init.lua" \
+    LUA_CPATH=";;.luarocks/lib/lua/5.2/?.so" \
+    ./tg/bin/telegram-cli -k ./tg/tg-server.pub -s ./bot/bot.lua -l 1
 fi
