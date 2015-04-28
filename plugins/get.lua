@@ -1,20 +1,6 @@
 local _file_values = './data/values.lua'
 
-local function read_file_values( )
-  local f = io.open(_file_values, "r+")
-  -- If file doesn't exists
-  if f == nil then
-    -- Create a new empty table
-    print ('Created value file '.._file_values)
-    serialize_to_file({}, _file_values)
-  else
-    print ('Values loaded: '.._file_values)
-    f:close() 
-  end
-  return loadfile (_file_values)()
-end
-
-_values = read_file_values()
+_values = load_from_file(_file_values)
 
 local function fetch_value(chat, value_name)
   -- Chat non exists
@@ -56,8 +42,8 @@ local function run(msg, matches)
   local chat_id = tostring(msg.to.id)
   if matches[1] == "!get" then
     return get_value(chat_id, nil)
-  end  
-   return get_value(chat_id, matches[1])
+  end
+  return get_value(chat_id, matches[1])
 end
 
 local function lex(msg)
@@ -83,11 +69,11 @@ local function lex(msg)
 end
 
 return {
-    description = "Retrieves variables saved with !set", 
-    usage = "!get (value_name): Returns the value_name value.",
-    patterns = {
-      "^!get (%a+)$",
-      "^!get$"},
-    run = run,
-    pre_process = lex
+  description = "Retrieves variables saved with !set", 
+  usage = "!get (value_name): Returns the value_name value.",
+  patterns = {
+    "^!get (%a+)$",
+    "^!get$"},
+  run = run,
+  pre_process = lex
 }
