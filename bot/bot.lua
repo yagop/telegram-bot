@@ -1,6 +1,10 @@
+package.path = package.path .. ';.luarocks/share/lua/5.2/?.lua'
+  ..';.luarocks/share/lua/5.2/?/init.lua'
+package.cpath = package.cpath .. ';.luarocks/lib/lua/5.2/?.so'
+
 require("./bot/utils")
 
-VERSION = '0.11.4'
+VERSION = '0.12.1 (BETA)'
 
 -- This function is called when tg receive a msg
 function on_msg_receive (msg)
