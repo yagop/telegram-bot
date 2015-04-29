@@ -3,8 +3,8 @@
 
 do
 
-local NUM_MSG_MAX = 2
-local TIME_CHECK = 2 -- seconds
+local NUM_MSG_MAX = 5
+local TIME_CHECK = 4 -- seconds
 
 local function get_stats(msg)
   if msg.to.type == 'chat' then
@@ -28,7 +28,7 @@ local function pre_process(msg)
     -- TODO: User id
     redis:zincrby(hash, 1, name)
   end
-  
+
   -- Check flood
   if msg.from.type == 'user' then
     local hash = 'flood:user:'..msg.from.id
