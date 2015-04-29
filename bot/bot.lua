@@ -73,6 +73,17 @@ function msg_valid(msg)
     return false
   end
 
+  if msg.from.id == our_id then
+    print('\27[36mNot valid: Msg from our id\27[39m')
+    return false
+  end
+
+  if msg.to.type == 'encr_chat' then
+    vardump(msg)
+    print('\27[36mNot valid: Encripted chat\27[39m')
+    return false
+  end
+
   return true
 end
 
