@@ -14,8 +14,10 @@ function on_msg_receive (msg)
   -- vardump(msg)
   if msg_valid(msg) then
     msg = pre_process_msg(msg)
-    match_plugins(msg)
-    mark_read(receiver, ok_cb, false)
+    if msg then
+      match_plugins(msg)
+      mark_read(receiver, ok_cb, false)
+    end
   end
 end
 
@@ -73,7 +75,7 @@ end
 -- Apply plugin.pre_process function
 function pre_process_msg(msg)
   for name,plugin in pairs(plugins) do
-    if plugin.pre_process then
+    if plugin.pre_process and msg then
       msg = plugin.pre_process(msg)
     end
   end
