@@ -21,6 +21,14 @@ end
 
 -- Save stats, ban user
 local function pre_process(msg)
+    -- Save stats on Redis
+  if msg and msg.to.type == 'chat' then
+    local name = get_name(msg)
+    local hash = 'chat:'..msg.to.id..':stats'
+    -- TODO: User id
+    redis:zincrby(hash, 1, name)
+  end
+  
   -- Check flood
   if msg.from.type == 'user' then
     local hash = 'flood:user:'..msg.from.id
@@ -31,14 +39,6 @@ local function pre_process(msg)
       msg = nil
     end
     redis:setex(hash, TIME_CHECK, msgs+1)
-  end
-
-  -- Save stats on Redis
-  if msg.to.type == 'chat' then
-    local name = get_name(msg)
-    local hash = 'chat:'..msg.to.id..':stats'
-    -- TODO: User id
-    redis:zincrby(hash, 1, name)
   end
 
   return msg
