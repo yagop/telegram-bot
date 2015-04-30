@@ -6,32 +6,93 @@ do
 local NUM_MSG_MAX = 5
 local TIME_CHECK = 4 -- seconds
 
-local function get_stats(msg)
+local function user_print_name(user)
+  if user.print_name then
+    return user.print_name
+  end
+
+  local text = ''
+  if user.first_name then
+    text = user.last_name..' '
+  end
+  if user.lastname then
+    text = text..user.last_name
+  end
+
+  return text
+end
+
+-- Returns a table with `name` and `msgs`
+local function get_msgs_user_chat(user_id, chat_id)
+  local user_info = {}
+  local uhash = 'user:'..user_id
+  local user = redis:hgetall(uhash)
+  local um_hash = 'msgs:'..user_id..':'..chat_id
+  user_info.msgs = tonumber(redis:get(um_hash) or 0)
+  user_info.name = user_print_name(user)..' ('..user_id..')'
+  return user_info
+end
+
+local function get_msg_num_stats(msg)
   if msg.to.type == 'chat' then
-    local name = get_name(msg)
-    local hash = 'chat:'..msg.to.id..':stats'
-    local stats = redis:zrange(hash, 0, -1, 'withscores')
-    local text = ''
-    for k,v in pairs(stats) do
-      text = text..v[1]..': \t '..v[2]
+    local chat_id = msg.to.id
+    -- Users on chat
+    local hash = 'chat:'..chat_id..':users'
+    local users = redis:smembers(hash)
+    local users_info = {}
+
+    -- Get user info
+    for i = 1, #users do
+      local user_id = users[i]
+      local user_info = get_msgs_user_chat(user_id, chat_id)
+      table.insert(users_info, user_info)
     end
+
+    -- Sort users by msgs number
+    table.sort(users_info, function(a, b) 
+        if a.msgs and b.msgs then
+          return a.msgs > b.msgs
+        end
+      end)
+
+    local text = ''
+    for k,user in pairs(users_info) do
+      text = text..user.name..' => '..user.msgs..'\n'
+    end
+
     return text
   end
 end
 
 -- Save stats, ban user
 local function pre_process(msg)
-    -- Save stats on Redis
+  -- Save user on Redis
+  if msg.from.type == 'user' then
+    local hash = 'user:'..msg.from.id
+    if msg.from.print_name then
+      redis:hset(hash, 'print_name', msg.from.print_name)
+    end
+    if msg.from.first_name then
+      redis:hset(hash, 'first_name', msg.from.first_name)
+    end
+    if msg.from.last_name then
+      redis:hset(hash, 'last_name', msg.from.last_name)
+    end
+  end
+
+  -- Save stats on Redis
   if msg.to.type == 'chat' then
-    local name = get_name(msg)
-    local hash = 'chat:'..msg.to.id..':stats'
-    -- TODO: User id
-    redis:zincrby(hash, 1, name)
+    -- User is on chat
+    local hash = 'chat:'..msg.to.id..':users'
+    redis:sadd(hash, msg.from.id)
+    -- User msgs
+    hash = 'msgs:'..msg.from.id..':'..msg.to.id
+    redis:incr(hash)
   end
 
   -- Check flood
   if msg.from.type == 'user' then
-    local hash = 'flood:user:'..msg.from.id
+    local hash = 'user:'..msg.from.id..':msgs'
     local msgs = tonumber(redis:get(hash) or 0)
     if msgs > NUM_MSG_MAX then
       print('User '..msg.from.id..'is flooding '..msgs)
@@ -44,9 +105,9 @@ local function pre_process(msg)
 end
 
 local function run(msg, matches)
-  if matches[1] == "stats" and is_sudo(msg) then
+  if matches[1] == "stats" then
     if msg.to.type == 'chat' then
-      return get_stats(msg)
+      return get_msg_num_stats(msg)
     else
       return 'Stats works only on chats'
     end
