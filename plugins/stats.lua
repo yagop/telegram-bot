@@ -22,7 +22,7 @@ end
 -- Save stats, ban user
 local function pre_process(msg)
     -- Save stats on Redis
-  if msg and msg.to.type == 'chat' then
+  if msg.to.type == 'chat' then
     local name = get_name(msg)
     local hash = 'chat:'..msg.to.id..':stats'
     -- TODO: User id
@@ -35,7 +35,6 @@ local function pre_process(msg)
     local msgs = tonumber(redis:get(hash) or 0)
     if msgs > NUM_MSG_MAX then
       print('User '..msg.from.id..'is flooding '..msgs)
-      redis:setex(hash, TIME_CHECK, msgs+1)
       msg = nil
     end
     redis:setex(hash, TIME_CHECK, msgs+1)
