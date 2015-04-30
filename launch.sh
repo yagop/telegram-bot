@@ -78,7 +78,5 @@ else
     exit 1
   fi
 
-  LUA_PATH=";;.luarocks/share/lua/5.2/?.lua;.luarocks/share/lua/5.2/?/init.lua" \
-    LUA_CPATH=";;.luarocks/lib/lua/5.2/?.so" \
-    ./tg/bin/telegram-cli -k ./tg/tg-server.pub -s ./bot/bot.lua -l 1 -E
+  ./tg/bin/telegram-cli -k ./tg/tg-server.pub -s ./bot/bot.lua -l 1 -E
 fi
