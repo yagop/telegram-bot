@@ -45,6 +45,7 @@ return {
   usage = "!get (value_name): Returns the value_name value.",
   patterns = {
     "^(!get) (.+)$",
-    "^!get$"},
+    "^!get$"
+  },
   run = run
 }
