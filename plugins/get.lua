@@ -11,10 +11,10 @@ local function list_variables(msg)
   local hash = get_variables_hash(msg)
   
   if hash then
-    local values = redis:hgetall(hash)
+    local names = redis:hkeys(hash)
     local text = ''
-    for k,v in pairs(values) do
-      text = text..k..'\n'
+    for i=1, #names do
+      text = text..names[i]..'\n'
     end
     return text
   end
