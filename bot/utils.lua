@@ -5,6 +5,7 @@ URL = require "socket.url"
 json = (loadfile "./libs/JSON.lua")()
 serpent = (loadfile "./libs/serpent.lua")()
 mimetype = (loadfile "./libs/mimetype.lua")()
+redis = (loadfile "./libs/redis.lua")()
 
 http.TIMEOUT = 10
 
