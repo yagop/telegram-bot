@@ -1,4 +1,4 @@
-telegram-bot 
+telegram-bot
 ============
 
 [![](https://travis-ci.org/yagop/telegram-bot.svg?branch=master)](https://travis-ci.org/yagop/telegram-bot)
@@ -209,7 +209,7 @@ Bot Commands
         help.lua
       </td>
       <td>
-        Help plugin. Get info from other plugins. 
+        Help plugin. Get info from other plugins.
       </td>
       <td>
         !help: Show list of plugins.
@@ -359,7 +359,7 @@ Bot Commands
         Roll dice
       </td>
       <td>
-        !roll d<sides>|<count> d<sides> 
+        !roll d<sides>|<count> d<sides>
       </td>
     </tr>
     <tr>
@@ -440,6 +440,28 @@ Bot Commands
       </td>
       <td>
         !tw [text]: Sends the Tweet with the configured accout.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        tweet.lua
+      </td>
+      <td>
+        Gets the last n tweets or one random from an user with his id or name.
+      </td>
+      <td>
+        !tweet id [id] - Get a random tweet from user with that id.
+        <br>
+        !tweet id [id] last - Get the last tweet from user with that id.
+        <br>
+        !tweet id [id] last [n] - Get the n last tweets from user with that id (maximum 10 tweets)
+        <br>
+        !tweet name [name] - Get a random tweet from user with that name.
+        <br>
+        !tweet name [name] last - Get the last tweet from user with that name.
+        <br>
+        !tweet name [name] last [n] - Get the n last tweets from user with that name (maximum 10 tweets)
+        <br>
       </td>
     </tr>
     <tr>
