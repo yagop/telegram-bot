@@ -23,15 +23,16 @@ local function httpRequest(url)
 end
 
 local function searchYoutubeVideo(text)
-  local base_url = 'http://gdata.youtube.com/feeds/api/'
-  local data = httpRequest(base_url..'videos?max-results=1&alt=json&q='..URL.escape(text))
+  local base_url = 'https://gdata.youtube.com/feeds/api/'
+  local data = httpRequest(base_url..'videos?v=2&alt=jsonc&max-results=1&start-index=2&q='..URL.escape(text))
+
   if not data then
     print("HTTP Error")
     return nil
-  elseif not data.feed.entry then
+  elseif not data.data.items then
     return "YouTube video not found!"
   end
-  return data.feed.entry[1].link[1].href
+  return data.data.items[1].player.default
 end
 
 local function run(msg, matches)
