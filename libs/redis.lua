@@ -1,4 +1,5 @@
 local Redis = require 'redis'
+local FakeRedis = require 'fakeredis'
 
 local params = {
   host = '127.0.0.1',
@@ -17,8 +18,28 @@ Redis.commands.hgetall = Redis.command('hgetall', {
 local redis = nil
 
 -- Won't launch an error if fails
-pcall(function()
+local ok = pcall(function()
   redis = Redis.connect(params)
 end)
+
+if not ok then
+
+  local fake_func = function()
+    print('\27[31mRedis isn\'t installed, install it!\27[39m')
+  end
+
+  fake_func()
+  fake = FakeRedis.new()
+
+  redis = setmetatable({}, {
+  __index = function(a, b)
+    if b ~= 'data' and fake[b] then
+      fake_func(b)
+    end
+    return fake[b] or fake_func
+  end })
+
+end
+
 
 return redis
