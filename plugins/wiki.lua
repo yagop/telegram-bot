@@ -45,10 +45,7 @@ local function wikiSearch(searchTerm, chat)
   if code == 404 then return api.." does not have info about \""..searchTerm.."\"" end 
   if code ~=200 then return "ERROR: "..status end -- "ERROR: "..code..". Status: "..status
   if body == nil then return "ERROR: body = nil" end
-  --return "->"..body
-  --local wikiContent = string.match(body, "<div id%=\"mw%-content%-text\"(.*)<div id=\"printfooter\"")
   local wikiContent = string.match(body, "<div id%=\"mw%-content%-text\".->(.-)<div class=\"printfooter\".->")
-  --local wikiContent = string.match(body, "<p>(.-)</p>")
   if (wikiContent == nil) then return "ERROR: couldn't parse output." end -- return "ERROR: wikiContent = nil"
   wikiContent = string.gsub(wikiContent, "\n", "")
   wikiContent = string.gsub(wikiContent, "<a.->", "")
@@ -67,13 +64,11 @@ local function wikiSearch(searchTerm, chat)
   wikiContent = string.gsub(wikiContent, "<table.->.-</table>", "")
   wikiContent = string.gsub(wikiContent, "<li.->(.-)</li>", " - %1\n")
   wikiContent = string.gsub(wikiContent, "<.->", "")
-
   --wikiContent = string.gsub(wikiContent, "<.->.-</.->", "")
   if string.len(wikiContent) >= 500 then
      wikiContent = string.sub(wikiContent, 1, 500).." [...]"
   end
   wikiContent = wikiContent.."\nLink: "..api..parameters
-  --return string.len(wikiContent)
   return wikiContent
 end
 
