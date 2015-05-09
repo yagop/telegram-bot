@@ -1,4 +1,4 @@
-telegram-bot 
+telegram-bot
 ============
 
 [![](https://travis-ci.org/yagop/telegram-bot.svg?branch=master)](https://travis-ci.org/yagop/telegram-bot)
@@ -100,6 +100,17 @@ Bot Commands
       </td>
       <td>
         /bot bugzilla [bug number]
+      </td>
+    </tr>
+    <tr>
+      <td>
+        channel.lua
+      </td>
+      <td>
+        Enable / disable the bot for a particular chat.
+      </td>
+      <td>
+        !channel (enable/disable)
       </td>
     </tr>
     <tr>
@@ -209,7 +220,7 @@ Bot Commands
         help.lua
       </td>
       <td>
-        Help plugin. Get info from other plugins. 
+        Help plugin. Get info from other plugins.
       </td>
       <td>
         !help: Show list of plugins.
@@ -359,7 +370,18 @@ Bot Commands
         Roll dice
       </td>
       <td>
-        !roll d<sides>|<count> d<sides> 
+        !roll d<sides>|<count> d<sides>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        search_youtube.lua
+      </td>
+      <td>
+        Searchs for a video in Youtube and sends first result back.
+      </td>
+      <td>
+        !youtube [term]: Search for a youtube video and send it.
       </td>
     </tr>
     <tr>
