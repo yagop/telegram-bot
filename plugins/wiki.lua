@@ -1,3 +1,4 @@
+local sudo_required_for_wiki_set = false
 local wiki_plugin_usage = {
    "!wiki [terms]: Searches wiki and send results",
    "!wiki_set [wiki]: sets the wikimedia site for this chat",
@@ -27,24 +28,32 @@ end
 
 
 local function wikiSearch(searchTerm, chat)
-  local api = "http://"..fetch_value(chat).."/"
+  local api = "http://"..fetch_value(chat)
+  if string.sub(api, -1) ~= "/" then api = api.."/" end
   local parameters = (URL.escape(searchTerm) or "")
+  local url = api..parameters
   local http = require("socket.http")
   local respbody = {} 
   local ltn12 = require "ltn12"
   local body, code, headers, status = http.request{
-    url = api..parameters,
+    url = url,
     method = "GET",
     --headers = headers,
     --source = ltn12.source.string(reqBody),
     redirect = true,
     sink = ltn12.sink.table(respbody)
   }
+  --for key, value in pairs (headers) do
+  --  print(key.."->"..value)
+  --end
+  
+  
   local body = table.concat(respbody)
   if (status == nil) then return "ERROR: status = nil" end
   if code == 404 then return api.." does not have info about \""..searchTerm.."\"" end 
   if code ~=200 then return "ERROR: "..status end -- "ERROR: "..code..". Status: "..status
   if body == nil then return "ERROR: body = nil" end
+  local location = headers.location
   local wikiContent = string.match(body, "<div id%=\"mw%-content%-text\".->(.-)<div class=\"printfooter\".->")
   if (wikiContent == nil) then return "ERROR: couldn't parse output." end -- return "ERROR: wikiContent = nil"
   wikiContent = string.gsub(wikiContent, "\n", "")
@@ -68,7 +77,7 @@ local function wikiSearch(searchTerm, chat)
   if string.len(wikiContent) >= 500 then
      wikiContent = string.sub(wikiContent, 1, 500).." [...]"
   end
-  wikiContent = wikiContent.."\nLink: "..api..parameters
+  wikiContent = wikiContent.."\nLink: "..location
   return wikiContent
 end
 
@@ -80,10 +89,10 @@ local function parseText(chat, msg)
   
   local value = string.match(text, "!wiki_set (.*)")
   if (value ~= nil) then
-     if is_sudo(msg) then
-	return save_value(chat, value)
+     if (is_sudo(msg) or (not sudo_required_for_wiki_set)) then
+        return save_value(chat, value)
      else
-	return "You do not have permission!"
+        return "You do not have permission!"
      end
   end
   
