@@ -268,6 +268,18 @@ Bot Commands
     </tr>
     <tr>
       <td>
+        isup.lua
+      </td>
+      <td>
+        Check if a website is up or not
+      </td>
+      <td>
+        !isup [website]
+        <br>
+      </td>
+    </tr>
+    <tr>
+      <td>
         location.lua
       </td>
       <td>
