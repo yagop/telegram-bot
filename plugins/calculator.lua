@@ -23,7 +23,7 @@ end
 
 return {
   description = "Cacluate math expressions with mathjs API",
-  usage = "!cacl [expression]: evaluates the expression and sends the result.",
+  usage = "!calc [expression]: evaluates the expression and sends the result.",
   patterns = {
     "^!calc (.*)$"
   },
