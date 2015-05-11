@@ -22,7 +22,7 @@ local function run(msg, matches)
 end
 
 return {
-  description = "Cacluate math expressions with mathjs API",
+  description = "Calculate math expressions with mathjs API",
   usage = "!calc [expression]: evaluates the expression and sends the result.",
   patterns = {
     "^!calc (.*)$"
