@@ -75,6 +75,11 @@ Bot Commands
       <td>eur.lua</td>
       <td>Realtime EURUSD market price</td>
       <td>!eur [USD]</td>
+      </tr>
+    <tr>
+      <td>expand.lua</td>
+      <td>Expand a shorten URL to the original.</td>
+      <td>!expand [url]</td>
     </tr>
     <tr>
       <td>fortunes_uc3m.lua</td>
@@ -306,6 +311,6 @@ $ sudo stop telegram # To stop it
 
 Contact me
 ------------
-You can contact me [via Telegram](https://telegram.me/yago_perez) but if you have an issue please [open](https://github.com/yagop/telegram-bot/issues) one. 
+You can contact me [via Telegram](https://telegram.me/yago_perez) but if you have an issue please [open](https://github.com/yagop/telegram-bot/issues) one.
 
 [Join](https://telegram.me/joinchat/ALJ3iwFAhOCh4WNUHAyzXQ) on the TelegramBot Discussion Group.
