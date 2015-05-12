@@ -10,7 +10,7 @@ local function run(msg, patterns)
 
    local ok, response_code, response_headers, response_status_line = http.request(request_constructor)
    if ok and response_headers.location then
-      return "Expanded: " .. response_headers.location
+      return " 👍 " .. response_headers.location
    else
       return "Can't expand the url."
    end
