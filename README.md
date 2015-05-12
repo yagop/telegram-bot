@@ -160,6 +160,11 @@ Bot Commands
       <td>minecraft.lua</td>
       <td>Searches Minecraft server and sends info</td>
       <td>!mine [ip]: Searches Minecraft server on specified ip and sends info. Default port: 25565<br>!mine [ip] [port]: Searches Minecraft server on specified ip and port and sends info.<br></td>
+      </tr>
+    <tr>
+      <td>pili.lua</td>
+      <td>Short an URL with pili.la service</td>
+      <td>!pili [url]: Short the url</td>
     </tr>
     <tr>
       <td>plugins.lua</td>
@@ -306,6 +311,6 @@ $ sudo stop telegram # To stop it
 
 Contact me
 ------------
-You can contact me [via Telegram](https://telegram.me/yago_perez) but if you have an issue please [open](https://github.com/yagop/telegram-bot/issues) one. 
+You can contact me [via Telegram](https://telegram.me/yago_perez) but if you have an issue please [open](https://github.com/yagop/telegram-bot/issues) one.
 
 [Join](https://telegram.me/joinchat/ALJ3iwFAhOCh4WNUHAyzXQ) on the TelegramBot Discussion Group.
