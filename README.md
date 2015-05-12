@@ -2,7 +2,6 @@ telegram-bot
 ============
 
 [![](https://travis-ci.org/yagop/telegram-bot.svg?branch=master)](https://travis-ci.org/yagop/telegram-bot)
-[![PayPayl donate button](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=SPWYE8FZ9CP6N&item_name=TelegramBot&currency_code=USD "Donate to this project using Paypal")
 
 A Telegram Bot based on plugins using [tg](https://github.com/vysheng/tg).
 
