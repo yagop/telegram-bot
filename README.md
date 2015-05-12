@@ -247,6 +247,11 @@ Bot Commands
       <td>weather.lua</td>
       <td>weather in that city (Madrid is default)</td>
       <td>!weather (city)</td>
+      </tr>
+    <tr>
+      <td>webshot.lua</td>
+      <td>Take an screenshot of a web.</td>
+      <td>!webshot [url]</td>
     </tr>
     <tr>
       <td>wiki.lua</td>
@@ -306,6 +311,6 @@ $ sudo stop telegram # To stop it
 
 Contact me
 ------------
-You can contact me [via Telegram](https://telegram.me/yago_perez) but if you have an issue please [open](https://github.com/yagop/telegram-bot/issues) one. 
+You can contact me [via Telegram](https://telegram.me/yago_perez) but if you have an issue please [open](https://github.com/yagop/telegram-bot/issues) one.
 
 [Join](https://telegram.me/joinchat/ALJ3iwFAhOCh4WNUHAyzXQ) on the TelegramBot Discussion Group.
