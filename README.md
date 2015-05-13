@@ -287,8 +287,8 @@ Bot Commands
       <td>
         Retrieves METAR and optionally taf messages and decodes them
       </td>
-        !metar [taf] stationcode
       <td>
+        !metar [taf] stationcode
       </td>
     </tr>
     <tr>
