@@ -5,6 +5,7 @@ URL = require "socket.url"
 json = (loadfile "./libs/JSON.lua")()
 serpent = (loadfile "./libs/serpent.lua")()
 mimetype = (loadfile "./libs/mimetype.lua")()
+redis = (loadfile "./libs/redis.lua")()
 
 http.TIMEOUT = 10
 
@@ -430,12 +431,13 @@ function match_pattern(pattern, text)
 end
 
 -- Function to read data from files
-function load_from_file(file)
+function load_from_file(file, default_data)
   local f = io.open(file, "r+")
   -- If file doesn't exists
   if f == nil then
     -- Create a new empty table
-    serialize_to_file({}, file)
+    default_data = default_data or {}
+    serialize_to_file(default_data, file)
     print ('Created file', file)
   else
     print ('Data loaded from file', file)

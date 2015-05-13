@@ -1,4 +1,4 @@
-telegram-bot 
+telegram-bot
 ============
 
 [![Build Status](https://travis-ci.org/nerdclub-tfg/telegram-bot.svg)](https://travis-ci.org/nerdclub-tfg/telegram-bot)
@@ -19,266 +19,146 @@ Bot Commands
 <table>
   <thead>
     <tr>
-      <td>
-        <strong>
-          Name
-        </strong>
-      </td>
-      <td>
-        <strong>
-          Description
-        </strong>
-      </td>
-      <td>
-        <strong>
-          Usage
-        </strong>
-      </td>
+      <td><strong>Name</strong></td>
+      <td><strong>Description</strong></td>
+      <td><strong>Usage</strong></td>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>
-        9gag.lua
-      </td>
-      <td>
-        9GAG for telegram
-      </td>
-      <td>
-        !9gag: Send random image from 9gag
-      </td>
+      <td>9gag.lua</td>
+      <td>9GAG for telegram</td>
+      <td>!9gag: Send random image from 9gag</td>
     </tr>
     <tr>
-      <td>
-        boobs.lua
-      </td>
-      <td>
-        Gets a random boobs or butts pic
-      </td>
-      <td>
-        !boobs: Get a boobs NSFW image. :underage:
-        <br>
-        !butts: Get a butts NSFW image. :underage:
-        <br>
-      </td>
+      <td>boobs.lua</td>
+      <td>Gets a random boobs or butts pic</td>
+      <td>!boobs: Get a boobs NSFW image. :underage:<br>!butts: Get a butts NSFW image. :underage:<br></td>
     </tr>
     <tr>
-      <td>
-        btc.lua
-      </td>
-      <td>
-        Bitcoin global average market value (in EUR or USD)
-      </td>
-      <td>
-        !btc [EUR|USD] [amount]
-      </td>
+      <td>btc.lua</td>
+      <td>Bitcoin global average market value (in EUR or USD)</td>
+      <td>!btc [EUR|USD] [amount]</td>
     </tr>
     <tr>
-      <td>
-        bugzilla.lua
-      </td>
-      <td>
-        Lookup bugzilla status update
-      </td>
-      <td>
-        /bot bugzilla [bug number]
-      </td>
+      <td>bugzilla.lua</td>
+      <td>Lookup bugzilla status update</td>
+      <td>/bot bugzilla [bug number]</td>
     </tr>
     <tr>
-      <td>
-        echo.lua
-      </td>
-      <td>
-        Simplest plugin ever!
-      </td>
-      <td>
-        !echo [whatever]: echoes the msg
-      </td>
+      <td>calculator.lua</td>
+      <td>Cacluate math expressions with mathjs API</td>
+      <td>!calc [expression]: evaluates the expression and sends the result.</td>
     </tr>
     <tr>
-      <td>
-        eur.lua
-      </td>
-      <td>
-        EURUSD market value
-      </td>
-      <td>
-        !eur [USD]
-      </td>
+      <td>channels.lua</td>
+      <td>Plugin to manage channels. Enable or disable channel.</td>
+      <td>!channel enable: enable current channel<br>!channel disable: disable current channel<br></td>
     </tr>
     <tr>
-      <td>
-        fortunes_uc3m.lua
-      </td>
-      <td>
-        Fortunes from Universidad Carlos III
-      </td>
-      <td>
-        !uc3m
-      </td>
+      <td>danbooru.lua</td>
+      <td>Gets a random fresh or popular image from Danbooru</td>
+      <td>!danbooru - gets a random fresh image from Danbooru :underage:<br>!danboorud - random daily popular image :underage:<br>!danbooruw - random weekly popular image :underage:<br>!danboorum - random monthly popular image :underage:<br></td>
     </tr>
     <tr>
-      <td>
-        get.lua
-      </td>
-      <td>
-        Retrieves variables saved with !set
-      </td>
-      <td>
-        !get (value_name): Returns the value_name value.
-      </td>
+      <td>download_media.lua</td>
+      <td>When bot receives a media msg, download the media.</td>
+      <td></td>
     </tr>
     <tr>
-      <td>
-        giphy.lua
-      </td>
-      <td>
-        GIFs from telegram with Giphy API
-      </td>
-      <td>
-        !gif (term): Search and sends GIF from Giphy. If no param, sends a trending GIF.
-        <br>
-        !giphy (term): Search and sends GIF from Giphy. If no param, sends a trending GIF.
-        <br>
-      </td>
+      <td>echo.lua</td>
+      <td>Simplest plugin ever!</td>
+      <td>!echo [whatever]: echoes the msg</td>
     </tr>
     <tr>
-      <td>
-        google.lua
-      </td>
-      <td>
-        Searches Google and send results
-      </td>
-      <td>
-        !google [terms]: Searches Google and send results
-      </td>
+      <td>eur.lua</td>
+      <td>Realtime EURUSD market price</td>
+      <td>!eur [USD]</td>
+      </tr>
+    <tr>
+      <td>expand.lua</td>
+      <td>Expand a shorten URL to the original.</td>
+      <td>!expand [url]</td>
     </tr>
     <tr>
-      <td>
-        gps.lua
-      </td>
-      <td>
-        generates a map showing the given GPS coordinates
-      </td>
-      <td>
-        !gps latitude,longitude: generates a map showing the given GPS coordinates
-      </td>
+      <td>fortunes_uc3m.lua</td>
+      <td>Fortunes from Universidad Carlos III</td>
+      <td>!uc3m</td>
     </tr>
     <tr>
-      <td>
-        hackernews.lua
-      </td>
-      <td>
-        Show top 5 hacker news (ycombinator.com)
-      </td>
-      <td>
-        !hackernews
-      </td>
+      <td>get.lua</td>
+      <td>Retrieves variables saved with !set</td>
+      <td>!get (value_name): Returns the value_name value.</td>
     </tr>
     <tr>
-      <td>
-        hello.lua
-      </td>
-      <td>
-        Says hello to someone
-      </td>
-      <td>
-        say hello to [name]
-      </td>
+      <td>giphy.lua</td>
+      <td>GIFs from telegram with Giphy API</td>
+      <td>!gif (term): Search and sends GIF from Giphy. If no param, sends a trending GIF.<br>!giphy (term): Search and sends GIF from Giphy. If no param, sends a trending GIF.<br></td>
     </tr>
     <tr>
-      <td>
-        help.lua
-      </td>
-      <td>
-        Help plugin. Get info from other plugins. 
-      </td>
-      <td>
-        !help: Show list of plugins.
-        <br>
-        !help all: Show all commands for every plugin.
-        <br>
-        !help [plugin name]: Commands for that plugin.
-        <br>
-      </td>
+      <td>google.lua</td>
+      <td>Searches Google and send results</td>
+      <td>!google [terms]: Searches Google and send results</td>
     </tr>
     <tr>
-      <td>
-        images.lua
-      </td>
-      <td>
-        When user sends image URL (ends with png, jpg, jpeg) download and send it to origin.
-      </td>
-      <td>
-      </td>
+      <td>gps.lua</td>
+      <td>generates a map showing the given GPS coordinates</td>
+      <td>!gps latitude,longitude: generates a map showing the given GPS coordinates</td>
     </tr>
     <tr>
-      <td>
-        imdb.lua
-      </td>
-      <td>
-        Imdb plugin for telegram
-      </td>
-      <td>
-        !imdb [movie]
-      </td>
+      <td>hackernews.lua</td>
+      <td>Show top 5 hacker news (ycombinator.com)</td>
+      <td>!hackernews</td>
     </tr>
     <tr>
-      <td>
-        img_google.lua
-      </td>
-      <td>
-        Search image with Google API and sends it.
-      </td>
-      <td>
-        !img [term]: Random search an image with Google API.
-      </td>
+      <td>hello.lua</td>
+      <td>Says hello to someone</td>
+      <td>say hello to [name]</td>
     </tr>
     <tr>
-      <td>
-        invite.lua
-      </td>
-      <td>
-        Invite other user to the chat group
-      </td>
-      <td>
-        !invite name [user_name]
-        <br>
-        !invite id [user_id]
-        <br>
-      </td>
+      <td>help.lua</td>
+      <td>Help plugin. Get info from other plugins. </td>
+      <td>!help: Show list of plugins.<br>!help all: Show all commands for every plugin.<br>!help [plugin name]: Commands for that plugin.<br></td>
     </tr>
     <tr>
-      <td>
-        location.lua
-      </td>
-      <td>
-        Gets information about a location, maplink and overview
-      </td>
-      <td>
-        !loc (location): Gets information about a location, maplink and overview
-      </td>
+      <td>images.lua</td>
+      <td>When user sends image URL (ends with png, jpg, jpeg) download and send it to origin.</td>
+      <td></td>
     </tr>
     <tr>
-      <td>
-        magic8ball.lua
-      </td>
-      <td>
-        Magic 8Ball
-      </td>
-      <td>
-        !magic8ball
-      </td>
+      <td>imdb.lua</td>
+      <td>Imdb plugin for telegram</td>
+      <td>!imdb [movie]</td>
     </tr>
     <tr>
-      <td>
-        media.lua
-      </td>
-      <td>
-        When user sends media URL (ends with gif, mp4, pdf, etc.) download and send it to origin.
-      </td>
-      <td>
-      </td>
+      <td>img_google.lua</td>
+      <td>Search image with Google API and sends it.</td>
+      <td>!img [term]: Random search an image with Google API.</td>
+    </tr>
+    <tr>
+      <td>invite.lua</td>
+      <td>Invite other user to the chat group</td>
+      <td>!invite name [user_name]<br>!invite id [user_id]<br></td>
+    </tr>
+    <tr>
+      <td>isup.lua</td>
+      <td>Check if a website or server is up.</td>
+      <td>!isup [host]: Performs a HTTP request or Socket (ip:port) connexion<br>!isup cron [host]: Every 5mins check if host is up. (Requires privileged user)<br>!isup cron delete [host]: Disable checking that host.<br></td>
+    </tr>
+    <tr>
+      <td>location.lua</td>
+      <td>Gets information about a location, maplink and overview</td>
+      <td>!loc (location): Gets information about a location, maplink and overview</td>
+    </tr>
+    <tr>
+      <td>magic8ball.lua</td>
+      <td>Magic 8Ball</td>
+      <td>!magic8ball</td>
+    </tr>
+    <tr>
+      <td>media.lua</td>
+      <td>When user sends media URL (ends with gif, mp4, pdf, etc.) download and send it to origin.</td>
+      <td></td>
     </tr>
     <tr>
       <td>
@@ -292,6 +172,11 @@ Bot Commands
       </td>
     </tr>
     <tr>
+      <td>minecraft.lua</td>
+      <td>Searches Minecraft server and sends info</td>
+      <td>!mine [ip]: Searches Minecraft server on specified ip and sends info. Default port: 25565<br>!mine [ip] [port]: Searches Minecraft server on specified ip and port and sends info.<br></td>
+    </tr>
+    <tr>
       <td>
         ping.lua
       </td>
@@ -302,47 +187,19 @@ Bot Commands
       </td>
     </tr>
     <tr>
-      <td>
-        plugins.lua
-      </td>
-      <td>
-        Plugin to manage other plugins. Enable, disable or reload.
-      </td>
-      <td>
-        !plugins: list all plugins
-        <br>
-        !plugins enable [plugin]: enable plugin
-        <br>
-        !plugins disable [plugin]: disable plugin
-        <br>
-        !plugins reeload: reloads all plugins
-        <br>
-      </td>
+      <td>plugins.lua</td>
+      <td>Plugin to manage other plugins. Enable, disable or reload.</td>
+      <td>!plugins: list all plugins.<br>!plugins enable [plugin]: enable plugin.<br>!plugins disable [plugin]: disable plugin.<br>!plugins disable [plugin] chat: disable plugin only this chat.<br>!plugins reload: reloads all plugins.<br></td>
     </tr>
     <tr>
-      <td>
-        quotes.lua
-      </td>
-      <td>
-        Quote plugin, you can create and retrieves random quotes
-      </td>
-      <td>
-        !addquote [msg]
-        <br>
-        !quote
-        <br>
-      </td>
+      <td>quotes.lua</td>
+      <td>Quote plugin, you can create and retrieves random quotes</td>
+      <td>!addquote [msg]<br>!quote<br></td>
     </tr>
     <tr>
-      <td>
-        rae.lua
-      </td>
-      <td>
-        Spanish dictionary
-      </td>
-      <td>
-        !rae [word]: Search that word in Spanish dictionary.
-      </td>
+      <td>rae.lua</td>
+      <td>Spanish dictionary</td>
+      <td>!rae [word]: Search that word in Spanish dictionary.</td>
     </tr>
     <tr>
       <td>
@@ -357,155 +214,91 @@ Bot Commands
       </td>
     </tr>
     <tr>
+      <td>roll.lua</td>
+      <td>Roll some dice!</td>
       <td>
-        roll.lua
-      </td>
-      <td>
-        Roll dice
-      </td>
-      <td>
-        !roll d<sides>|<count> d<sides> 
-      </td>
-    </tr>
-    <tr>
-      <td>
-        set.lua
-      </td>
-      <td>
-        Plugin for saving values. get.lua plugin is necesary to retrieve them.
-      </td>
-      <td>
-        !set [value_name] [data]: Saves the data with the value_name name.
+        !roll d
+        <sides>
+        |
+        <count>
+        d
+        <sides>
       </td>
     </tr>
     <tr>
-      <td>
-        stats.lua
-      </td>
-      <td>
-        Plugin to update user stats.
-      </td>
-      <td>
-        !stats: Returns a list of Username [telegram_id]: msg_num
-      </td>
+      <td>search_youtube.lua</td>
+      <td>Search video on youtube and send it.</td>
+      <td>!youtube [term]: Search for a youtube video and send it.</td>
     </tr>
     <tr>
-      <td>
-        steam.lua
-      </td>
-      <td>
-        Displays preview of store infomration/pricing/screenshot.
-      </td>
-      <td>
-      </td>
+      <td>set.lua</td>
+      <td>Plugin for saving values. get.lua plugin is necesary to retrieve them.</td>
+      <td>!set [value_name] [data]: Saves the data with the value_name name.</td>
     </tr>
     <tr>
-      <td>
-        time.lua
-      </td>
-      <td>
-        Displays the local time in an area
-      </td>
-      <td>
-        !time [area]: Displays the local time in that area
-      </td>
+      <td>stats.lua</td>
+      <td>Plugin to update user stats.</td>
+      <td>!stats: Returns a list of Username [telegram_id]: msg_num</td>
     </tr>
     <tr>
-      <td>
-        translate.lua
-      </td>
-      <td>
-        Translate some text
-      </td>
-      <td>
-        !translate text. Translate to english the text.
-        <br>
-        !translate target_lang text.
-        <br>
-        !translate source,target text
-        <br>
-      </td>
+      <td>steam.lua</td>
+      <td>Grabs Steam info for Steam links.</td>
+      <td></td>
     </tr>
     <tr>
-      <td>
-        twitter.lua
-      </td>
-      <td>
-        When user sends twitter URL, send text and images to origin. Requieres OAuth Key.
-      </td>
-      <td>
-      </td>
+      <td>time.lua</td>
+      <td>Displays the local time in an area</td>
+      <td>!time [area]: Displays the local time in that area</td>
     </tr>
     <tr>
-      <td>
-        twitter_send.lua
-      </td>
-      <td>
-        Sends a tweet
-      </td>
-      <td>
-        !tw [text]: Sends the Tweet with the configured accout.
-      </td>
+      <td>translate.lua</td>
+      <td>Translate some text</td>
+      <td>!translate text. Translate to english the text.<br>!translate target_lang text.<br>!translate source,target text<br></td>
     </tr>
     <tr>
-      <td>
-        version.lua
-      </td>
-      <td>
-        Shows bot version
-      </td>
-      <td>
-        !version: Shows bot version
-      </td>
+      <td>tweet.lua</td>
+      <td>Random tweew from user</td>
+      <td>!tweet id [id]: Get a random tweet from the user with that ID<br>!tweet id [id] last: Get a random tweet from the user with that ID<br>!tweet name [name]: Get a random tweet from the user with that name<br>!tweet name [name] last: Get a random tweet from the user with that name<br></td>
     </tr>
     <tr>
-      <td>
-        vote.lua
-      </td>
-      <td>
-        Plugin for voting in groups.
-      </td>
-      <td>
-        !voting reset: Reset all the votes.
-        <br>
-        !vote [number]: Cast the vote.
-        <br>
-        !voting stats: Shows the statistics of voting.
-        <br>
-      </td>
+      <td>twitter.lua</td>
+      <td>When user sends twitter URL, send text and images to origin. Requieres OAuth Key.</td>
+      <td></td>
     </tr>
     <tr>
-      <td>
-        weather.lua
-      </td>
-      <td>
-        weather in that city (Madrid is default)
-      </td>
-      <td>
-        !weather (city)
-      </td>
+      <td>twitter_send.lua</td>
+      <td>Sends a tweet</td>
+      <td>!tw [text]: Sends the Tweet with the configured accout.</td>
     </tr>
     <tr>
-      <td>
-        xkcd.lua
-      </td>
-      <td>
-        Send comic images from xkcd
-      </td>
-      <td>
-        !xkcd (id): Send an xkcd image and title. If not id, send a random one
-        <br>
-      </td>
+      <td>version.lua</td>
+      <td>Shows bot version</tdd>
+      <td>!version: Shows bot version</td>
     </tr>
     <tr>
-      <td>
-        youtube.lua
-      </td>
-      <td>
-        Sends YouTube info and image.
-      </td>
-      <td>
-      </td>
+      <td>vote.lua</td>
+      <td>Plugin for voting in groups.</td>
+      <td>!voting reset: Reset all the votes.<br>!vote [number]: Cast the vote.<br>!voting stats: Shows the statistics of voting.<br></td>
+    </tr>
+    <tr>
+      <td>weather.lua</td>
+      <td>weather in that city (Madrid is default)</td>
+      <td>!weather (city)</td>
+    </tr>
+    <tr>
+      <td>wiki.lua</td>
+      <td>Searches Wikipedia and send results</td>
+      <td>!wiki [terms]: Searches wiki and send results<br>!wiki_set [wiki]: sets the wikimedia site for this chat<br>!wiki_get: gets the current wikimedia site<br></td>
+    </tr>
+    <tr>
+      <td>xkcd.lua</td>
+      <td>Send comic images from xkcd</td>
+      <td>!xkcd (id): Send an xkcd image and title. If not id, send a random one<br></td>
+    </tr>
+    <tr>
+      <td>youtube.lua</td>
+      <td>Sends YouTube info and image.</td>
+      <td></td>
     </tr>
   </tbody>
 </table>
@@ -514,7 +307,7 @@ Installation
 ------------
 ```bash
 # Tested on Ubuntu 14.04, for other OSs check out https://github.com/vysheng/tg#installation
-sudo apt-get install libreadline-dev libconfig-dev libssl-dev lua5.2 liblua5.2-dev libevent-dev make unzip git
+sudo apt-get install libreadline-dev libconfig-dev libssl-dev lua5.2 liblua5.2-dev libevent-dev make unzip git redis-server
 ```
 
 ```bash
@@ -551,3 +344,5 @@ $ sudo stop telegram # To stop it
 Contact me
 ------------
 You can contact me [via Telegram](https://telegram.me/yago_perez) but if you have an issue please [open](https://github.com/yagop/telegram-bot/issues) one.
+
+[Join](https://telegram.me/joinchat/ALJ3iwFAhOCh4WNUHAyzXQ) on the TelegramBot Discussion Group.

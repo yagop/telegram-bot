@@ -1,6 +1,10 @@
+package.path = package.path .. ';.luarocks/share/lua/5.2/?.lua'
+  ..';.luarocks/share/lua/5.2/?/init.lua'
+package.cpath = package.cpath .. ';.luarocks/lib/lua/5.2/?.so'
+
 require("./bot/utils")
 
-VERSION = '0.11.4'
+VERSION = '0.12.1'
 
 -- This function is called when tg receive a msg
 function on_msg_receive (msg)
@@ -14,8 +18,10 @@ function on_msg_receive (msg)
   -- vardump(msg)
   if msg_valid(msg) then
     msg = pre_process_msg(msg)
-    match_plugins(msg)
-    mark_read(receiver, ok_cb, false)
+    if msg then
+      match_plugins(msg)
+      mark_read(receiver, ok_cb, false)
+    end
   end
 end
 
@@ -72,13 +78,24 @@ function msg_valid(msg)
     return false
   end
 
+  if msg.from.id == our_id then
+    print('\27[36mNot valid: Msg from our id\27[39m')
+    return false
+  end
+
+  if msg.to.type == 'encr_chat' then
+    vardump(msg)
+    print('\27[36mNot valid: Encripted chat\27[39m')
+    return false
+  end
+
   return true
 end
 
 -- Apply plugin.pre_process function
 function pre_process_msg(msg)
   for name,plugin in pairs(plugins) do
-    if plugin.pre_process then
+    if plugin.pre_process and msg then
       msg = plugin.pre_process(msg)
     end
   end
