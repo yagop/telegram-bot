@@ -1,9 +1,7 @@
 do
 
-function imdb(movie)
+local function imdb(movie)
   local http = require("socket.http")
-  http.TIMEOUT = 5
-
   local movie = movie:gsub(' ', '+')
   local url = "http://www.imdbapi.com/?t=" .. movie
   local response, code, headers = http.request(url)
@@ -22,7 +20,7 @@ function imdb(movie)
   return nil
 end
 
-function run(msg, matches)
+local function run(msg, matches)
   return imdb(matches[1])
 end
 
