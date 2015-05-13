@@ -282,6 +282,17 @@ Bot Commands
     </tr>
     <tr>
       <td>
+        metar.lua
+      </td>
+      <td>
+        Retrieves METAR and optionally taf messages and decodes them
+      </td>
+      <td>
+        !metar [taf] stationcode
+      </td>
+    </tr>
+    <tr>
+      <td>
         ping.lua
       </td>
       <td>
