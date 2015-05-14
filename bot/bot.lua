@@ -237,8 +237,17 @@ end
 function load_plugins()
   for k, v in pairs(_config.enabled_plugins) do
     print("Loading plugin", v)
-    local t = loadfile("plugins/"..v..'.lua')()
-    plugins[v] = t
+
+    local ok, err =  pcall(function()
+      local t = loadfile("plugins/"..v..'.lua')()
+      plugins[v] = t
+    end)
+
+    if not ok then
+      print('\27[31mError loading plugin '..v..'\27[39m')
+      print('\27[31m'..err..'\27[39m')
+    end
+
   end
 end
 
