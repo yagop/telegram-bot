@@ -63,7 +63,7 @@ install_rocks() {
 install() {
   git pull
   git submodule update --init --recursive
-  # Let's check the RAM and if it's low than 300MB use a special configure
+  # If RAM is lower than 300MB disable extf queries
   if [ $RAM -lt 307200 ]; then
       cd tg && ./configure --disable-extf && make
   else
