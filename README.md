@@ -165,6 +165,11 @@ Bot Commands
       <td>minecraft.lua</td>
       <td>Searches Minecraft server and sends info</td>
       <td>!mine [ip]: Searches Minecraft server on specified ip and sends info. Default port: 25565<br>!mine [ip] [port]: Searches Minecraft server on specified ip and port and sends info.<br></td>
+      </tr>
+    <tr>
+      <td>pili.lua</td>
+      <td>Short an URL with pili.la service</td>
+      <td>!pili [url]: Short the url</td>
     </tr>
     <tr>
       <td>plugins.lua</td>
