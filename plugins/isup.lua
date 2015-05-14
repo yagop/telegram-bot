@@ -124,7 +124,8 @@ return {
     "^!ping (cron delete) (.*)$",
     "^!ping (cron) (.*)$"
   },
-  run = run
+  run = run,
+  cron = cron
 }
 
 end
