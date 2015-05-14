@@ -112,7 +112,7 @@ end
 return {
   description = "Check if a website or server is up.",
   usage = {
-    "!isup [host]: Performs a HTTP request or Socket (ip:port) connexion",
+    "!isup [host]: Performs a HTTP request or Socket (ip:port) connection",
     "!isup cron [host]: Every 5mins check if host is up. (Requires privileged user)",
     "!isup cron delete [host]: Disable checking that host."
   },

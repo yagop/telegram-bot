@@ -80,7 +80,7 @@ function msg_valid(msg)
 
   if msg.to.type == 'encr_chat' then
     vardump(msg)
-    print('\27[36mNot valid: Encripted chat\27[39m')
+    print('\27[36mNot valid: Encrypted chat\27[39m')
     return false
   end
 
