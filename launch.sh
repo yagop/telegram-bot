@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 THIS_DIR=$(cd $(dirname $0); pwd)
+RAM=`grep MemTotal /proc/meminfo | awk '{print $2}'`
 cd $THIS_DIR
 
 update() {
@@ -14,20 +15,20 @@ install_luarocks() {
   git clone https://github.com/keplerproject/luarocks.git
   cd luarocks
   git checkout tags/v2.2.1 # Current stable
-   
+
   PREFIX="$THIS_DIR/.luarocks"
-  
+
   ./configure --prefix=$PREFIX --sysconfdir=$PREFIX/luarocks --force-config
-  
+
   RET=$?; if [ $RET -ne 0 ];
-    then echo "Error. Exiting."; exit $RET; 
+    then echo "Error. Exiting."; exit $RET;
   fi
 
   make build && make install
   RET=$?; if [ $RET -ne 0 ];
     then echo "Error. Exiting.";exit $RET;
   fi
-   
+
   cd ..
   rm -rf luarocks
 }
@@ -62,7 +63,12 @@ install_rocks() {
 install() {
   git pull
   git submodule update --init --recursive
-  cd tg && ./configure && make
+  # Let's check the RAM and if it's low than 300MB use a special configure
+  if [ $RAM -lt 307200 ]; then
+      cd tg && ./configure --disable-extf && make
+  else
+      cd tg && ./configure && make
+  fi
   RET=$?; if [ $RET -ne 0 ];
     then echo "Error. Exiting."; exit $RET;
   fi
