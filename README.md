@@ -252,6 +252,11 @@ Bot Commands
       <td>weather.lua</td>
       <td>weather in that city (Madrid is default)</td>
       <td>!weather (city)</td>
+      </tr>
+    <tr>
+      <td>webshot.lua</td>
+      <td>Take an screenshot of a web.</td>
+      <td>!webshot [url]</td>
     </tr>
     <tr>
       <td>wiki.lua</td>
