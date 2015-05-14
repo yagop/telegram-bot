@@ -4,7 +4,7 @@ package.cpath = package.cpath .. ';.luarocks/lib/lua/5.2/?.so'
 
 require("./bot/utils")
 
-VERSION = '0.12.1'
+VERSION = '0.12.2'
 
 -- This function is called when tg receive a msg
 function on_msg_receive (msg)
