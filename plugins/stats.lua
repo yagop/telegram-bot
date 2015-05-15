@@ -85,10 +85,11 @@ local function pre_process(msg)
     -- User is on chat
     local hash = 'chat:'..msg.to.id..':users'
     redis:sadd(hash, msg.from.id)
-    -- User msgs
-    hash = 'msgs:'..msg.from.id..':'..msg.to.id
-    redis:incr(hash)
   end
+
+  -- Total user msgs
+  local hash = 'msgs:'..msg.from.id..':'..msg.to.id
+  redis:incr(hash)
 
   -- Check flood
   if msg.from.type == 'user' then
@@ -104,10 +105,38 @@ local function pre_process(msg)
   return msg
 end
 
+local function get_bot_stats()
+
+  local redis_scan = [[
+    local cursor = '0'
+    local count = 0
+
+    repeat
+      local r = redis.call("SCAN", cursor, "MATCH", KEYS[1])
+      cursor = r[1]
+      count = count + #r[2]
+    until cursor == '0'
+    return count]]
+
+  -- Users
+  local hash = 'msgs:*:'..our_id
+  local r = redis:eval(redis_scan, 1, hash)
+  local text = 'Users: '..r
+
+  hash = 'chat:*:users'
+  r = redis:eval(redis_scan, 1, hash)
+  text = text..'\nChats: '..r
+
+  return text
+
+end
+
 local function run(msg, matches)
-  if matches[1] == "stats" then
+  if matches[1]:lower() == "stats" then
     if msg.to.type == 'chat' then
       return get_msg_num_stats(msg)
+    elseif is_sudo(msg) then
+      return get_bot_stats()
     else
       return 'Stats works only on chats'
     end
@@ -118,7 +147,7 @@ return {
   description = "Plugin to update user stats.", 
   usage = "!stats: Returns a list of Username [telegram_id]: msg_num",
   patterns = {
-    "^!(stats)"
+    "^!([Ss]tats)$"
     }, 
   run = run,
   pre_process = pre_process
