@@ -62,6 +62,11 @@ Bot Commands
       <td>!danbooru - gets a random fresh image from Danbooru :underage:<br>!danboorud - random daily popular image :underage:<br>!danbooruw - random weekly popular image :underage:<br>!danboorum - random monthly popular image :underage:<br></td>
     </tr>
     <tr>
+      <td>dogify.lua</td>
+      <td>Create a doge image with words.</td>
+      <td>!dogify (words/or phrases/separated/by/slashes) - Create a doge image with the words.</td>
+    </tr>
+    <tr>
       <td>download_media.lua</td>
       <td>When bot receives a media msg, download the media.</td>
       <td></td>
