@@ -1,10 +1,10 @@
 telegram-bot 
 ============
 
-[![](https://travis-ci.org/yagop/telegram-bot.svg?branch=master)](https://travis-ci.org/yagop/telegram-bot) 
+[![](https://travis-ci.org/yagop/telegram-bot.svg?branch=master)](https://travis-ci.org/yagop/telegram-bot)
+[![PayPayl donate button](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=SPWYE8FZ9CP6N&item_name=TelegramBot&currency_code=USD "Donate to this project using Paypal")
 
 A Telegram Bot based on plugins using [tg](https://github.com/vysheng/tg).
-Test it on [telegram.me/yago_bot](https://telegram.me/yago_bot)
 
 Multimedia
 ----------
@@ -61,6 +61,23 @@ Bot Commands
         <br>
         !butts: Get a butts NSFW image. :underage:
         <br>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        dan.lua
+      </td>
+      <td>
+        Gets a random fresh or popular image from Danbooru
+      </td>
+      <td>
+        !dan - random fresh image. :underage:
+        <br>
+        !dand - random daily popular image. :underage:
+        <br>
+        !danw - random weekly popular image. :underage:
+        <br>
+        !danm - random monthly popular image. :underage:
       </td>
     </tr>
     <tr>
@@ -336,6 +353,17 @@ Bot Commands
     </tr>
     <tr>
       <td>
+        roll.lua
+      </td>
+      <td>
+        Roll dice
+      </td>
+      <td>
+        !roll d<sides>|<count> d<sides> 
+      </td>
+    </tr>
+    <tr>
+      <td>
         set.lua
       </td>
       <td>
@@ -481,7 +509,7 @@ Installation
 ------------
 ```bash
 # Tested on Ubuntu 14.04, for other OSs check out https://github.com/vysheng/tg#installation
-sudo apt-get install libreadline-dev libconfig-dev libssl-dev lua5.2 liblua5.2-dev libevent-dev make unzip git
+sudo apt-get install libreadline-dev libconfig-dev libssl-dev lua5.2 liblua5.2-dev libevent-dev make unzip git redis-server
 ```
 
 ```bash

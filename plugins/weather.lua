@@ -1,10 +1,16 @@
 do
 
-local BASE_URL = "http://api.openweathermap.org/data/2.5"
+local BASE_URL = "http://api.openweathermap.org/data/2.5/weather"
 
-function get_weather(location)
+local function get_weather(location)
   print("Finding weather in ", location)
+  local url = BASE_URL
+  url = url..'?q='..location
+  url = url..'&units=metric'
+
   local b, c, h = http.request(BASE_URL.."/weather?q=" .. location .. "&units=metric")
+  if c ~= 200 then return nil end
+
   local weather = json:decode(b)
   print("Weather returns", weather)
   local city = weather.name
@@ -48,19 +54,28 @@ function get_weather(location)
   return temp .. '\n' .. conditions .. '\n' .. wind
 end
 
-function run(msg, matches)
+local function run(msg, matches)
+  local city = 'Madrid,ES'
+
   if string.len(matches[1]) > 2 then 
     city = matches[1]
   else
     city = "Kyiv"
   end
   return get_weather(city)
+  if not text then
+    text = 'Can\'t get weather from that city.'
+  end
+  return text
 end
 
 return {
   description = "weather in that city (Kyiv is default)", 
   usage = "!weather (city)",
-  patterns = {"^!weather%s?(.*)$"}, 
+  patterns = {
+    "^!weather$",
+    "^!weather (.*)$"
+  }, 
   run = run 
 }
 

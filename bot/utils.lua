@@ -5,6 +5,7 @@ URL = require "socket.url"
 json = (loadfile "./libs/JSON.lua")()
 serpent = (loadfile "./libs/serpent.lua")()
 mimetype = (loadfile "./libs/mimetype.lua")()
+redis = (loadfile "./libs/redis.lua")()
 
 http.TIMEOUT = 10
 
@@ -116,50 +117,16 @@ function download_to_file(url, file_name)
   return file_path
 end
 
-
-function vardump(value, depth, key)
-  local linePrefix = ""
-  local spaces = ""
-  
-  if key ~= nil then
-    linePrefix = "["..key.."] = "
-  end
-  
-  if depth == nil then
-    depth = 0
-  else
-    depth = depth + 1
-    for i=1, depth do spaces = spaces .. "  " end
-  end
-  
-  if type(value) == 'table' then
-    mTable = getmetatable(value)
-    if mTable == nil then
-      print(spaces ..linePrefix.."(table) ")
-    else
-      print(spaces .."(metatable) ")
-        value = mTable
-    end		
-    for tableKey, tableValue in pairs(value) do
-      vardump(tableValue, depth, tableKey)
-    end
-  elseif type(value)	== 'function' or 
-      type(value)	== 'thread' or 
-      type(value)	== 'userdata' or
-      value		== nil
-  then
-    print(spaces..tostring(value))
-  else
-    print(spaces..linePrefix.."("..type(value)..") "..tostring(value))
-  end
+function vardump(value)
+  print(serpent.block(value, {comment=false}))
 end
 
 -- taken from http://stackoverflow.com/a/11130774/3163199
 function scandir(directory)
   local i, t, popen = 0, {}, io.popen
   for filename in popen('ls -a "'..directory..'"'):lines() do
-      i = i + 1
-      t[i] = filename
+    i = i + 1
+    t[i] = filename
   end
   return t
 end
@@ -461,4 +428,20 @@ function match_pattern(pattern, text)
     end
   end
   -- nil
+end
+
+-- Function to read data from files
+function load_from_file(file, default_data)
+  local f = io.open(file, "r+")
+  -- If file doesn't exists
+  if f == nil then
+    -- Create a new empty table
+    default_data = default_data or {}
+    serialize_to_file(default_data, file)
+    print ('Created file', file)
+  else
+    print ('Data loaded from file', file)
+    f:close() 
+  end
+  return loadfile (file)()
 end

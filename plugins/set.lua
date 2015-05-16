@@ -1,31 +1,35 @@
-local _file_values = './data/values.lua'
-
-function save_value(chat, text )
-	var_name, var_value = string.match(text, "!set (%a+) (.+)")
-	if (var_name == nil or var_value == nil) then
-		return "Usage: !set var_name value"
-	end
-	if _values[chat] == nil then
-		_values[chat] = {}
-	end
-	_values[chat][var_name] = var_value
-
-	-- Save values to file
-	serialize_to_file(_values, _file_values)
-	
-	return "Saved "..var_name.." = "..var_value
+local function save_value(msg, name, value)
+  if (not name or not value) then
+    return "Usage: !set var_name value"
+  end
+  
+  local hash = nil
+  if msg.to.type == 'chat' then
+    hash = 'chat:'..msg.to.id..':variables'
+  end
+  if msg.to.type == 'user' then
+    hash = 'user:'..msg.from.id..':variables'
+  end
+  if hash then
+    redis:hset(hash, name, value)
+    return "Saved "..name.." => "..value
+  end
 end
 
-function run(msg, matches)
-	local chat_id = tostring(msg.to.id)
-	local text = save_value(chat_id, msg.text)
-	return text
+local function run(msg, matches)
+  local name = string.sub(matches[1], 1, 50)
+  local value = string.sub(matches[2], 1, 1000)
+
+  local text = save_value(msg, name, value)
+  return text
 end
 
 return {
-    description = "Plugin for saving values. get.lua plugin is necesary to retrieve them.", 
-    usage = "!set [value_name] [data]: Saves the data with the value_name name.",
-    patterns = {"^!set (%a+) (.+)$"}, 
-    run = run 
+  description = "Plugin for saving values. get.lua plugin is necesary to retrieve them.", 
+  usage = "!set [value_name] [data]: Saves the data with the value_name name.",
+  patterns = {
+   "!set ([^%s]+) (.+)$"
+  }, 
+  run = run 
 }
 
