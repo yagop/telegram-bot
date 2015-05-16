@@ -4,7 +4,7 @@ package.cpath = package.cpath .. ';.luarocks/lib/lua/5.2/?.so'
 
 require("./bot/utils")
 
-VERSION = '0.12.1'
+VERSION = '0.12.2'
 
 -- This function is called when tg receive a msg
 function on_msg_receive (msg)
@@ -79,8 +79,7 @@ function msg_valid(msg)
   end
 
   if msg.to.type == 'encr_chat' then
-    vardump(msg)
-    print('\27[36mNot valid: Encripted chat\27[39m')
+    print('\27[36mNot valid: Encrypted chat\27[39m')
     return false
   end
 
@@ -238,8 +237,17 @@ end
 function load_plugins()
   for k, v in pairs(_config.enabled_plugins) do
     print("Loading plugin", v)
-    local t = loadfile("plugins/"..v..'.lua')()
-    plugins[v] = t
+
+    local ok, err =  pcall(function()
+      local t = loadfile("plugins/"..v..'.lua')()
+      plugins[v] = t
+    end)
+
+    if not ok then
+      print('\27[31mError loading plugin '..v..'\27[39m')
+      print('\27[31m'..err..'\27[39m')
+    end
+
   end
 end
 
