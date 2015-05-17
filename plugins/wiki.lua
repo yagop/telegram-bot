@@ -1,5 +1,5 @@
 -- http://git.io/vUA4M
-
+local socket = require "socket"
 local JSON = require "cjson"
 
 local Wikipedia = {
@@ -26,12 +26,6 @@ end
 --  return decoded JSON table from Wikipedia
 --]]
 function Wikipedia:loadPage(text, lang, intro, plain)
-    local socket = require('socket')
-    local url = require('socket.url')
-    local http = require('socket.http')
-    local https = require('ssl.https')
-    local ltn12 = require('ltn12')
-
     local request, sink = {}, {}
     local query = ""
 
@@ -39,16 +33,16 @@ function Wikipedia:loadPage(text, lang, intro, plain)
     for k,v in pairs(self.wiki_params) do
         query = query .. k .. '=' .. v .. '&'
     end
-    local parsed = url.parse(self:getWikiServer(lang))
+    local parsed = URL.parse(self:getWikiServer(lang))
     parsed.path = self.wiki_path
-    parsed.query = query .. "titles=" .. url.escape(text)
+    parsed.query = query .. "titles=" .. URL.escape(text)
 
     -- HTTP request
-    request['url'] = url.build(parsed)
+    request['url'] = URL.build(parsed)
     print(request['url'])
     request['method'] = 'GET'
     request['sink'] = ltn12.sink.table(sink)
-    http.TIMEOUT, https.TIMEOUT = 10, 10
+    
     local httpRequest = parsed.scheme == 'http' and http.request or https.request
     local code, headers, status = socket.skip(1, httpRequest(request))
 
@@ -72,8 +66,6 @@ end
 -- extract intro passage in wiki page
 function Wikipedia:wikintro(text, lang)
     local result = self:loadPage(text, lang, true, true)
-
-    vardump(result)
 
     if result and result.query then
 
