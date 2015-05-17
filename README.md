@@ -270,7 +270,7 @@ Bot Commands
     </tr>
     <tr>
       <td>meme.lua</td>
-      <td>Generates a meme with a top text and bottom text, full meme list <a href="http://pastebin.com/jzsmdFLD">here</a>. </td>
+      <td>Generates a meme with a top text and bottom text, full meme list [here](http://pastebin.com/jzsmdFL). </td>
       <td>!meme [Meme Name], [top text], [bottom text]</td>
     </tr>
     <tr>
