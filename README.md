@@ -269,6 +269,11 @@ Bot Commands
       <td>!webshot [url]</td>
     </tr>
     <tr>
+      <td>meme.lua</td>
+      <td>Generates a meme with a top text and bottom text, full meme list <a href="http://pastebin.com/jzsmdFLD">here</a>. </td>
+      <td>!meme [Meme Name], [top text], [bottom text]</td>
+    </tr>
+    <tr>
       <td>wiki.lua</td>
       <td>Searches Wikipedia and send results</td>
       <td>!wiki [terms]: Searches wiki and send results<br>!wiki_set [wiki]: sets the wikimedia site for this chat<br>!wiki_get: gets the current wikimedia site<br></td>
