@@ -2,6 +2,11 @@
 local socket = require "socket"
 local JSON = require "cjson"
 
+local wikiusage = {
+    "!wiki [text]: Search on default Wikipedia (EN)",
+    "!wiki(lang) [text]: Search on 'lang' Wikipedia. Example: !wikies hola.",
+}
+
 local Wikipedia = {
    -- http://meta.wikimedia.org/wiki/List_of_Wikipedias
    wiki_server = "http://%s.wikipedia.org",
@@ -79,7 +84,9 @@ function Wikipedia:wikintro(text, lang)
         if page and page.extract then
             return text..": "..page.extract
         else
-            return "Extract not found for "..text
+            local text = "Extract not found for "..text
+            text = text..'\n'..table.concat(wikiusage, '\n')
+            return text
         end
     else
         return "Sorry an error happened"
@@ -96,6 +103,11 @@ local function run(msg, matches)
         term = lang
         lang = nil
     end
+    if term == "" then
+        local text = "Usage:\n"
+        text = text..table.concat(wikiusage, '\n')
+        return text
+    end
     -- TODO: Show the link
     local result = Wikipedia:wikintro(term, lang)
     return result
@@ -103,13 +115,10 @@ end
 
 return {
     description = "Searches Wikipedia and send results",
-    usage = {
-        "!wiki [text]: Search on default Wikipedia (EN)",
-        "!wiki(lang) [text]: Search on 'lang' Wikipedia. Example: !wikies hola.",
-    },
+    usage = wikiusage,
     patterns = {
-        "^!wiki (.*)$",
-        "^!wiki(%w+) (.*)$",
+        "^![Ww]iki(%w+) (.+)$",
+        "^![Ww]iki ?(.*)$"
     },
     run = run
 }
