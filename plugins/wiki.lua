@@ -97,7 +97,7 @@ end
 
 local function run(msg, matches)
     -- TODO: Remember language (i18 on future version)
-    -- TODO: Support for non Wikipedias but Mediawikis
+    -- TODO: Support for non Wikipedias (MediaWikis)
     local term = matches[2]
     local lang = matches[1] -- Can be nil
     if not term then
@@ -113,7 +113,7 @@ return {
     description = "Searches Wikipedia and send results",
     usage = {
         "!wiki [text]: Search on default Wikipedia (EN)",
-        "!wiki(lang) [text]: Search on 'lang' wikipedia. Example: !wikies hola.",
+        "!wiki(lang) [text]: Search on 'lang' Wikipedia. Example: !wikies hola.",
     },
     patterns = {
         "^!wiki (.*)$",

@@ -1,6 +1,6 @@
 do
 
--- Retruns the key (index) in the config.enabled_plugins table
+-- Returns the key (index) in the config.enabled_plugins table
 local function plugin_enabled( name )
   for k,v in pairs(_config.enabled_plugins) do
     if name == v then
@@ -104,11 +104,11 @@ end
 
 local function reenable_plugin_on_chat(receiver, plugin)
   if not _config.disabled_plugin_on_chat then
-    return 'There aren\'t any disabled plugin.'
+    return 'There aren\'t any disabled plugins'
   end
 
   if not _config.disabled_plugin_on_chat[receiver] then
-    return 'There aren\'t any disabled plugin for this chat.'
+    return 'There aren\'t any disabled plugins for this chat'
   end
 
   if not _config.disabled_plugin_on_chat[receiver][plugin] then
@@ -126,7 +126,7 @@ local function run(msg, matches)
     return list_plugins()
   end
 
-  -- Reenable a plugin for this chat
+  -- Re-enable a plugin for this chat
   if matches[1] == 'enable' and matches[3] == 'chat' then
     local receiver = get_receiver(msg)
     local plugin = matches[2]

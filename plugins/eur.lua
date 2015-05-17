@@ -26,7 +26,7 @@ local function run(msg, matches)
 end
 
 return {
-    description = "Realtime EURUSD market price", 
+    description = "Real-time EURUSD market price", 
     usage = "!eur [USD]",
     patterns = {
       "^!eur$",

@@ -25,7 +25,7 @@ local function run(msg, matches)
 end
 
 return {
-  description = "Imdb plugin for telegram",
+  description = "IMDB plugin for telegram",
   usage = "!imdb [movie]",
   patterns = {"^!imdb (.+)"},
   run = run

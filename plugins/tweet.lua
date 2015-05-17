@@ -109,16 +109,16 @@ end
 
 local function check_keys()
    if consumer_key:isempty() then
-      return "Twitter Consumer Key is empty, write it in plugins/twitter.lua"
+      return "Twitter Consumer Key is empty, write it in plugins/tweet.lua"
    end
    if consumer_secret:isempty() then
-      return "Twitter Consumer Secret is empty, write it in plugins/twitter.lua"
+      return "Twitter Consumer Secret is empty, write it in plugins/tweet.lua"
    end
    if access_token:isempty() then
-      return "Twitter Access Token is empty, write it in plugins/twitter.lua"
+      return "Twitter Access Token is empty, write it in plugins/tweet.lua"
    end
    if access_token_secret:isempty() then
-      return "Twitter Access Token Secret is empty, write it in plugins/twitter.lua"
+      return "Twitter Access Token Secret is empty, write it in plugins/tweet.lua"
    end
    return ""
 end
@@ -169,12 +169,12 @@ local function getTweet(msg, base, all)
    local response_code, response_headers, response_status_line, response_body = client:PerformRequest("GET", twitter_url, base)
 
    if response_code ~= 200 then
-      return "Can't connect, maybe the user don't exist."
+      return "Can't connect, maybe the user doesn't exist."
    end
 
    local response = json:decode(response_body)
    if #response == 0 then
-      return "Can't retrieve any tweet, sorry"
+      return "Can't retrieve any tweets, sorry"
    end
    if all then
       for i,tweet in pairs(response) do
@@ -228,7 +228,7 @@ end
 
 
 return {
-   description = "Random tweew from user",
+   description = "Random tweet from user",
    usage = {
       "!tweet id [id]: Get a random tweet from the user with that ID",
       "!tweet id [id] last: Get a random tweet from the user with that ID",

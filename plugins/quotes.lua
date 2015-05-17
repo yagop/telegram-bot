@@ -59,7 +59,7 @@ end
 
 return {
     description = "Save quote",
-    description = "Quote plugin, you can create and retrieves random quotes",
+    description = "Quote plugin, you can create and retrieve random quotes",
     usage = {
         "!addquote [msg]",
         "!quote",
