@@ -68,7 +68,7 @@ end
 
 local function process_google_data(google, receiver, query)
   if google.responseStatus == 403 then
-    local text = 'ERROR: Readched maximum searchs per day'
+    local text = 'ERROR: Reached maximum searches per day'
     send_msg(receiver, text, ok_cb, false)
 
   elseif google.responseStatus == 200 then

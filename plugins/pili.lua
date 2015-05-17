@@ -21,9 +21,9 @@ end
 
 
 return {
-   description = "Short an url with the awesome http://pili.la",
+   description = "Shorten an URL with the awesome http://pili.la",
    usage = {
-      "!pili [url]: Short the url"
+      "!pili [url]: Shorten the URL"
    },
    patterns = {
       "^!pili (https?://[%w-_%.%?%.:/%+=&]+)$"

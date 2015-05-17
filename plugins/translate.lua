@@ -28,7 +28,7 @@ function translate(source_lang, target_lang, text)
   local trans = json:decode(res)
   
   local sentences = ""
-  -- Join multiple sencentes
+  -- Join multiple sentences
   for k,sentence in pairs(trans.sentences) do
     sentences = sentences..sentence.trans..'\n'
   end
@@ -52,7 +52,7 @@ function run(msg, matches)
     return translate(nil, target, text)
   end
 
-  -- Frist pattern
+  -- First pattern
   if #matches == 3 then
     print("Third")
     local source = matches[1]
@@ -66,7 +66,7 @@ end
 return {
   description = "Translate some text", 
   usage = {
-    "!translate text. Translate to english the text.",
+    "!translate text. Translate the text to English.",
     "!translate target_lang text.",
     "!translate source,target text",
   },

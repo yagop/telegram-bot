@@ -46,8 +46,8 @@ local function run(msg, matches)
 end
 
 return {
-  description = "Search video on youtube and send it.",
-  usage = "!youtube [term]: Search for a youtube video and send it.",
+  description = "Search video on YouTube and send it.",
+  usage = "!youtube [term]: Search for a YouTube video and send it.",
   patterns = {
     "^!youtube (.*)"
   },
