@@ -29,7 +29,7 @@ function imdb(msg, movie)
 end
 
 local function run(msg, matches)
-  return imdb(matches[1])
+  return imdb(msg, matches[1])
 end
 
 return {
