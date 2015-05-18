@@ -127,6 +127,11 @@ Bot Commands
       <td>!help: Show list of plugins.<br>!help all: Show all commands for every plugin.<br>!help [plugin name]: Commands for that plugin.<br></td>
     </tr>
     <tr>
+        <td>id.lua</td>
+        <td>Know your id or the id of a chat members.</td>
+        <td>!id: Return your ID and the chat id if you are in one.<br>!id(s) chat: Return the IDs of the chat members.<br></td>
+    </tr>
+    <tr>
       <td>images.lua</td>
       <td>When user sends image URL (ends with png, jpg, jpeg) download and send it to origin.</td>
       <td></td>
