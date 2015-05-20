@@ -41,48 +41,41 @@ function on_binlog_replay_end()
 end
 
 function msg_valid(msg)
-  -- Don't process outgoing messages
-  if msg.out then
+  if msg.out then -- Dont process outgoing messages
     print('\27[36mNot valid: msg from us\27[39m')
     return false
-  end
-
-  -- Before bot was started
-  if msg.date < now then
+    
+  elseif msg.date < now then -- When just started
     print('\27[36mNot valid: old msg\27[39m')
     return false
-  end
-
-  if msg.unread == 0 then
+    
+  elseif not msg.unread then
     print('\27[36mNot valid: readed\27[39m')
     return false
-  end
 
-  if msg.service then
-    print('\27[36mNot valid: service\27[39m')
-    return false
-  end
-
-  if not msg.to.id then
+  elseif not msg.to.id then
     print('\27[36mNot valid: To id not provided\27[39m')
     return false
-  end
-
-  if not msg.from.id then
+    
+  elseif not msg.from.id then
     print('\27[36mNot valid: From id not provided\27[39m')
     return false
-  end
-
-  if msg.from.id == our_id then
-    print('\27[36mNot valid: Msg from our id\27[39m')
-    return false
-  end
-
-  if msg.to.type == 'encr_chat' then
+    
+  elseif msg.to.type == 'encr_chat' then
     print('\27[36mNot valid: Encrypted chat\27[39m')
     return false
+    
+  elseif msg.from.id == our_id then
+    print('\27[36mNot valid: Msg from our id\27[39m')
+    return false -- This disable your own user
+    
+  elseif msg.service then
+    print('\27[36mNot valid: service\27[39m')
+    -- vardump(msg)
+    -- welcome(msg)
+    return false
   end
-
+  
   return true
 end
 
