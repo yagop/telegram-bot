@@ -15,9 +15,9 @@ local function run(msg, matches)
 end
 
 return {
-  description = "Latex equation to image",
+  description = "Convert LaTeX equation to image",
   usage = {
-    "!tex equation: Get image from equation"
+    "!tex equation: Convert LaTeX equation to image"
   },
   patterns = {
     "!tex (.*)"
