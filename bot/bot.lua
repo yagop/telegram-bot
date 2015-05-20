@@ -8,7 +8,6 @@ VERSION = '0.12.2'
 
 -- This function is called when tg receive a msg
 function on_msg_receive (msg)
-  
   if not started then
     return
   end
@@ -16,6 +15,9 @@ function on_msg_receive (msg)
   local receiver = get_receiver(msg)
 
   -- vardump(msg)
+  if msg.service then
+     match_service_msg(msg)
+  end
   if msg_valid(msg) then
     msg = pre_process_msg(msg)
     if msg then
@@ -122,6 +124,55 @@ local function is_plugin_disabled_on_chat(plugin_name, receiver)
   return false
 end
 
+function match_service_msg(msg)
+   local action = msg.action or {type = ""}
+   if action.type == "chat_add_user" then
+      chat_new_user(msg)
+   elseif action.type == "chat_add_user_link" then
+      chat_new_user_link(msg)
+   end
+end
+
+local function template_add_user(base, to_username, from_username, chat_name, chat_id)
+   if to_username == "@" then
+      to_username = ''
+   end
+   if from_username == "@" then
+      from_username = ''
+   end
+   base = string.gsub(base, "{to_username}", to_username)
+   base = string.gsub(base, "{from_username}", from_username)
+   base = string.gsub(base, "{chat_name}", chat_name)
+   base = string.gsub(base, "{chat_id}", chat_id)
+   return base
+end
+
+function chat_new_user_link(msg)
+   local pattern = _config.initial_chat_msg or ''
+   local to_username = '@' .. msg.from.username
+   local from_username = '[link](@' .. msg.action.link_issuer.username .. ')'
+   local chat_name = msg.to.print_name or ''
+   local chat_id = 'chat#id' .. msg.to.id
+   pattern = template_add_user(pattern, to_username, from_username, chat_name, chat_id)
+   if pattern ~= '' then
+      local receiver = get_receiver(msg)
+      send_msg(receiver, pattern, ok_cb, false)
+   end
+end
+
+function chat_new_user(msg)
+   local pattern = _config.initial_chat_msg or ''
+   local to_username = '@' .. msg.action.user.username
+   local from_username = '@' .. msg.from.username
+   local chat_name = msg.to.print_name or ''
+   local chat_id = 'chat#id' .. msg.to.id
+   pattern = template_add_user(pattern, to_username, from_username, chat_name, chat_id)
+   if pattern ~= '' then
+      local receiver = get_receiver(msg)
+      send_msg(receiver, pattern, ok_cb, false)
+   end
+end
+
 function match_plugin(plugin, plugin_name, msg)
   local receiver = get_receiver(msg)
 
@@ -207,7 +258,9 @@ function create_config( )
       "xkcd",
       "youtube" },
     sudo_users = {our_id},
-    disabled_channels = {}
+    disabled_channels = {},
+    template_chat_new_user =  ""
+    -- Template parameters: {to_username} {from_username} {chat_name} {chat_id}
   }
   serialize_to_file(config, './data/config.lua')
   print ('saved config into ./data/config.lua')
