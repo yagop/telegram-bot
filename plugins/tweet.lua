@@ -189,6 +189,9 @@ local function getTweet(msg, base, all)
    return nil
 end
 
+function isint(n)
+   return n==math.floor(n)
+end
 
 local function run(msg, matches)
    local checked = check_keys()
@@ -199,7 +202,11 @@ local function run(msg, matches)
    local base = {include_rts = 1}
 
    if matches[1] == 'id' then
-      base.user_id = matches[2]
+      local userid = tonumber(matches[2])
+      if userid == nil or not isint(userid) then
+         return "The id of a user is a number, check this web: http://gettwitterid.com/"
+      end
+      base.user_id = userid
    elseif matches[1] == 'name' then
       base.screen_name = matches[2]
    else
@@ -221,9 +228,7 @@ local function run(msg, matches)
    end
    base.count = count
 
-   getTweet(msg, base, all)
-
-   return nil
+   return getTweet(msg, base, all)
 end
 
 
