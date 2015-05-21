@@ -310,23 +310,24 @@ function parseMetarOrTafReport(s)
         end
         skipWhitespaces()
       end
-      while not test(0, "%d", 1) do
-        local cloud = {}
-        cloud.cover = substring(3)
-        cloud.height = substring(3).."00"
-        if not test(0, "%s", 1) then
-          if test(2, "%s", 1) then
-            cloud.special = substring(2)
-          else
-            cloud.special = substring(3)
-          end
+    end
+    
+    while (not test(0, "%d", 1)) and test(3, "%d", 1) and (nextGroupLength() == 6 or nextGroupLength() == 8 or nextGroupLength() == 9) do
+      local cloud = {}
+      cloud.cover = substring(3)
+      cloud.height = substring(3).."00"
+      if not test(0, "%s", 1) then
+        if test(2, "%s", 1) then
+          cloud.special = substring(2)
+        else
+          cloud.special = substring(3)
         end
-        if not part.clouds then
-          part.clouds = {}
-        end
-        table.insert(part.clouds, cloud)
-        skipWhitespaces()
       end
+      if not part.clouds then
+        part.clouds = {}
+      end
+      table.insert(part.clouds, cloud)
+      skipWhitespaces()
     end
     
     -- temperature and dew point
@@ -405,6 +406,13 @@ function parseMetarOrTafReport(s)
       table.insert(report.trends, deepcopy(part))
     end
     part = {}
+    if test(0, "PROB") then
+      print("PROB")
+      skip(4) -- PROB
+      part.probability = substring(2)
+      print(part.probability)
+      skipWhitespaces()
+    end
     if not (test(0, "TEMPO") or test(0, "BECMG")) then
       break
     end
@@ -436,6 +444,9 @@ function reportToMessage(report)
     else
       part = report.trends[i]
       msg = msg..part.change.." from "..part.effective.from.day.."th day at "..part.effective.from.hour.." UTC to "..part.effective.to.day.."th day at "..part.effective.to.hour.." UTC:\n"
+    end
+    if part.probability then
+      msg = msg.."  Probability: "..part.probability.."%\n"
     end
     
     -- print part
