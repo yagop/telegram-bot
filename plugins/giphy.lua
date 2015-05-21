@@ -60,12 +60,8 @@ local function run(msg, matches)
 
   local receiver = get_receiver(msg)
   print("GIF URL"..gif_url)
-  local text = 'Preparing to make you laugh'
-  local cb_extra = {
-    gif_url = gif_url,
-    receiver = receiver
-  }
-  send_msg(receiver, text, send_gif, cb_extra)
+  
+  send_photo_from_url(receiver, gif_url)
 end
 
 return {
