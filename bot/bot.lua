@@ -46,8 +46,9 @@ function msg_valid(msg)
   --~ if msg.out then -- Dont process outgoing messages
     --~ print('\27[36mNot valid: msg from us\27[39m')
     --~ return false
+    --~ else
     
-  elseif msg.date < now then -- When just started
+  if msg.date < now then -- When just started
     print('\27[36mNot valid: old msg\27[39m')
     return false
     
