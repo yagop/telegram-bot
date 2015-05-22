@@ -1,10 +1,10 @@
-telegram-bot
+telegram-bot PLUS
 ============
 
-[![](https://travis-ci.org/yagop/telegram-bot.svg?branch=master)](https://travis-ci.org/yagop/telegram-bot)
+[![](https://travis-ci.org/rutrus/telegram-bot-plus.svg?branch=master)](https://travis-ci.org/rutrus/telegram-bot-plus)
 [![Donate button](https://img.shields.io/badge/nepal-donate-yellow.svg)](http://www.nrcs.org/donate-nrcs "Donate to Nepal Red Cross Society")
 
-A Telegram Bot based on plugins using [tg](https://github.com/vysheng/tg).
+Plugins and hacks in LUA for Telegram-cli Bot based on plugins using [tg](https://github.com/vysheng/tg).
 
 Multimedia
 ----------
@@ -14,6 +14,15 @@ Multimedia
 - When user sends YouTube URL, send to origin video image.
 
 ![http://i.imgur.com/0FGUvU0.png](http://i.imgur.com/0FGUvU0.png) ![http://i.imgur.com/zW7WWWt.png](http://i.imgur.com/zW7WWWt.png) ![http://i.imgur.com/zW7WWWt.png](http://i.imgur.com/kPK7paz.png)
+
+
+¿Why Plus? - New features
+----------
+This repository has new features than telegram-bot. Plugins for telegram-bot are compatibles.
+* Plugin !whereismyip sends origin of an IP: !ip google.com
+* Plugin !kick deletes an user from a channel
+* Plugin !invite is fixed
+* Plugin !translate is fixed
 
 Bot Commands
 ------------
@@ -301,13 +310,13 @@ sudo apt-get install libreadline-dev libconfig-dev libssl-dev lua5.2 liblua5.2-d
 ```bash
 # After those dependencies, lets install the bot
 cd $HOME
-git clone https://github.com/yagop/telegram-bot.git
+git clone https://github.com/rutrus/telegram-bot-plus.git
 cd telegram-bot
 ./launch.sh install
 ./launch.sh # Will ask you for a phone number & confirmation code.
 ```
 
-Enable more [`plugins`](https://github.com/yagop/telegram-bot/tree/master/plugins)
+Enable more [`plugins`](https://github.com/rutrus/telegram-bot-plus/tree/master/plugins)
 -------------
 See the plugins list with `!plugins` command.
 
@@ -331,6 +340,6 @@ $ sudo stop telegram # To stop it
 
 Contact me
 ------------
-You can contact me [via Telegram](https://telegram.me/yago_perez) but if you have an issue please [open](https://github.com/yagop/telegram-bot/issues) one.
+You can contact me [via Telegram](https://telegram.me/rutrus) but if you have an issue please [open](https://github.com/yagop/telegram-bot/issues) one.
 
 [Join](https://telegram.me/joinchat/ALJ3iwFAhOCh4WNUHAyzXQ) on the TelegramBot Discussion Group.
