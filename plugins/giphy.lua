@@ -38,12 +38,6 @@ local function search(text)
   return get_image(response)
 end
 
-local function send_gif(cb_extra, success, result)
-  local receiver = cb_extra.receiver
-  local gif_url = cb_extra.gif_url
-  send_document_from_url(receiver, gif_url)
-end
-
 local function run(msg, matches)
   local gif_url = nil
   
@@ -61,7 +55,7 @@ local function run(msg, matches)
   local receiver = get_receiver(msg)
   print("GIF URL"..gif_url)
   
-  send_photo_from_url(receiver, gif_url)
+  send_document_from_url(receiver, gif_url)
 end
 
 return {
