@@ -1,6 +1,20 @@
 do
 
-local function get_pokemon(query)
+local images_enabled = true;
+
+local function get_sprite(id)
+  local url = "http://pokeapi.co/api/v1/sprite/"..id.."/"
+  local b,c = http.request(url)
+  local data = json:decode(b)
+  local image = data.image
+  return image
+end
+
+local function callback(extra)
+  send_msg(extra.receiver, extra.text, ok_cb, false)
+end
+
+local function send_pokemon(query, receiver)
   local url = "http://pokeapi.co/api/v1/pokemon/" .. query .. "/"
   local b,c = http.request(url)
   local pokemon = json:decode(b)
@@ -8,21 +22,44 @@ local function get_pokemon(query)
   if pokemon == nil then
     return 'No pokémon found.'
   end
-  return  'Pokédex ID: ' .. pokemon.pkdx_id .. '\n'
-        ..'Name: ' .. pokemon.name .. '\n'
-        ..'Weight: ' .. pokemon.weight .. '\n'
-        ..'Height: ' .. pokemon.height .. '\n'
-        ..'Speed: ' .. pokemon.speed .. '\n'
+
+  local text = 'Pokédex ID: ' .. pokemon.pkdx_id
+    ..'\nName: ' .. pokemon.name
+    ..'\nWeight: ' .. pokemon.weight
+    ..'\nHeight: ' .. pokemon.height
+    ..'\nSpeed: ' .. pokemon.speed
+
+  local image = nil
+
+  if images_enabled then
+    image = get_sprite(pokemon.pkdx_id)
+  end
+
+  if image then
+    image = "http://pokeapi.co"..image
+    local extra = {
+      receiver = receiver,
+      text = text
+    }
+    send_photo_from_url(receiver, image, callback, extra)
+  else
+    return text
+  end
 end
 
 local function run(msg, matches)
-  return get_pokemon(matches[1])
+  local receiver = get_receiver(msg)
+  local query = URL.escape(matches[1])
+  return send_pokemon(query, receiver)
 end
 
 return {
   description = "Pokedex searcher for Telegram",
   usage = "!pokedex [Name/ID]: Search the pokédex for Name/ID and get info of the pokémon!",
-  patterns = {"^!pokedex (.*)$"},
+  patterns = {
+    "^!pokedex (.*)$",
+    "^!pokemon (.+)$"
+  },
   run = run
 }
 
