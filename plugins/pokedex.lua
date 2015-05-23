@@ -2,8 +2,9 @@ do
 
 local images_enabled = true;
 
-local function get_sprite(id)
-  local url = "http://pokeapi.co/api/v1/sprite/"..id.."/"
+local function get_sprite(path)
+  local url = "http://pokeapi.co/"..path
+  print(url)
   local b,c = http.request(url)
   local data = json:decode(b)
   local image = data.image
@@ -31,8 +32,9 @@ local function send_pokemon(query, receiver)
 
   local image = nil
 
-  if images_enabled then
-    image = get_sprite(pokemon.pkdx_id)
+  if images_enabled and pokemon.sprites and pokemon.sprites[1] then
+    local sprite = pokemon.sprites[1].resource_uri
+    image = get_sprite(sprite)
   end
 
   if image then
