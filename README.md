@@ -157,13 +157,18 @@ Bot Commands
     </tr>
     <tr>
       <td>invite.lua</td>
-      <td>Invite other user to the chat group</td>
+      <td>Invite other user to the chat group, to delete him see: kick.lua</td>
       <td>!invite name [user_name]<br>!invite id [user_id]<br></td>
     </tr>
     <tr>
       <td>isup.lua</td>
       <td>Check if a website or server is up.</td>
       <td>!isup [host]: Performs a HTTP request or Socket (ip:port) connection<br>!isup cron [host]: Every 5mins check if host is up. (Requires privileged user)<br>!isup cron delete [host]: Disable checking that host.<br></td>
+    </tr>
+    <tr>
+      <td>kick.lua</td>
+      <td>Deletes an user from a group chat.</td>
+      <td>!kick name [user_name]<br>!kick id [user_id]</td>
     </tr>
     <tr>
       <td>location.lua</td>
@@ -290,6 +295,11 @@ Bot Commands
       <td>!webshot [url]</td>
     </tr>
     <tr>
+      <td>whereismyip.lua</td>
+      <td>Shows you where is an IP or domain.</td>
+      <td>!ip [domain.com]</td>
+    </tr>
+    <tr>
       <td>wiki.lua</td>
       <td>Searches Wikipedia and send results</td>
       <td>!wiki [terms]: Searches wiki and send results<br>!wiki_set [wiki]: sets the wikimedia site for this chat<br>!wiki_get: gets the current wikimedia site<br></td>
@@ -310,6 +320,11 @@ Bot Commands
 Installation
 ------------
 ```bash
+# If you have just installed your system, upgrade it. In ubuntu:
+sudo apt-get update ; sudo apt-get upgrade
+```
+
+```bash
 # Tested on Ubuntu 14.04, for other OSs check out https://github.com/vysheng/tg#installation
 sudo apt-get install libreadline-dev libconfig-dev libssl-dev lua5.2 liblua5.2-dev libevent-dev make unzip git redis-server
 ```
@@ -318,7 +333,7 @@ sudo apt-get install libreadline-dev libconfig-dev libssl-dev lua5.2 liblua5.2-d
 # After those dependencies, lets install the bot
 cd $HOME
 git clone https://github.com/rutrus/telegram-bot-plus.git
-cd telegram-bot
+cd telegram-bot-plus
 ./launch.sh install
 ./launch.sh # Will ask you for a phone number & confirmation code.
 ```
