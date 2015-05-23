@@ -1,10 +1,10 @@
-telegram-bot
+telegram-bot PLUS
 ============
 
-[![](https://travis-ci.org/yagop/telegram-bot.svg?branch=master)](https://travis-ci.org/yagop/telegram-bot)
+[![](https://travis-ci.org/rutrus/telegram-bot-plus.svg?branch=master)](https://travis-ci.org/rutrus/telegram-bot-plus)
 [![Donate button](https://img.shields.io/badge/nepal-donate-yellow.svg)](http://www.nrcs.org/donate-nrcs "Donate to Nepal Red Cross Society")
 
-A Telegram Bot based on plugins using [tg](https://github.com/vysheng/tg).
+Plugins and hacks in LUA for Telegram-cli Bot based on plugins using [tg](https://github.com/vysheng/tg).
 
 Multimedia
 ----------
@@ -14,6 +14,15 @@ Multimedia
 - When user sends YouTube URL, send to origin video image.
 
 ![http://i.imgur.com/0FGUvU0.png](http://i.imgur.com/0FGUvU0.png) ![http://i.imgur.com/zW7WWWt.png](http://i.imgur.com/zW7WWWt.png) ![http://i.imgur.com/zW7WWWt.png](http://i.imgur.com/kPK7paz.png)
+
+
+¿Why Plus? - New features
+----------
+This repository has new features than telegram-bot. Plugins for telegram-bot are compatibles.
+* Plugin !whereismyip sends origin of an IP: !ip google.com
+* Plugin !kick deletes an user from a channel
+* Plugin !invite is fixed
+* Plugin !translate is fixed
 
 Bot Commands
 ------------
@@ -148,13 +157,18 @@ Bot Commands
     </tr>
     <tr>
       <td>invite.lua</td>
-      <td>Invite other user to the chat group</td>
+      <td>Invite other user to the chat group, to delete him see: kick.lua</td>
       <td>!invite name [user_name]<br>!invite id [user_id]<br></td>
     </tr>
     <tr>
       <td>isup.lua</td>
       <td>Check if a website or server is up.</td>
       <td>!isup [host]: Performs a HTTP request or Socket (ip:port) connection<br>!isup cron [host]: Every 5mins check if host is up. (Requires privileged user)<br>!isup cron delete [host]: Disable checking that host.<br></td>
+    </tr>
+    <tr>
+      <td>kick.lua</td>
+      <td>Deletes an user from a group chat.</td>
+      <td>!kick name [user_name]<br>!kick id [user_id]</td>
     </tr>
     <tr>
       <td>location.lua</td>
@@ -170,6 +184,13 @@ Bot Commands
       <td>media.lua</td>
       <td>When user sends media URL (ends with gif, mp4, pdf, etc.) download and send it to origin.</td>
       <td></td>
+    </tr>
+    <tr>
+      <td>meme.lua</td>
+      <td>Generate a meme image with up and bottom texts.</td>
+      <td>
+      !meme search (name): Return the name of the meme that match.<br>!meme list: Return the link where you can see the memes.<br>!meme listall: Return the list of all memes. Only admin can call it.<br>!meme [name] - [text_up] - [text_down]: Generate a meme with the picture that match with that name with the texts provided.<br>!meme [name] "[text_up]" "[text_down]": Generate a meme with the picture that match with that name with the texts provided.<br>
+      </td>
     </tr>
     <tr>
       <td>minecraft.lua</td>
@@ -274,6 +295,11 @@ Bot Commands
       <td>!webshot [url]</td>
     </tr>
     <tr>
+      <td>whereismyip.lua</td>
+      <td>Shows you where is an IP or domain.</td>
+      <td>!ip [domain.com]</td>
+    </tr>
+    <tr>
       <td>wiki.lua</td>
       <td>Searches Wikipedia and send results</td>
       <td>!wiki [terms]: Searches wiki and send results<br>!wiki_set [wiki]: sets the wikimedia site for this chat<br>!wiki_get: gets the current wikimedia site<br></td>
@@ -294,6 +320,11 @@ Bot Commands
 Installation
 ------------
 ```bash
+# If you have just installed your system, upgrade it. In ubuntu:
+sudo apt-get update ; sudo apt-get upgrade
+```
+
+```bash
 # Tested on Ubuntu 14.04, for other OSs check out https://github.com/vysheng/tg#installation
 sudo apt-get install libreadline-dev libconfig-dev libssl-dev lua5.2 liblua5.2-dev libevent-dev make unzip git redis-server
 ```
@@ -301,13 +332,13 @@ sudo apt-get install libreadline-dev libconfig-dev libssl-dev lua5.2 liblua5.2-d
 ```bash
 # After those dependencies, lets install the bot
 cd $HOME
-git clone https://github.com/yagop/telegram-bot.git
-cd telegram-bot
+git clone https://github.com/rutrus/telegram-bot-plus.git
+cd telegram-bot-plus
 ./launch.sh install
 ./launch.sh # Will ask you for a phone number & confirmation code.
 ```
 
-Enable more [`plugins`](https://github.com/yagop/telegram-bot/tree/master/plugins)
+Enable more [`plugins`](https://github.com/rutrus/telegram-bot-plus/tree/master/plugins)
 -------------
 See the plugins list with `!plugins` command.
 
@@ -331,6 +362,6 @@ $ sudo stop telegram # To stop it
 
 Contact me
 ------------
-You can contact me [via Telegram](https://telegram.me/yago_perez) but if you have an issue please [open](https://github.com/yagop/telegram-bot/issues) one.
+You can contact me [via Telegram](https://telegram.me/rutrus) but if you have an issue please [open](https://github.com/yagop/telegram-bot/issues) one.
 
 [Join](https://telegram.me/joinchat/ALJ3iwFAhOCh4WNUHAyzXQ) on the TelegramBot Discussion Group.

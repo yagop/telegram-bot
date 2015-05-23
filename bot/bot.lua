@@ -3,8 +3,10 @@ package.path = package.path .. ';.luarocks/share/lua/5.2/?.lua'
 package.cpath = package.cpath .. ';.luarocks/lib/lua/5.2/?.so'
 
 require("./bot/utils")
+-- require("/home/rutrus/.telegram-bot/bot/utils")
 
-VERSION = '0.12.2'
+
+VERSION = '0.12.2 PLUS'
 
 -- This function is called when tg receive a msg
 function on_msg_receive (msg)
@@ -41,48 +43,40 @@ function on_binlog_replay_end()
 end
 
 function msg_valid(msg)
-  -- Don't process outgoing messages
-  if msg.out then
-    print('\27[36mNot valid: msg from us\27[39m')
-    return false
-  end
-
-  -- Before bot was started
-  if msg.date < now then
+  --~ if msg.out then -- Dont process outgoing messages
+    --~ print('\27[36mNot valid: msg from us\27[39m')
+    --~ return false
+    --~ else
+    
+  if msg.date < now then -- When just started
     print('\27[36mNot valid: old msg\27[39m')
     return false
-  end
-
-  if msg.unread == 0 then
+    
+  elseif not msg.unread then
     print('\27[36mNot valid: readed\27[39m')
     return false
-  end
 
-  if msg.service then
+  elseif not msg.to.id then
+    print('\27[36mNot valid: To id not provided\27[39m')
+    return false
+    
+  elseif not msg.from.id then
+    print('\27[36mNot valid: From id not provided\27[39m')
+    return false
+    
+  elseif msg.to.type == 'encr_chat' then
+    print('\27[36mNot valid: Encrypted chat\27[39m')
+    return false
+    
+  elseif msg.from.id == our_id then
+    print('\27[36mDetected Msg from our id\27[39m')
+    return true -- This disable your own user
+    
+  elseif msg.service then
     print('\27[36mNot valid: service\27[39m')
     return false
   end
-
-  if not msg.to.id then
-    print('\27[36mNot valid: To id not provided\27[39m')
-    return false
-  end
-
-  if not msg.from.id then
-    print('\27[36mNot valid: From id not provided\27[39m')
-    return false
-  end
-
-  if msg.from.id == our_id then
-    print('\27[36mNot valid: Msg from our id\27[39m')
-    return false
-  end
-
-  if msg.to.type == 'encr_chat' then
-    print('\27[36mNot valid: Encrypted chat\27[39m')
-    return false
-  end
-
+  
   return true
 end
 
@@ -125,7 +119,7 @@ end
 function match_plugin(plugin, plugin_name, msg)
   local receiver = get_receiver(msg)
 
-  -- Go over patterns. If one matches it's enough.
+  -- Go over patterns. If one matches is enought.
   for k, pattern in pairs(plugin.patterns) do
     local matches = match_pattern(pattern, msg.text)
     if matches then
@@ -162,10 +156,10 @@ function save_config( )
 end
 
 -- Returns the config from config.lua file.
--- If file doesn't exist, create it.
+-- If file doesnt exists, create it.
 function load_config( )
-  local f = io.open('./data/config.lua', "r")
-  -- If config.lua doesn't exist
+  local f = assert(io.open('./data/config.lua', "r"))
+  -- If config.lua doesnt exists
   if not f then
     print ("Created new config file: data/config.lua")
     create_config()
@@ -181,31 +175,58 @@ end
 
 -- Create a basic config.json file and saves it.
 function create_config( )
-  -- A simple config with basic plugins and ourselves as privileged user
+  -- A simple config with basic plugins and ourserves as priviled user
   config = {
     enabled_plugins = {
-      "9gag",
-      "eur",
-      "echo",
-      "btc",
-      "get",
-      "giphy",
-      "google",
-      "gps",
-      "help",
-      "images",
-      "img_google",
-      "location",
-      "media",
-      "plugins",
-      "channels",
-      "set",
-      "stats",
-      "time",
-      "version",
-      "weather",
-      "xkcd",
-      "youtube" },
+        "9gag",
+        "boobs",
+        "btc",
+        "bugzilla",
+        "calculator",
+        "channels",
+        "danbooru",
+        "download_media",
+        "echo",
+        "eur",
+        "expand",
+        "fortunes_uc3m",
+        "get",
+        "giphy",
+        "google",
+        "gps",
+        "hackernews",
+        "hello",
+        "help",
+        "images",
+        "imdb",
+        "img_google",
+        "invite",
+        "isup",
+        "location",
+        "magic8ball",
+        "media",
+        "minecraft",
+        "pili",
+        "plugins",
+        "quotes",
+        "rae",
+        "roll",
+        "search_youtube",
+        "set",
+        "stats",
+        "steam",
+        "time",
+        "translate",
+        "tweet",
+        "twitter",
+        "twitter_send",
+        "version",
+        "vote",
+        "weather",
+        "webshot",
+        "wiki",
+        "xkcd",
+        "youtube" },
     sudo_users = {our_id},
     disabled_channels = {}
   }
