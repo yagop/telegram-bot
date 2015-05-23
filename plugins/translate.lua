@@ -11,27 +11,7 @@ print(text)
   local path = "https://translate.yandex.net/api/v1.5/tr.json/translate"
   if api then
     local i = math.random(#api)
-    local api_key = api[i]
-    if api_key then
-      url = url.."&key="..api_key
-    end
-  else return "Valid API key is not provided in data/translate_api.lua"  
-  end
-  if not target_lang then target_lang = 'en' end
-  -- URL query parameters
-  local params = {
-    key = api_key,
-    lang = source_lang.."-"..target_lang,
-    text = URL.escape(text)
-  }
-  local query = format_http_params(params, true)
-  url = path..query
-  if api then
-    local i = math.random(#api)
-    local api_key = api[i]
-    if api_key then
-      url = url.."&key="..api_key
-    end
+    api_key = api[i]
   else
     config = load_from_file('data/config.lua')
     for i=1,#config.sudo_users do
@@ -39,6 +19,15 @@ print(text)
     end
     return "Valid API key is not provided. Contact owner."  
   end
+  if not target_lang then target_lang = 'en' end
+  -- URL query parameters
+  local params = {
+    lang = source_lang.."-"..target_lang,
+    text = URL.escape(text),
+  }
+  local query = format_http_params(params, true)
+  url = path..query.."&key="..api_key
+vardump(url)
   local res, code = https.request(url)
   -- Return nil if error
   if code > 200 then
@@ -83,7 +72,7 @@ function detect_language (text, target)
 end
 
 function run(msg, matches)
-    API_TRANS = load_from_file('data/translate_api.lua')
+  API_TRANS = load_from_file('data/translate_api.lua')
   api = API_TRANS
   --~ Get an api from https://tech.yandex.com/keys/get/?service=trnsl
   if api then
