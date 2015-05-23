@@ -176,7 +176,7 @@ local function trivia_scores(msg)
 end
 
 local function run(msg, matches)
-  if(matches[1] == "!triviascore") then
+  if(matches[1] == "!triviascore" or matches[1] == "!triviascores") then
     -- Output all scores
     return trivia_scores(msg)
   elseif(matches[1] == "!triviaquestion")then
