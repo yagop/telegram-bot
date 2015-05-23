@@ -181,6 +181,13 @@ Bot Commands
       <td></td>
     </tr>
     <tr>
+      <td>meme.lua</td>
+      <td>Generate a meme image with up and bottom texts.</td>
+      <td>
+      !meme search (name): Return the name of the meme that match.<br>!meme list: Return the link where you can see the memes.<br>!meme listall: Return the list of all memes. Only admin can call it.<br>!meme [name] - [text_up] - [text_down]: Generate a meme with the picture that match with that name with the texts provided.<br>!meme [name] "[text_up]" "[text_down]": Generate a meme with the picture that match with that name with the texts provided.<br>
+      </td>
+    </tr>
+    <tr>
       <td>minecraft.lua</td>
       <td>Searches Minecraft server and sends info</td>
       <td>!mine [ip]: Searches Minecraft server on specified IP and sends info. Default port: 25565<br>!mine [ip] [port]: Searches Minecraft server on specified IP and port and sends info.<br></td>
