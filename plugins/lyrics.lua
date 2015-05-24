@@ -83,7 +83,7 @@ end
 
 return {
   description = 'Gettign lyrics of a song',
-  usage = '!lyrics [track]',
+  usage = '!lyrics [track or artist - track]: Search and get lyrics of the song',
   patterns = {
      '^!lyrics? (.*)$'
   },
