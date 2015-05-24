@@ -11,7 +11,7 @@ Multimedia
 - When user sends image (png, jpg, jpeg) URL download and send it to origin.
 - When user sends media (gif, mp4, pdf, etc.) URL download and send it to origin.
 - When user sends twitter URL, send text and images to origin. Requires OAuth Key.
-- When user sends youtube URL, send to origin video image.
+- When user sends YouTube URL, send to origin video image.
 
 ![http://i.imgur.com/0FGUvU0.png](http://i.imgur.com/0FGUvU0.png) ![http://i.imgur.com/zW7WWWt.png](http://i.imgur.com/zW7WWWt.png) ![http://i.imgur.com/zW7WWWt.png](http://i.imgur.com/kPK7paz.png)
 
@@ -48,7 +48,7 @@ Bot Commands
     </tr>
     <tr>
       <td>calculator.lua</td>
-      <td>Cacluate math expressions with mathjs API</td>
+      <td>Calculate math expressions with mathjs API</td>
       <td>!calc [expression]: evaluates the expression and sends the result.</td>
     </tr>
     <tr>
@@ -78,7 +78,7 @@ Bot Commands
     </tr>
     <tr>
       <td>eur.lua</td>
-      <td>Realtime EURUSD market price</td>
+      <td>Real-time EURUSD market price</td>
       <td>!eur [USD]</td>
       </tr>
     <tr>
@@ -127,13 +127,18 @@ Bot Commands
       <td>!help: Show list of plugins.<br>!help all: Show all commands for every plugin.<br>!help [plugin name]: Commands for that plugin.<br></td>
     </tr>
     <tr>
+        <td>id.lua</td>
+        <td>Know your id or the id of a chat members.</td>
+        <td>!id: Return your ID and the chat id if you are in one.<br>!id(s) chat: Return the IDs of the chat members.<br></td>
+    </tr>
+    <tr>
       <td>images.lua</td>
       <td>When user sends image URL (ends with png, jpg, jpeg) download and send it to origin.</td>
       <td></td>
     </tr>
     <tr>
       <td>imdb.lua</td>
-      <td>Imdb plugin for telegram</td>
+      <td>IMDB plugin for Telegram</td>
       <td>!imdb [movie]</td>
     </tr>
     <tr>
@@ -149,7 +154,7 @@ Bot Commands
     <tr>
       <td>isup.lua</td>
       <td>Check if a website or server is up.</td>
-      <td>!isup [host]: Performs a HTTP request or Socket (ip:port) connexion<br>!isup cron [host]: Every 5mins check if host is up. (Requires privileged user)<br>!isup cron delete [host]: Disable checking that host.<br></td>
+      <td>!isup [host]: Performs a HTTP request or Socket (ip:port) connection<br>!isup cron [host]: Every 5mins check if host is up. (Requires privileged user)<br>!isup cron delete [host]: Disable checking that host.<br></td>
     </tr>
     <tr>
       <td>location.lua</td>
@@ -169,11 +174,11 @@ Bot Commands
     <tr>
       <td>minecraft.lua</td>
       <td>Searches Minecraft server and sends info</td>
-      <td>!mine [ip]: Searches Minecraft server on specified ip and sends info. Default port: 25565<br>!mine [ip] [port]: Searches Minecraft server on specified ip and port and sends info.<br></td>
+      <td>!mine [ip]: Searches Minecraft server on specified IP and sends info. Default port: 25565<br>!mine [ip] [port]: Searches Minecraft server on specified IP and port and sends info.<br></td>
       </tr>
     <tr>
       <td>pili.lua</td>
-      <td>Short an URL with pili.la service</td>
+      <td>Shorten an URL with pili.la service</td>
       <td>!pili [url]: Short the url</td>
     </tr>
     <tr>
@@ -205,12 +210,12 @@ Bot Commands
     </tr>
     <tr>
       <td>search_youtube.lua</td>
-      <td>Search video on youtube and send it.</td>
-      <td>!youtube [term]: Search for a youtube video and send it.</td>
+      <td>Search video on YouTube and send it.</td>
+      <td>!youtube [term]: Search for a YouTube video and send it.</td>
     </tr>
     <tr>
       <td>set.lua</td>
-      <td>Plugin for saving values. get.lua plugin is necesary to retrieve them.</td>
+      <td>Plugin for saving values. get.lua plugin is necessary to retrieve them.</td>
       <td>!set [value_name] [data]: Saves the data with the value_name name.</td>
     </tr>
     <tr>
@@ -231,22 +236,22 @@ Bot Commands
     <tr>
       <td>translate.lua</td>
       <td>Translate some text</td>
-      <td>!translate text. Translate to english the text.<br>!translate target_lang text.<br>!translate source,target text<br></td>
+      <td>!translate text. Translate the text to English.<br>!translate target_lang text.<br>!translate source,target text<br></td>
     </tr>
     <tr>
       <td>tweet.lua</td>
-      <td>Random tweew from user</td>
+      <td>Random tweet from user</td>
       <td>!tweet id [id]: Get a random tweet from the user with that ID<br>!tweet id [id] last: Get a random tweet from the user with that ID<br>!tweet name [name]: Get a random tweet from the user with that name<br>!tweet name [name] last: Get a random tweet from the user with that name<br></td>
     </tr>
     <tr>
       <td>twitter.lua</td>
-      <td>When user sends twitter URL, send text and images to origin. Requieres OAuth Key.</td>
+      <td>When user sends twitter URL, send text and images to origin. Requires OAuth Key.</td>
       <td></td>
     </tr>
     <tr>
       <td>twitter_send.lua</td>
       <td>Sends a tweet</td>
-      <td>!tw [text]: Sends the Tweet with the configured accout.</td>
+      <td>!tw [text]: Sends the Tweet with the configured account.</td>
     </tr>
     <tr>
       <td>version.lua</td>
@@ -320,7 +325,7 @@ Those commands require a privileged user, privileged users are defined inside `d
 
 Run it as a daemon
 ------------
-If your linux/unix comes with [upstart](http://upstart.ubuntu.com/) you can run the bot by this way
+If your Linux/Unix comes with [upstart](http://upstart.ubuntu.com/) you can run the bot by this way
 ```bash
 $ sed -i "s/yourusername/$(whoami)/g" etc/telegram.conf
 $ sed -i "s_telegrambotpath_$(pwd)_g" etc/telegram.conf

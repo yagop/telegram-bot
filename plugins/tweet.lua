@@ -109,16 +109,16 @@ end
 
 local function check_keys()
    if consumer_key:isempty() then
-      return "Twitter Consumer Key is empty, write it in plugins/twitter.lua"
+      return "Twitter Consumer Key is empty, write it in plugins/tweet.lua"
    end
    if consumer_secret:isempty() then
-      return "Twitter Consumer Secret is empty, write it in plugins/twitter.lua"
+      return "Twitter Consumer Secret is empty, write it in plugins/tweet.lua"
    end
    if access_token:isempty() then
-      return "Twitter Access Token is empty, write it in plugins/twitter.lua"
+      return "Twitter Access Token is empty, write it in plugins/tweet.lua"
    end
    if access_token_secret:isempty() then
-      return "Twitter Access Token Secret is empty, write it in plugins/twitter.lua"
+      return "Twitter Access Token Secret is empty, write it in plugins/tweet.lua"
    end
    return ""
 end
@@ -169,12 +169,12 @@ local function getTweet(msg, base, all)
    local response_code, response_headers, response_status_line, response_body = client:PerformRequest("GET", twitter_url, base)
 
    if response_code ~= 200 then
-      return "Can't connect, maybe the user don't exist."
+      return "Can't connect, maybe the user doesn't exist."
    end
 
    local response = json:decode(response_body)
    if #response == 0 then
-      return "Can't retrieve any tweet, sorry"
+      return "Can't retrieve any tweets, sorry"
    end
    if all then
       for i,tweet in pairs(response) do
@@ -189,6 +189,9 @@ local function getTweet(msg, base, all)
    return nil
 end
 
+function isint(n)
+   return n==math.floor(n)
+end
 
 local function run(msg, matches)
    local checked = check_keys()
@@ -199,7 +202,11 @@ local function run(msg, matches)
    local base = {include_rts = 1}
 
    if matches[1] == 'id' then
-      base.user_id = matches[2]
+      local userid = tonumber(matches[2])
+      if userid == nil or not isint(userid) then
+         return "The id of a user is a number, check this web: http://gettwitterid.com/"
+      end
+      base.user_id = userid
    elseif matches[1] == 'name' then
       base.screen_name = matches[2]
    else
@@ -221,14 +228,12 @@ local function run(msg, matches)
    end
    base.count = count
 
-   getTweet(msg, base, all)
-
-   return nil
+   return getTweet(msg, base, all)
 end
 
 
 return {
-   description = "Random tweew from user",
+   description = "Random tweet from user",
    usage = {
       "!tweet id [id]: Get a random tweet from the user with that ID",
       "!tweet id [id] last: Get a random tweet from the user with that ID",

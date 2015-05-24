@@ -4,32 +4,33 @@
 
 do
 
+local function callback(extra, success, result)
+  vardump(success)
+  vardump(result)
+end
+
 local function run(msg, matches)
+  local user = matches[2]
+
   -- User submitted a user name
   if matches[1] == "name" then
-    local user = matches[2]
     user = string.gsub(user," ","_")
   end
   
   -- User submitted an id
   if matches[1] == "id" then
-    local user = matches[2]
     user = 'user#id'..user
   end
 
   -- The message must come from a chat group
   if msg.to.type == 'chat' then
     local chat = 'chat#id'..msg.to.id
+    chat_add_user(chat, user, callback, false)
+    return "Add: "..user.." to "..chat
   else 
     return 'This isnt a chat group!'
   end
 
-  print ("Trying to add: "..user.." to "..chat)
-  local status = chat_add_user (chat, user, ok_cb, false)
-  if not status then
-    return "An error happened"
-  end
-  return "Added user: "..user.." to "..chat
 end
 
 return {

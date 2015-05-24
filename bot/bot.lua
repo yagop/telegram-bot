@@ -31,7 +31,7 @@ end
 function on_binlog_replay_end()
   started = true
   postpone (cron_plugins, false, 60*5.0)
-  -- See plugins/ping.lua as an example for cron
+  -- See plugins/isup.lua as an example for cron
 
   _config = load_config()
 
@@ -41,7 +41,7 @@ function on_binlog_replay_end()
 end
 
 function msg_valid(msg)
-  -- Dont process outgoing messages
+  -- Don't process outgoing messages
   if msg.out then
     print('\27[36mNot valid: msg from us\27[39m')
     return false
@@ -80,6 +80,11 @@ function msg_valid(msg)
 
   if msg.to.type == 'encr_chat' then
     print('\27[36mNot valid: Encrypted chat\27[39m')
+    return false
+  end
+
+  if msg.from.id == 777000 then
+    print('\27[36mNot valid: Telegram message\27[39m')
     return false
   end
 
@@ -125,7 +130,7 @@ end
 function match_plugin(plugin, plugin_name, msg)
   local receiver = get_receiver(msg)
 
-  -- Go over patterns. If one matches is enought.
+  -- Go over patterns. If one matches it's enough.
   for k, pattern in pairs(plugin.patterns) do
     local matches = match_pattern(pattern, msg.text)
     if matches then
@@ -162,10 +167,10 @@ function save_config( )
 end
 
 -- Returns the config from config.lua file.
--- If file doesnt exists, create it.
+-- If file doesn't exist, create it.
 function load_config( )
   local f = io.open('./data/config.lua', "r")
-  -- If config.lua doesnt exists
+  -- If config.lua doesn't exist
   if not f then
     print ("Created new config file: data/config.lua")
     create_config()
@@ -181,7 +186,7 @@ end
 
 -- Create a basic config.json file and saves it.
 function create_config( )
-  -- A simple config with basic plugins and ourserves as priviled user
+  -- A simple config with basic plugins and ourselves as privileged user
   config = {
     enabled_plugins = {
       "9gag",
