@@ -1,11 +1,15 @@
 do
 
-local BASE_DETECT_URL = 'http://api.lyricsnmusic.com/songs?api_key=f48dfff195fc936b5e724198f116ec'
+local BASE_LNM_URL = 'http://api.lyricsnmusic.com/songs'
+local LNM_APIKEY = '1f5ea5cf652d9b2ba5a5118a11dba5'
+
 local BASE_LYRICS_URL = 'http://api.chartlyrics.com/apiv1.asmx/SearchLyricDirect'
 
 local function getInfo(query)
   print('Getting info of ' .. query)
-  local url = BASE_DETECT_URL .. '&q=' .. URL.escape(query)
+
+  local url = BASE_LNM_URL..'?api_key='..LNM_APIKEY
+    ..'&q='..URL.escape(query)
 
   local b, c = http.request(url)
   if c ~= 200 then
@@ -22,13 +26,13 @@ local function getLyrics(query)
 
   local artist, track = getInfo(query)
   if artist and track then
-    local url = BASE_LYRICS_URL .. '?artist=' .. URL.escape(artist) .. '&song=' .. URL.escape(track)
+    local url = BASE_LYRICS_URL..'?artist='..URL.escape(artist)
+      ..'&song='..URL.escape(track)
 
     local b, c = http.request(url)
-    if c~=200 then
+    if c ~= 200 then
       return nil
     end
-    
 
     local xml = require("xml")
     local result = xml.load(b)
