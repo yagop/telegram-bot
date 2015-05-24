@@ -187,6 +187,11 @@ Bot Commands
       <td>!plugins: list all plugins.<br>!plugins enable [plugin]: enable plugin.<br>!plugins disable [plugin]: disable plugin.<br>!plugins disable [plugin] chat: disable plugin only this chat.<br>!plugins reload: reloads all plugins.<br></td>
     </tr>
     <tr>
+      <td>qr.lua</td>
+      <td>Given a text it returns a qr code</td>
+      <td>!qr [text] : returns a black and white qr code <br> !qr "[background color]" "[data color]" [text] : returns a colored qr code (see !help qr to see how specify colors).</td>
+    </tr>
+    <tr>
       <td>quotes.lua</td>
       <td>Quote plugin, you can create and retrieves random quotes</td>
       <td>!addquote [msg]<br>!quote<br></td>
