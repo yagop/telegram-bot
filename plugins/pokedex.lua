@@ -23,11 +23,14 @@ local function send_pokemon(query, receiver)
   if pokemon == nil then
     return 'No pokémon found.'
   end
-
+  
+  local h = pokemon.height
+  local w = pokemon.weight
+  str:sub(1,pos-1), r, str:sub(pos+1, str:len())
   local text = 'Pokédex ID: ' .. pokemon.pkdx_id
     ..'\nName: ' .. pokemon.name
-    ..'\nWeight: ' .. pokemon.weight
-    ..'\nHeight: ' .. pokemon.height
+    ..'\nWeight: ' .. w:sub(1,h:len()-1) .. "." .. w:sub(w:len()-1, w:len()) .. " kg" --- api returns height and weight x10
+    ..'\nHeight: ' .. h:sub(1,h:len()-1) .. "." .. h:sub(h:len()-1, h:len()) .. " m " --- need to change back to proper units
     ..'\nSpeed: ' .. pokemon.speed
 
   local image = nil
