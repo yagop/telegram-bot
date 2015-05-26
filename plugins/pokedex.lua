@@ -26,7 +26,6 @@ local function send_pokemon(query, receiver)
   
   local h = pokemon.height
   local w = pokemon.weight
-  str:sub(1,pos-1), r, str:sub(pos+1, str:len())
   local text = 'Pokédex ID: ' .. pokemon.pkdx_id
     ..'\nName: ' .. pokemon.name
     ..'\nWeight: ' .. w:sub(1,h:len()-1) .. "." .. w:sub(w:len()-1, w:len()) .. " kg" --- api returns height and weight x10
