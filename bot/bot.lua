@@ -15,9 +15,7 @@ function on_msg_receive (msg)
   local receiver = get_receiver(msg)
 
   -- vardump(msg)
-  if msg.service then
-     match_service_msg(msg)
-  end
+  msg = pre_process_service_msg(msg)
   if msg_valid(msg) then
     msg = pre_process_msg(msg)
     if msg then
@@ -60,11 +58,6 @@ function msg_valid(msg)
     return false
   end
 
-  if msg.service then
-    print('\27[36mNot valid: service\27[39m')
-    return false
-  end
-
   if not msg.to.id then
     print('\27[36mNot valid: To id not provided\27[39m')
     return false
@@ -86,6 +79,25 @@ function msg_valid(msg)
   end
 
   return true
+end
+
+--
+function pre_process_service_msg(msg)
+   if msg.service then
+      local action = msg.action or {type=""}
+      -- Double ! to discriminate of normal actions
+      msg.text = "!!tgservice " .. action.type
+      msg.realservice = true
+
+      -- wipe the data to allow the bot to read service messages
+      if msg.out then
+         msg.out = false
+      end
+      if msg.from.id == our_id then
+         msg.from.id = 0
+      end
+   end
+   return msg
 end
 
 -- Apply plugin.pre_process function
@@ -122,55 +134,6 @@ local function is_plugin_disabled_on_chat(plugin_name, receiver)
     end
   end
   return false
-end
-
-function match_service_msg(msg)
-   local action = msg.action or {type = ""}
-   if action.type == "chat_add_user" then
-      chat_new_user(msg)
-   elseif action.type == "chat_add_user_link" then
-      chat_new_user_link(msg)
-   end
-end
-
-local function template_add_user(base, to_username, from_username, chat_name, chat_id)
-   if to_username == "@" then
-      to_username = ''
-   end
-   if from_username == "@" then
-      from_username = ''
-   end
-   base = string.gsub(base, "{to_username}", to_username)
-   base = string.gsub(base, "{from_username}", from_username)
-   base = string.gsub(base, "{chat_name}", chat_name)
-   base = string.gsub(base, "{chat_id}", chat_id)
-   return base
-end
-
-function chat_new_user_link(msg)
-   local pattern = _config.initial_chat_msg or ''
-   local to_username = '@' .. msg.from.username
-   local from_username = '[link](@' .. msg.action.link_issuer.username .. ')'
-   local chat_name = msg.to.print_name or ''
-   local chat_id = 'chat#id' .. msg.to.id
-   pattern = template_add_user(pattern, to_username, from_username, chat_name, chat_id)
-   if pattern ~= '' then
-      local receiver = get_receiver(msg)
-      send_msg(receiver, pattern, ok_cb, false)
-   end
-end
-
-function chat_new_user(msg)
-   local pattern = _config.initial_chat_msg or ''
-   local to_username = '@' .. msg.action.user.username
-   local from_username = '@' .. msg.from.username
-   local chat_name = msg.to.print_name or ''
-   local chat_id = 'chat#id' .. msg.to.id
-   pattern = template_add_user(pattern, to_username, from_username, chat_name, chat_id)
-   if pattern ~= '' then
-      local receiver = get_receiver(msg)
-      send_msg(receiver, pattern, ok_cb, false)
-   end
 end
 
 function match_plugin(plugin, plugin_name, msg)
