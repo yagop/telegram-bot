@@ -219,12 +219,13 @@ end
 
 return {
   description = "Trivia plugin for Telegram",
-  usage =   "Trivia plugin, here is how to use!"
-          .."!trivia to obtain a new question. \n"
-          .."!trivia [answer] to answer the question. \n"
-          .."!triviaquestion to show the current question. \n"
-          .."!triviascore to get a scoretable of all players. \n"
-          .."!triviaskip to skip a question (requires sudo)",
+  usage = {
+    "!trivia to obtain a new question."
+    "!trivia [answer] to answer the question."
+    "!triviaquestion to show the current question."
+    "!triviascore to get a scoretable of all players."
+    "!triviaskip to skip a question (requires sudo)"
+  },
   patterns = {"^!trivia (.*)$",
               "^!trivia$",
               "^!triviaquestion$",
