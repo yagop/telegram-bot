@@ -1,6 +1,6 @@
 local function run(msg, matches)
    -- avoid this plugins to process user messages
-   if not msg.realservice then
+   if not msg.service then
       -- return "Are you trying to troll me?"
       return nil
    end

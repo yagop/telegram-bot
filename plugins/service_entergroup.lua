@@ -47,7 +47,7 @@ end
 
 
 local function run(msg, matches)
-   if not msg.realservice then
+   if not msg.service then
       return "Are you trying to troll me?"
    end
    if matches[1] == "chat_add_user" then

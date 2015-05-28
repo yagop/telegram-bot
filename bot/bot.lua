@@ -92,7 +92,6 @@ function pre_process_service_msg(msg)
       local action = msg.action or {type=""}
       -- Double ! to discriminate of normal actions
       msg.text = "!!tgservice " .. action.type
-      msg.realservice = true
 
       -- wipe the data to allow the bot to read service messages
       if msg.out then
