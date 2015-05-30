@@ -33,42 +33,46 @@ local function get_msgs_user_chat(user_id, chat_id)
   return user_info
 end
 
-local function get_msg_num_stats(msg)
-  if msg.to.type == 'chat' then
-    local chat_id = msg.to.id
-    -- Users on chat
-    local hash = 'chat:'..chat_id..':users'
-    local users = redis:smembers(hash)
-    local users_info = {}
+local function chat_stats(chat_id)
+  -- Users on chat
+  local hash = 'chat:'..chat_id..':users'
+  local users = redis:smembers(hash)
+  local users_info = {}
 
-    -- Get user info
-    for i = 1, #users do
-      local user_id = users[i]
-      local user_info = get_msgs_user_chat(user_id, chat_id)
-      table.insert(users_info, user_info)
-    end
-
-    -- Sort users by msgs number
-    table.sort(users_info, function(a, b) 
-        if a.msgs and b.msgs then
-          return a.msgs > b.msgs
-        end
-      end)
-
-    local text = ''
-    for k,user in pairs(users_info) do
-      text = text..user.name..' => '..user.msgs..'\n'
-    end
-
-    return text
+  -- Get user info
+  for i = 1, #users do
+    local user_id = users[i]
+    local user_info = get_msgs_user_chat(user_id, chat_id)
+    table.insert(users_info, user_info)
   end
+
+  -- Sort users by msgs number
+  table.sort(users_info, function(a, b) 
+      if a.msgs and b.msgs then
+        return a.msgs > b.msgs
+      end
+    end)
+
+  local text = ''
+  for k,user in pairs(users_info) do
+    text = text..user.name..' => '..user.msgs..'\n'
+  end
+
+  return text
 end
 
 -- Save stats, ban user
 local function pre_process(msg)
+  -- Ignore service msg
+  if msg.service then
+    print('Service message')
+    return msg
+  end
+
   -- Save user on Redis
   if msg.from.type == 'user' then
     local hash = 'user:'..msg.from.id
+    print('Saving user', hash)
     if msg.from.print_name then
       redis:hset(hash, 'print_name', msg.from.print_name)
     end
@@ -105,7 +109,7 @@ local function pre_process(msg)
   return msg
 end
 
-local function get_bot_stats()
+local function bot_stats()
 
   local redis_scan = [[
     local cursor = '0'
@@ -133,21 +137,45 @@ end
 
 local function run(msg, matches)
   if matches[1]:lower() == "stats" then
-    if msg.to.type == 'chat' then
-      return get_msg_num_stats(msg)
-    elseif is_sudo(msg) then
-      return get_bot_stats()
-    else
-      return 'Stats works only on chats'
+
+    if not matches[2] then
+      if msg.to.type == 'chat' then
+        local chat_id = msg.to.id
+        return chat_stats(chat_id)
+      else
+        return 'Stats works only on chats'
+      end
+    end
+
+    if matches[2] == "bot" then
+      if not is_sudo(msg) then
+        return "Bot stats requires privileged user"
+      else
+        return bot_stats()
+      end
+    end
+
+    if matches[2] == "chat" then
+      if not is_sudo(msg) then
+        return "This command requires privileged user"
+      else
+        return chat_stats(matches[3])
+      end
     end
   end
 end
 
 return {
   description = "Plugin to update user stats.", 
-  usage = "!stats: Returns a list of Username [telegram_id]: msg_num",
+  usage = {
+    "!stats: Returns a list of Username [telegram_id]: msg_num",
+    "!stats chat <chat_id>: Show stats for chat_id",
+    "!stats bot: Shows bot stats (sudo users)"
+  },
   patterns = {
-    "^!([Ss]tats)$"
+    "^!([Ss]tats)$",
+    "^!([Ss]tats) (chat) (%d+)",
+    "^!([Ss]tats) (bot)"
     }, 
   run = run,
   pre_process = pre_process
