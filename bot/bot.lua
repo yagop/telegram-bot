@@ -108,6 +108,7 @@ end
 function pre_process_msg(msg)
   for name,plugin in pairs(plugins) do
     if plugin.pre_process and msg then
+      print('Preprocess', name)
       msg = plugin.pre_process(msg)
     end
   end
