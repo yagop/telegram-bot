@@ -1,6 +1,11 @@
 local OAuth = require "OAuth"
 
-local twitter_config = load_from_file('data/twitter.lua')
+-- EDIT data/twitter.lua with the API keys
+local twitter_config = load_from_file('data/twitter.lua', {
+    -- DON'T EDIT HERE.
+    consumer_key = "", consumer_secret = "",
+    access_token = "", access_token_secret = ""
+  })
 
 local client = OAuth.new(twitter_config.consumer_key, twitter_config.consumer_secret, {
     RequestToken = "https://api.twitter.com/oauth/request_token", 
