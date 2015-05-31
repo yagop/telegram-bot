@@ -36,7 +36,6 @@ local function pre_process(msg)
   if msg.action and msg.action.type then
     local action = msg.action.type
     -- Check if banned user joins chat
-    vardump(msg)
     if action == 'chat_add_user' or action == 'chat_add_user_link' then
       local user_id
       if msg.action.link_issuer then
