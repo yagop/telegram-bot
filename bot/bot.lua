@@ -4,11 +4,10 @@ package.cpath = package.cpath .. ';.luarocks/lib/lua/5.2/?.so'
 
 require("./bot/utils")
 
-VERSION = '0.12.2'
+VERSION = '0.13.0'
 
 -- This function is called when tg receive a msg
 function on_msg_receive (msg)
-  
   if not started then
     return
   end
@@ -16,6 +15,7 @@ function on_msg_receive (msg)
   local receiver = get_receiver(msg)
 
   -- vardump(msg)
+  msg = pre_process_service_msg(msg)
   if msg_valid(msg) then
     msg = pre_process_msg(msg)
     if msg then
@@ -58,11 +58,6 @@ function msg_valid(msg)
     return false
   end
 
-  if msg.service then
-    print('\27[36mNot valid: service\27[39m')
-    return false
-  end
-
   if not msg.to.id then
     print('\27[36mNot valid: To id not provided\27[39m')
     return false
@@ -91,10 +86,29 @@ function msg_valid(msg)
   return true
 end
 
+--
+function pre_process_service_msg(msg)
+   if msg.service then
+      local action = msg.action or {type=""}
+      -- Double ! to discriminate of normal actions
+      msg.text = "!!tgservice " .. action.type
+
+      -- wipe the data to allow the bot to read service messages
+      if msg.out then
+         msg.out = false
+      end
+      if msg.from.id == our_id then
+         msg.from.id = 0
+      end
+   end
+   return msg
+end
+
 -- Apply plugin.pre_process function
 function pre_process_msg(msg)
   for name,plugin in pairs(plugins) do
     if plugin.pre_process and msg then
+      print('Preprocess', name)
       msg = plugin.pre_process(msg)
     end
   end
