@@ -167,7 +167,7 @@ local function run(msg, matches)
     if matches[2] == 'delete' and matches[3] == 'user' then
       local hash = 'whitelist:user#id'..matches[4]
       redis:del(hash)
-      return 'User '..msg.from.id..' removed from whitelist'
+      return 'User '..matches[4]..' removed from whitelist'
     end
 
     if matches[2] == 'delete' and matches[3] == 'chat' then
