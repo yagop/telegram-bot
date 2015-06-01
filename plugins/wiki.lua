@@ -23,8 +23,10 @@ local Wikipedia = {
     redirects = ""
   },
   wiki_search_params = {
-    action = "opensearch",
-    limit = 20,
+    action = "query",
+	 list = "search",
+    srlimit = 20,
+	 format = "json",
   },
   default_lang = "en",
 }
@@ -47,7 +49,7 @@ function Wikipedia:loadPage(text, lang, intro, plain, is_search)
     end
     parsed = URL.parse(self:getWikiServer(lang))
     parsed.path = self.wiki_path
-    parsed.query = query .. "search=" .. URL.escape(text)
+    parsed.query = query .. "srsearch=" .. URL.escape(text)
   else
     self.wiki_load_params.explaintext = plain and "" or nil
     for k,v in pairs(self.wiki_load_params) do
@@ -113,20 +115,17 @@ end
 function Wikipedia:wikisearch(text, lang)
   local result = self:loadPage(text, lang, true, true, true)
 
-  if result and result[1] then
-    if result[2] and result[2][1] then
-	 	local pages = ""
-		for i,page in ipairs(result[2]) do
-        pages = pages .. "\n" .. page
-		end
-      return pages
-    else
-      return "No result found"
-    end
+  if result and result.query then
+    local titles = ""
+	 for i,item in pairs(result.query.search) do
+      titles = titles .. "\n" .. item["title"]
+	 end
+	 titles = titles ~= "" and titles or "No results found"
+	 return titles
   else
     return "Sorry, an error occurred"
   end
-  	
+
 end
 
 local function run(msg, matches)
