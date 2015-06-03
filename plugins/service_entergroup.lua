@@ -52,7 +52,7 @@ local function run(msg, matches)
    end
    if matches[1] == "chat_add_user" then
       chat_new_user(msg)
-   elseif mathes[1] == "chat_add_user_link" then
+   elseif matches[1] == "chat_add_user_link" then
       chat_new_user_link(msg)
    end
 end
