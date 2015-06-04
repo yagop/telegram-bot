@@ -142,9 +142,9 @@ local function disable_plugin(plugin_name)
 end
 
 local function cli_plugins(cb_arg, action)
-  if action == "list" then
+  if action:lower() == "list" then
     list_plugins()
-  elseif action == "reload" then
+  elseif action:lower() == "reload" then
     reload_plugins(true)
   else
     print("Arg #1 should be \"list\" or \"reload\".")
@@ -152,9 +152,9 @@ local function cli_plugins(cb_arg, action)
 end
 
 local function cli_plugin(cb_arg, action, pluginName)
-  if action == "enable" then
+  if action:lower() == "enable" then
     enable_plugin(pluginName)
-  elseif action == "disable" then
+  elseif action:lower() == "disable" then
     disable_plugin(pluginName)
   else
     print("Arg #1 should be \"enable\" or \"disable\".")
@@ -162,11 +162,21 @@ local function cli_plugin(cb_arg, action, pluginName)
 end
 
 local function run_cli()
-  register_interface_function("plugins", cli_plugins, false, "plugins <list|reload>     List lua plugins", "string")
-  register_interface_function("plugin", cli_plugin, false, "plugin <enable|disable> <plugin-name>     Enables/Disables the plugin.", "string", "string")
+  register_interface_function("plugins", cli_plugins, false, '\27[94m'.."plugins <list|reload>     List lua plugins"..'\27[33m', "string")
+  register_interface_function("plugin", cli_plugin, false, '\27[94m'.."plugin <enable|disable> <plugin-name>     Enables/Disables the plugin."..'\27[33m', "string", "string")
 end
 
-local cli = run_cli()
+
+
+if not _config then
+  print("It seems this script is not being executed from telegram-bot")
+else
+  if os.time() < now + 5 then -- Check if the bot started at least 5 seconds ago. Prevents duplication of commands in tg-cli terminal if this plugin gets reloaded.
+    local cli = run_cli()
+    loaded = true
+  end
+end
+
 
 ----------------------------------
 ---->  end tg-cli interface  <----
@@ -175,7 +185,7 @@ local cli = run_cli()
 local function run(msg, matches)
   if matches[1]:lower() == "set col" then
     if matches[2] ~= nil then
-      if matches[2] >= 1 and matches[2] <= 6 then
+      if tonumber(matches[2]) >= 1 and tonumber(matches[2]) <= 6 then
         cli_output_columns = tonumber(matches[2])
         return "cli_output_columns = " .. cli_output_columns
       else
@@ -190,13 +200,15 @@ end
 return {
   description = "Plugin to manage other plugins. Enable, disable or reload.", 
   usage = {
-    "!plug-cli set col [n]: set number of columns.", 
+    "!plug-cli set col [n]: set number of columns."
   },
   patterns = {
     "^!plug[-]cli (set col) (%d)$",
   },
   run = run,
-  privileged = true
+  privileged = true,
+  onLoad = run_cli, -- Does nothing, but it might be useful... sometime.... ;)
+  reloadOnReladPlugins = false -- It would be interesting if this plugin was not reloaded: If reloaded, commands in tg-cli terminal duplicate.
 }
 
 end
