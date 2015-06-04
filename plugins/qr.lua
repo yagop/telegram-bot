@@ -4,49 +4,40 @@
 * psykomantis
 ]]
 
-function url_encode(str)
-  if (str) then
-    str = string.gsub (str, "\n", "\r\n")
-    str = string.gsub (str, "([^%w %-%_%.%~])",
-        function (c) return string.format ("%%%02X", string.byte(c)) end)
-    str = string.gsub (str, " ", "+")
-  end
-  return str
-end
+local function get_hex(str)
+  local colors = {
+    red = "f00",
+    blue = "00f",
+    green = "0f0",
+    yellow = "ff0",
+    purple = "f0f",
+    white = "fff",
+    black = "000",
+    gray = "ccc"
+  }
 
-
-function get_hex(str)
-  if(string.match(str,"(red)") == "red") then
-    return "f00"
-  elseif(string.match(str,"(blue)") == "blue") then
-    return "00f"
-  elseif(string.match(str,"(green)") == "green") then
-    return "0f0"
-  elseif(string.match(str,"(yellow)") == "yellow") then
-    return "ff0"
-  elseif(string.match(str,"(purple)") == "purple") then
-    return "f0f"
-  elseif(string.match(str,"(white)") == "white") then
-    return "fff"
-  elseif(string.match(str,"(black)") == "black") then
-    return "000"
-  elseif(string.match(str,"(gray)") == "gray") then
-    return "ccc"
+  for color, value in pairs(colors) do
+    if color == str then
+      return value
+    end
   end
 
   return str
 end
 
+local function qr(receiver, text, color, bgcolor)
 
+  local url = "http://api.qrserver.com/v1/create-qr-code/?"
+    .."size=600x600"  --fixed size otherways it's low detailed
+    .."&data="..URL.escape(text:trim())
 
-do
+  if color then
+    url = url.."&color="..get_hex(color)
+  end
+  if bgcolor then
+    url = url.."&bgcolor="..get_hex(bgcolor)
+  end
 
-local function qr(msg, query)
-
-  local receiver = get_receiver(msg)
-
-  local http = require("socket.http")
-  local url = "http://api.qrserver.com/v1/create-qr-code/?" .. query .. "&size=600x600"  --fixed size otherways it's low detailed
   local response, code, headers = http.request(url)
 
   if code ~= 200 then
@@ -54,51 +45,41 @@ local function qr(msg, query)
   end
 
   if #response > 0 then
-	   send_photo_from_url(receiver, url)
+	  send_photo_from_url(receiver, url)
 	return
 
   end
   return "Oops! Something strange happened :("
 end
 
-
-
 local function run(msg, matches)
+  local receiver = get_receiver(msg)
 
-  local query = ""
+  local text = matches[1]
+  local color
+  local back
 
-  if(#matches == 3) then
-
-    local bgcolor = get_hex(matches[1])
-    local color = get_hex(matches[2])
-    local data = url_encode(matches[3]:trim())
-
-    query = "data=" .. data .. "&color=" .. color .. "&bgcolor=" .. bgcolor
-
-    return qr(msg, query)
-
+  if #matches > 1 then
+    text = matches[3]
+    color = matches[2]
+    back = matches[1]
   end
 
-  query = "data=" .. url_encode(matches[1]:trim())
-
-  return qr(msg, query)
+  return qr(receiver, text, color, back)
 end
 
 return {
   description = {"qr code plugin for telegram, given a text it returns the qr code"},
   usage = {
     "!qr [text]",
-    '!qr "[background color]" "[data color]" [text]',
-    ".......................................................",
-    "Color through text: red|green|blue|purple|black|white|gray",
-    "Or colors through hex notation: (\"a56729\" is brown)",
-    "Or colors through decimals: (\"255-192-203\" is pink)"
+    '!qr "[background color]" "[data color]" [text]\n'
+      .."Color through text: red|green|blue|purple|black|white|gray\n"
+      .."Colors through hex notation: (\"a56729\" is brown)\n"
+      .."Or colors through decimals: (\"255-192-203\" is pink)"
   },
   patterns = {
-    '^!qr "(.+)" "(.+)" (.+)$',
+    '^!qr "(%w+)" "(%w+)" (.+)$',
     "^!qr (.+)$"
   },
   run = run
 }
-
-end
