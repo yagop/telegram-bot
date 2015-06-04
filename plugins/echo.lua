@@ -4,8 +4,8 @@ local function run(msg, matches)
   local b = 1
 
   while b ~= 0 do
-    text,b = text:gsub('^!+','')
     text = text:trim()
+    text,b = text:gsub('^!+','')
   end
   return text
 end
@@ -14,7 +14,7 @@ return {
   description = "Simplest plugin ever!",
   usage = "!echo [whatever]: echoes the msg",
   patterns = {
-    "^!echo (.+)$"
+    "^!echo +(.+)$"
   }, 
   run = run 
 }

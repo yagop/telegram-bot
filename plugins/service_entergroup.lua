@@ -1,6 +1,11 @@
 local add_user_cfg = load_from_file('data/add_user_cfg.lua')
 
 local function template_add_user(base, to_username, from_username, chat_name, chat_id)
+   base = base or ''
+   to_username = '@' .. (to_username or '')
+   from_username = '@' .. (from_username or '')
+   chat_name = chat_name or ''
+   chat_id = "chat#id" .. (chat_id or '')
    if to_username == "@" then
       to_username = ''
    end
@@ -15,11 +20,11 @@ local function template_add_user(base, to_username, from_username, chat_name, ch
 end
 
 function chat_new_user_link(msg)
-   local pattern = add_user_cfg.initial_chat_msg or ''
-   local to_username = '@' .. msg.from.username
-   local from_username = '[link](@' .. msg.action.link_issuer.username .. ')'
-   local chat_name = msg.to.print_name or ''
-   local chat_id = 'chat#id' .. msg.to.id
+   local pattern = add_user_cfg.initial_chat_msg
+   local to_username = msg.from.username
+   local from_username = '[link](@' .. (msg.action.link_issuer.username or '') .. ')'
+   local chat_name = msg.to.print_name
+   local chat_id = msg.to.id
    pattern = template_add_user(pattern, to_username, from_username, chat_name, chat_id)
    if pattern ~= '' then
       local receiver = get_receiver(msg)
@@ -28,11 +33,11 @@ function chat_new_user_link(msg)
 end
 
 function chat_new_user(msg)
-   local pattern = add_user_cfg.initial_chat_msg or ''
-   local to_username = '@' .. msg.action.user.username
-   local from_username = '@' .. msg.from.username
-   local chat_name = msg.to.print_name or ''
-   local chat_id = 'chat#id' .. msg.to.id
+   local pattern = add_user_cfg.initial_chat_msg
+   local to_username = msg.action.user.username
+   local from_username = msg.from.username
+   local chat_name = msg.to.print_name
+   local chat_id = msg.to.id
    pattern = template_add_user(pattern, to_username, from_username, chat_name, chat_id)
    if pattern ~= '' then
       local receiver = get_receiver(msg)
@@ -42,12 +47,12 @@ end
 
 
 local function run(msg, matches)
-   if not msg.realservice then
+   if not msg.service then
       return "Are you trying to troll me?"
    end
    if matches[1] == "chat_add_user" then
       chat_new_user(msg)
-   elseif mathes[1] == "chat_add_user_link" then
+   elseif matches[1] == "chat_add_user_link" then
       chat_new_user_link(msg)
    end
 end

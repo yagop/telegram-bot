@@ -88,6 +88,31 @@ local function get_newquestion(msg)
   end
 end
 
+-- This function generates a new question when forced
+local function force_newquestion(msg)
+    -- Let's show the answer if no-body guessed it right.
+    if(get_question(msg)) then
+      send_large_msg(get_receiver(msg), "The question '" .. get_question(msg) .."' has not been answered. \nThe answer was '" .. get_answer(msg) .."'")
+    end
+
+    local url = "http://jservice.io/api/random/"
+    local b,c = http.request(url)
+    local query = json:decode(b)
+
+    if query then
+      local stringQuestion = ""
+      if(query[1].category)then
+        stringQuestion = "Category: " .. query[1].category.title .. "\n"
+      end
+      if query[1].question then
+        stringQuestion = stringQuestion .. "Question: " .. query[1].question
+        set_question(msg, query[1].question, query[1].answer:lower())
+        return stringQuestion
+      end
+    end
+    return 'Something went wrong, please try again.'
+end
+
 -- This function adds a point to the player
 local function give_point(msg)
   local hash = get_hash(msg)
@@ -181,6 +206,10 @@ local function run(msg, matches)
     return trivia_scores(msg)
   elseif(matches[1] == "!triviaquestion")then
     return "Question: " .. get_question(msg)
+  elseif(matches[1] == "!triviaskip") then
+    if is_sudo(msg) then
+      return force_newquestion(msg) 
+    end
   elseif(matches[1] ~= "!trivia") then
     return check_answer(msg, matches[1])
   end
@@ -190,16 +219,19 @@ end
 
 return {
   description = "Trivia plugin for Telegram",
-  usage =   "Trivia plugin, here is how to use!"
-          .."!trivia to obtain a new question. \n"
-          .."!trivia [answer] to answer the question. \n"
-          .."!triviaquestion to show the current question. \n"
-          .."!triviascore to get a scoretable of all players.",
+  usage = {
+    "!trivia to obtain a new question.",
+    "!trivia [answer] to answer the question.",
+    "!triviaquestion to show the current question.",
+    "!triviascore to get a scoretable of all players.",
+    "!triviaskip to skip a question (requires sudo)"
+  },
   patterns = {"^!trivia (.*)$",
               "^!trivia$",
               "^!triviaquestion$",
               "^!triviascore$",
-              "^!triviascores$"},
+              "^!triviascores$",
+              "^!triviaskip$"},
   run = run
 }
 

@@ -1,31 +1,33 @@
 local OAuth = require "OAuth"
 
-local consumer_key = ""
-local consumer_secret = ""
-local access_token = ""
-local access_token_secret = ""
+-- EDIT data/twitter.lua with the API keys
+local twitter_config = load_from_file('data/twitter.lua', {
+    -- DON'T EDIT HERE.
+    consumer_key = "", consumer_secret = "",
+    access_token = "", access_token_secret = ""
+  })
 
-local client = OAuth.new(consumer_key, consumer_secret, {
+local client = OAuth.new(twitter_config.consumer_key, twitter_config.consumer_secret, {
     RequestToken = "https://api.twitter.com/oauth/request_token", 
     AuthorizeUser = {"https://api.twitter.com/oauth/authorize", method = "GET"},
-    AccessToken = "https://api.twitter.com/oauth/access_token"
+    AccessToken = "https://api.twitter.com/oauth/twitter_config.access_token"
 }, {
-    OAuthToken = access_token,
-    OAuthTokenSecret = access_token_secret
+    OAuthToken = twitter_config.access_token,
+    OAuthTokenSecret = twitter_config.access_token_secret
 })
 
 function run(msg, matches)
 
-  if consumer_key:isempty() then
+  if twitter_config.consumer_key:isempty() then
     return "Twitter Consumer Key is empty, write it in plugins/twitter.lua"
   end
-  if consumer_secret:isempty() then
+  if twitter_config.consumer_secret:isempty() then
     return "Twitter Consumer Secret is empty, write it in plugins/twitter.lua"
   end
-  if access_token:isempty() then
+  if twitter_config.access_token:isempty() then
     return "Twitter Access Token is empty, write it in plugins/twitter.lua"
   end
-  if access_token_secret:isempty() then
+  if twitter_config.access_token_secret:isempty() then
     return "Twitter Access Token Secret is empty, write it in plugins/twitter.lua"
   end
 
