@@ -63,7 +63,6 @@ function get_http_file_name(url, headers)
   -- Random name, hope content-type works
   file_name = file_name or str:random(5)
 
-  -- Possible headers names
   local content_type = headers["content-type"] 
   
   local extension = nil
@@ -73,6 +72,13 @@ function get_http_file_name(url, headers)
   if extension then
     file_name = file_name.."."..extension
   end
+
+  local disposition = headers["content-disposition"]
+  if disposition then
+    -- attachment; filename=CodeCogsEqn.png
+    file_name = disposition:match('filename=([^;]+)') or file_name
+  end
+    
   return file_name
 end
 
