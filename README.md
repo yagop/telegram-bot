@@ -236,6 +236,11 @@ Bot Commands
       <td></td>
     </tr>
     <tr>
+      <td>tex.lua</td>
+      <td>Convert LaTeX equation to image</td>
+      <td>!tex [equation]: Convert LaTeX equation to image</td>
+    </tr>
+    <tr>
       <td>time.lua</td>
       <td>Displays the local time in an area</td>
       <td>!time [area]: Displays the local time in that area</td>
