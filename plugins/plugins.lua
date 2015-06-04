@@ -21,21 +21,27 @@ local function plugin_exists( name )
   return false
 end
 
+local chars = {
+  enabled = ' ✔',
+  disabled = ' ❌',
+  privileged = ' 🎓',
+  system = ' 💻',
+};
+
 local function list_plugins(only_enabled)
   local text = ''
   for k, v in pairs( plugins_names( )) do
-    --  ✔ enabled, ❌ disabled
-    local status = '❌'
+    local status = chars.disabled;
     -- Check if is enabled
     for k2, v2 in pairs(_config.enabled_plugins) do
       if v == v2..'.lua' then 
-        status = '✔' 
+        status = chars.enabled;
       end
     end
-    if not only_enabled or status == '✔' then
+    if not only_enabled or status == chars.enabled then
       -- get the name
       v = string.match (v, "(.*)%.lua")
-      text = text..v..'  '..status..'\n'
+      text = text..v..' '..status..(plugins[v] and plugins[v].privileged and chars.privileged or '')..(plugins[v] and plugins[v].system and chars.system or '')..'\n'
     end
   end
   return text
@@ -46,7 +52,6 @@ local function reload_plugins( )
   load_plugins()
   return list_plugins(true)
 end
-
 
 local function enable_plugin( plugin_name )
   print('checking if '..plugin_name..' exists')
@@ -84,20 +89,29 @@ local function disable_plugin( name, chat )
 end
 
 local function disable_plugin_on_chat(receiver, plugin)
-  if not plugin_exists(plugin) then
-    return "Plugin doesn't exists"
-  end
-
+  
   if not _config.disabled_plugin_on_chat then
     _config.disabled_plugin_on_chat = {}
   end
-
+  
   if not _config.disabled_plugin_on_chat[receiver] then
     _config.disabled_plugin_on_chat[receiver] = {}
   end
-
+  
+  if plugin == 'all' then
+    for _, plugin_name in pairs(_config.enabled_plugins) do
+      if (not (plugins[plugin_name] and plugins[plugin_name].system)) then
+        _config.disabled_plugin_on_chat[receiver][plugin_name] = true
+      end
+    end
+    save_config()
+    return 'All non-system plugins was disabled on this chat'
+  end
+  if not plugin_exists(plugin) then
+    return "Plugin doesn't exists"
+  end
   _config.disabled_plugin_on_chat[receiver][plugin] = true
-
+  
   save_config()
   return 'Plugin '..plugin..' disabled on this chat'
 end
@@ -106,20 +120,25 @@ local function reenable_plugin_on_chat(receiver, plugin)
   if not _config.disabled_plugin_on_chat then
     return 'There aren\'t any disabled plugins'
   end
-
+    
   if not _config.disabled_plugin_on_chat[receiver] then
     return 'There aren\'t any disabled plugins for this chat'
   end
-
+    
+  if plugin == 'all' then
+    _config.disabled_plugin_on_chat[receiver] = {}
+    save_config()
+    return 'All plugins reenabled on this chat'
+  end
   if not _config.disabled_plugin_on_chat[receiver][plugin] then
     return 'This plugin is not disabled'
   end
-
+    
   _config.disabled_plugin_on_chat[receiver][plugin] = false
   save_config()
   return 'Plugin '..plugin..' is enabled again'
 end
-
+  
 local function run(msg, matches)
   -- Show the available plugins 
   if matches[1] == '!plugins' then
@@ -165,9 +184,12 @@ return {
   description = "Plugin to manage other plugins. Enable, disable or reload.", 
   usage = {
     "!plugins: list all plugins.", 
-    "!plugins enable [plugin]: enable plugin.",
     "!plugins disable [plugin]: disable plugin.",
-    "!plugins disable [plugin] chat: disable plugin only this chat.",
+    "!plugins enable [plugin]: enable plugin.",
+    "!plugins disable [plugin] chat: disable plugin on this chat only.",
+    "!plugins enable [plugin] chat: reenable disabled on this chat plugin.",
+    "!plugins disable all chat: disable all non-system plugins on this chat only.",
+    "!plugins enable all chat: reenable all disabled plugins on this chat.",
     "!plugins reload: reloads all plugins." },
   patterns = {
     "^!plugins$",
@@ -177,7 +199,8 @@ return {
     "^!plugins? (disable) ([%w_%.%-]+) (chat)",
     "^!plugins? (reload)$" },
   run = run,
-  privileged = true
+  privileged = true,
+  system = true,
 }
 
 end
