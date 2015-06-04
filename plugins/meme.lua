@@ -178,9 +178,6 @@ end
 return {
    description = "Generate a meme image with up and bottom texts.",
    usage = {
-      "-----------------------------------------------------------------------------------------------------------------------------",
-      "Meme commands:",
-      "-----------------------------------------------------------------------------------------------------------------------------",
       "!meme search (name): Return the name of the meme that match.",
       "!meme list: Return the link where you can see the memes.",
       "!meme listall: Return the list of all memes. Only admin can call it.",
