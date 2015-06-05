@@ -172,6 +172,13 @@ Bot Commands
       <td></td>
     </tr>
     <tr>
+      <td>meme.lua</td>
+      <td>Generate a meme image with up and bottom texts.</td>
+      <td>
+      !meme search (name): Return the name of the meme that match.<br>!meme list: Return the link where you can see the memes.<br>!meme listall: Return the list of all memes. Only admin can call it.<br>!meme [name] - [text_up] - [text_down]: Generate a meme with the picture that match with that name with the texts provided.<br>!meme [name] "[text_up]" "[text_down]": Generate a meme with the picture that match with that name with the texts provided.<br>
+      </td>
+    </tr>
+    <tr>
       <td>minecraft.lua</td>
       <td>Searches Minecraft server and sends info</td>
       <td>!mine [ip]: Searches Minecraft server on specified IP and sends info. Default port: 25565<br>!mine [ip] [port]: Searches Minecraft server on specified IP and port and sends info.<br></td>
@@ -185,6 +192,11 @@ Bot Commands
       <td>plugins.lua</td>
       <td>Plugin to manage other plugins. Enable, disable or reload.</td>
       <td>!plugins: list all plugins.<br>!plugins enable [plugin]: enable plugin.<br>!plugins disable [plugin]: disable plugin.<br>!plugins disable [plugin] chat: disable plugin only this chat.<br>!plugins reload: reloads all plugins.<br></td>
+    </tr>
+    <tr>
+      <td>qr.lua</td>
+      <td>Given a text it returns a qr code</td>
+      <td>!qr [text] : returns a black and white qr code <br> !qr "[background color]" "[data color]" [text] : returns a colored qr code (see !help qr to see how specify colors).</td>
     </tr>
     <tr>
       <td>quotes.lua</td>
@@ -209,6 +221,11 @@ Bot Commands
       </td>
     </tr>
     <tr>
+      <td>rss.lua</td>
+      <td>Manage User/Chat RSS subscriptions.</td>
+      <td>!rss: Get the rss subscriptions.<br>!rss subscribe (url): Subscribe to that url.<br>!rss unsubscribe (id): Unsubscribe of that id.<br>!rss sync: Sync the rss subscriptios now. Only sudo users can use this option.<br></td>
+    </tr>
+    <tr>
       <td>search_youtube.lua</td>
       <td>Search video on YouTube and send it.</td>
       <td>!youtube [term]: Search for a YouTube video and send it.</td>
@@ -227,6 +244,11 @@ Bot Commands
       <td>steam.lua</td>
       <td>Grabs Steam info for Steam links.</td>
       <td></td>
+    </tr>
+    <tr>
+      <td>tex.lua</td>
+      <td>Convert LaTeX equation to image</td>
+      <td>!tex [equation]: Convert LaTeX equation to image</td>
     </tr>
     <tr>
       <td>time.lua</td>
@@ -295,7 +317,7 @@ Installation
 ------------
 ```bash
 # Tested on Ubuntu 14.04, for other OSs check out https://github.com/vysheng/tg#installation
-sudo apt-get install libreadline-dev libconfig-dev libssl-dev lua5.2 liblua5.2-dev libevent-dev make unzip git redis-server g++ libjansson-dev libpython-dev
+sudo apt-get install libreadline-dev libconfig-dev libssl-dev lua5.2 liblua5.2-dev libevent-dev make unzip git redis-server g++ libjansson-dev libpython-dev expat libexpat1-dev
 ```
 
 ```bash
