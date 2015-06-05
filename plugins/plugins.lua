@@ -181,9 +181,9 @@ local function run(msg, matches)
 end
 
 return {
-  description = "Plugin to manage other plugins. Enable, disable or reload.", 
+  description = l10n("Plugin to manage other plugins. Enable, disable or reload."), 
   usage = {
-    "!plugins: list all plugins.", 
+    l10n("!plugins: list all plugins."), 
     "!plugins disable [plugin]: disable plugin.",
     "!plugins enable [plugin]: enable plugin.",
     "!plugins disable [plugin] chat: disable plugin on this chat only.",
