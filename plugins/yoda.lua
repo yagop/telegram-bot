@@ -1,17 +1,30 @@
+local ltn12 = require "ltn12"
+local https = require "ssl.https"
+
+-- Edit data/mashape.lua with your Mashape API key
+-- http://docs.mashape.com/api-keys
+local mashape = load_from_file('data/mashape.lua', {
+      api_key = ''
+   })
+
 local function request(text)
    local api = "https://yoda.p.mashape.com/yoda?"
    text = string.gsub(text, " ", "+")
    local parameters = "sentence="..(text or "")
    local url = api..parameters
-   local https = require("ssl.https")
-   local respbody = {}
-   local ltn12 = require "ltn12"
+
+   local api_key = mashape.api_key
+   if api_key:isempty() then
+      return 'Configure your Mashape API Key'
+   end
+
    local headers = {
-      ["X-Mashape-Key"] = "5j2cydo37tmshgTnssARJN6VuGqkp1ggaTojsnP2fharkD2Uir",
+      ["X-Mashape-Key"] = api_key,
       ["Accept"] = "text/plain"
    }
-   print(url)
-   local body, code, headers, status = https.request{
+
+   local respbody = {}
+   local body, code  = https.request{
       url = url,
       method = "GET",
       headers = headers,
@@ -20,7 +33,6 @@ local function request(text)
    }
    if code ~= 200 then return code end
    local body = table.concat(respbody)
-   print(body)
    return body
 end
 
