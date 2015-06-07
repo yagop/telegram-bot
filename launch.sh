@@ -68,6 +68,11 @@ install_rocks() {
   RET=$?; if [ $RET -ne 0 ];
     then echo "Error. Exiting."; exit $RET;
   fi
+  
+  ./.luarocks/bin/luarocks install serpent
+  RET=$?; if [ $RET -ne 0 ];
+    then echo "Error. Exiting."; exit $RET;
+  fi
 }
 
 install() {
