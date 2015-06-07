@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 THIS_DIR=$(cd $(dirname $0); pwd)
-RAM=`grep MemTotal /proc/meminfo | awk '{print $2}'`
 cd $THIS_DIR
 
 update() {
@@ -73,12 +72,7 @@ install_rocks() {
 install() {
   git pull
   git submodule update --init --recursive
-  # If RAM is lower than 300MB disable extf queries
-  if [ $RAM -lt 307200 ]; then
-      cd tg && ./configure --disable-extf && make
-  else
-      cd tg && ./configure && make
-  fi
+  cd tg && ./configure && make
   RET=$?; if [ $RET -ne 0 ];
     then echo "Error. Exiting."; exit $RET;
   fi
