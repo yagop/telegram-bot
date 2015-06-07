@@ -1,14 +1,24 @@
-local MashapeKey = "KEY"
+local https = require "ssl.https"
+local ltn12 = require "ltn12"
 
 local function request(imageUrl)
+   -- Edit data/mashape.lua with your Mashape API key
+   -- http://docs.mashape.com/api-keys
+   local mashape = load_from_file('data/mashape.lua', {
+         api_key = ''
+      })
+
+   local api_key = mashape.api_key
+   if api_key:isempty() then
+      return nil, 'Configure your Mashape API Key'
+   end
+
    local api = "https://sphirelabs-advanced-porn-nudity-and-adult-content-detection.p.mashape.com/v1/get/index.php?"
    local parameters = "&url="..(URL.escape(imageUrl) or "")
    local url = api..parameters
-   local https = require("ssl.https")
    local respbody = {}
-   local ltn12 = require "ltn12"
    local headers = {
-      ["X-Mashape-Key"] = MashapeKey,
+      ["X-Mashape-Key"] = api_key,
       ["Accept"] = "Accept: application/json"
    }
    print(url)
@@ -43,7 +53,7 @@ end
 
 local function run(msg, matches)
    local data, code = request(matches[1])
-   if code ~= 200 then return "There was an error. #"..code end
+   if code ~= 200 then return "There was an error. "..code end
    local isPorn, result = parseData(data)
    return result
 end
@@ -52,7 +62,7 @@ return {
    description = "Does this photo contain adult content?",
    usage = {
       "!isx [url]",
-      "!isX [url]"
+      "!isporn [url]"
    },
    patterns = {
       "^!is[x|X] (.*)$",
