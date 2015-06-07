@@ -1,17 +1,29 @@
+local https = require("ssl.https")
+local ltn12 = require "ltn12"
+
+-- Edit data/mashape.lua with your Mashape API key
+-- http://docs.mashape.com/api-keys
+local mashape = load_from_file('data/mashape.lua', {
+      api_key = ''
+   })
+
 local function request(imageUrl)
+   local api_key = mashape.api_key
+   if api_key:isempty() then
+      return nil, 'Configure your Mashape API Key'
+   end
+
    local api = "https://faceplusplus-faceplusplus.p.mashape.com/detection/detect?"
    local parameters = "attribute=gender%2Cage%2Crace"
    parameters = parameters .. "&url="..(URL.escape(imageUrl) or "")
    local url = api..parameters
-   local https = require("ssl.https")
-   local respbody = {}
-   local ltn12 = require "ltn12"
    local headers = {
-      ["X-Mashape-Key"] = "5j2cydo37tmshgTnssARJN6VuGqkp1ggaTojsnP2fharkD2Uir",
+      ["X-Mashape-Key"] = api_key,
       ["Accept"] = "Accept: application/json"
    }
    print(url)
-   local body, code, headers, status = https.request{
+   local respbody = {}
+   local body, code = https.request{
       url = url,
       method = "GET",
       headers = headers,
@@ -62,7 +74,7 @@ end
 local function run(msg, matches)
    --return request('http://www.uni-regensburg.de/Fakultaeten/phil_Fak_II/Psychologie/Psy_II/beautycheck/english/durchschnittsgesichter/m(01-32)_gr.jpg')
    local data, code = request(matches[1])
-   if code ~= 200 then return "There was an error. #"..code end
+   if code ~= 200 then return "There was an error. "..code end
    return parseData(data)
 end
 
