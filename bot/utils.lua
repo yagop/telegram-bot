@@ -64,8 +64,8 @@ function get_http_file_name(url, headers)
   -- Random name, hope content-type works
   file_name = file_name or str:random(5)
 
-  local content_type = headers["content-type"] 
-  
+  local content_type = headers["content-type"]
+
   local extension = nil
   if content_type then
     extension = mimetype.get_mime_extension(content_type)
@@ -79,12 +79,12 @@ function get_http_file_name(url, headers)
     -- attachment; filename=CodeCogsEqn.png
     file_name = disposition:match('filename=([^;]+)') or file_name
   end
-    
+
   return file_name
 end
 
---  Saves file to /tmp/. If file_name isn't provided, 
--- will get the text after the last "/" for filename 
+--  Saves file to /tmp/. If file_name isn't provided,
+-- will get the text after the last "/" for filename
 -- and content-type for extension
 function download_to_file(url, file_name)
   print("url to download: "..url)
@@ -113,7 +113,7 @@ function download_to_file(url, file_name)
   if code ~= 200 then return nil end
 
   file_name = file_name or get_http_file_name(url, headers)
-    
+
   local file_path = "/tmp/"..file_name
   print("Saved to: "..file_path)
 
@@ -149,10 +149,10 @@ end
 -- User has privileges
 function is_sudo(msg)
   local var = false
-  -- Check users id in config 
-  for v,user in pairs(_config.sudo_users) do 
-    if user == msg.from.id then 
-      var = true 
+  -- Check users id in config
+  for v,user in pairs(_config.sudo_users) do
+    if user == msg.from.id then
+      var = true
     end
   end
   return var
@@ -174,7 +174,7 @@ function plugins_names( )
     -- Ends with .lua
     if (v:match(".lua$")) then
       table.insert(files, v)
-    end 
+    end
   end
   return files
 end
@@ -182,11 +182,11 @@ end
 -- Function name explains what it does.
 function file_exists(name)
   local f = io.open(name,"r")
-  if f ~= nil then 
-    io.close(f) 
-    return true 
-  else 
-    return false 
+  if f ~= nil then
+    io.close(f)
+    return true
+  else
+    return false
   end
 end
 
@@ -247,7 +247,7 @@ function send_photo_from_url(receiver, url, cb_function, cb_extra)
   -- If callback not provided
   cb_function = cb_function or ok_cb
   cb_extra = cb_extra or false
-  
+
   local file_path = download_to_file(url, false)
   if not file_path then -- Error
     local text = 'Error downloading the image'
@@ -262,7 +262,7 @@ end
 function send_photo_from_url_callback(cb_extra, success, result)
   local receiver = cb_extra.receiver
   local url = cb_extra.url
-  
+
   local file_path = download_to_file(url, false)
   if not file_path then -- Error
     local text = 'Error downloading the image'
@@ -284,7 +284,7 @@ function send_photos_from_url(receiver, urls)
   send_photos_from_url_callback(cb_extra)
 end
 
--- Use send_photos_from_url. 
+-- Use send_photos_from_url.
 -- This function might be difficult to understand.
 function send_photos_from_url_callback(cb_extra, success, result)
   -- cb_extra is a table containing receiver, urls and remove_path
@@ -391,13 +391,63 @@ function user_allowed(plugin, msg)
   return true
 end
 
+
+function send_order_msg(destination, msgs)
+   local cb_extra = {
+      destination = destination,
+      msgs = msgs
+   }
+   send_order_msg_callback(cb_extra, true)
+end
+
+function send_order_msg_callback(cb_extra, success, result)
+   local destination = cb_extra.destination
+   local msgs = cb_extra.msgs
+   local file_path = cb_extra.file_path
+   if file_path ~= nil then
+      os.remove(file_path)
+      print("Deleted: " .. file_path)
+   end
+   if type(msgs) == 'string' then
+      send_large_msg(destination, msgs)
+   elseif type(msgs) ~= 'table' then
+      return
+   end
+   if #msgs < 1 then
+      return
+   end
+   local msg = table.remove(msgs, 1)
+   local new_cb_extra = {
+      destination = destination,
+      msgs = msgs
+   }
+   if type(msg) == 'string' then
+      send_msg(destination, msg, send_order_msg_callback, new_cb_extra)
+   elseif type(msg) == 'table' then
+      local typ = msg[1]
+      local nmsg = msg[2]
+      new_cb_extra.file_path = nmsg
+      if typ == 'document' then
+         send_document(destination, nmsg, send_order_msg_callback, new_cb_extra)
+      elseif typ == 'image' or typ == 'photo' then
+         send_photo(destination, nmsg, send_order_msg_callback, new_cb_extra)
+      elseif typ == 'audio' then
+         send_audio(destination, nmsg, send_order_msg_callback, new_cb_extra)
+      elseif typ == 'video' then
+         send_video(destination, nmsg, send_order_msg_callback, new_cb_extra)
+      else
+         send_file(destination, nmsg, send_order_msg_callback, new_cb_extra)
+      end
+   end
+end
+
 -- Same as send_large_msg_callback but friendly params
 function send_large_msg(destination, text)
   local cb_extra = {
     destination = destination,
     text = text
   }
-  send_large_msg_callback(cb_extra, true)
+  send_order_msg_callback(cb_extra, true)
 end
 
 -- If text is longer than 4096 chars, send multiple msg.
