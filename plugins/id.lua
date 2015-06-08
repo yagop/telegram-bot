@@ -24,7 +24,7 @@ local function returnids(cb_extra, success, result)
    for k,v in pairs(result.members) do
       text = text .. v.print_name .. " (user#id" .. v.id .. ")\n"
    end
-   send_msg(receiver, text, ok_cb, false)
+   send_large_msg(receiver, text)
 end
 
 local function run(msg, matches)
