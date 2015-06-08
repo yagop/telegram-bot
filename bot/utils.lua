@@ -447,7 +447,7 @@ function send_large_msg(destination, text)
     destination = destination,
     text = text
   }
-  send_order_msg_callback(cb_extra, true)
+  send_large_msg_callback(cb_extra, true)
 end
 
 -- If text is longer than 4096 chars, send multiple msg.
