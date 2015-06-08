@@ -1,10 +1,11 @@
+URL = require "socket.url"
 http = require "socket.http"
 https = require "ssl.https"
 ltn12 = require "ltn12"
-URL = require "socket.url"
+serpent = require "serpent"
 feedparser = require "feedparser"
+
 json = (loadfile "./libs/JSON.lua")()
-serpent = (loadfile "./libs/serpent.lua")()
 mimetype = (loadfile "./libs/mimetype.lua")()
 redis = (loadfile "./libs/redis.lua")()
 
