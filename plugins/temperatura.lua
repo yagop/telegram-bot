@@ -1,8 +1,5 @@
 local function run(msg, matches)
-	local handle = io.popen('/opt/vc/bin/vcgencmd measure_temp')
-	local text = handle:read("*a")
-	handle:close()
-
+	local text = run_command('/opt/vc/bin/vcgencmd measure_temp') or 'An error happened'
 	return text
 end
 
