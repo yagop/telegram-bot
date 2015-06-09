@@ -1,5 +1,5 @@
 local function run(msg, matches)
-	local handle = io.popen("temperatura")
+	local handle = io.popen('/opt/vc/bin/vcgencmd measure_temp')
 	local text = handle:read("*a")
 	handle:close()
 
@@ -8,9 +8,9 @@ end
 
 return{
 	description = "Simple plugin that shows Raspberry Pi temperature!",
-	usage = "!temperatura echoes the actual temperature.",
+	usage = "!temp echoes the actual temperature.",
 	patterns = {
-		"^!temperatura (.*)$"
+		"^!([Tt]emp)$"
 	},
 	run = run
 }
