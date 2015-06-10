@@ -1,12 +1,12 @@
 do
 
-  function unescape(str)
+  local function unescape(str)
     str = string.gsub( str, '&lt;', '<' )
     str = string.gsub( str, '&gt;', '>' )
     str = string.gsub( str, '&quot;', '"' )
     str = string.gsub( str, '&apos;', "'" )
     str = string.gsub( str, '&#(%d+);', function(n) return string.char(n) end )
-    str = string.gsub( str, '&#x(%d+);', function(n) return string.char(tonumber(n,16)) end )
+    str = string.gsub str, '&#x(%d+);', function(n) return string.char(tonumber(n,16)) end )
     str = string.gsub( str, '&amp;', '&' ) -- Be sure to do this after all others
   return str
   end
@@ -19,7 +19,7 @@ do
     return unescape
   end
 
-  local function run(msg)
+  function run(msg)
     local joke = chuck()
     return joke
   end
