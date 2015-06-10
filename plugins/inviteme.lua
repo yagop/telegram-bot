@@ -1,6 +1,6 @@
 do
 
-function parsed_url(link)
+local function parsed_url(link)
   local parsed_link = URL.parse(link)
   local parsed_path = URL.parse_path(parsed_link.path)
   return parsed_path[2]
