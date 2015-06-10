@@ -37,7 +37,7 @@ local function search_kickass(query)
   for i=1,results do
     local torrent = data.list[i]
     local link = torrent.torrentLink
-    --link = link:gsub('%?title=.+','')
+    link = link:gsub('%?title=.+','')
     text = text..torrent.title
       ..'\n'..'Seeds: '..torrent.seeds
       ..' '..'Leeches: '..torrent.leechs
