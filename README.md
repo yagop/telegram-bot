@@ -1,6 +1,8 @@
 telegram-bot
 ============
 
+[![Join the chat at https://gitter.im/yagop/telegram-bot](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/yagop/telegram-bot?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![](https://travis-ci.org/yagop/telegram-bot.svg?branch=master)](https://travis-ci.org/yagop/telegram-bot)
 [![Donate button](https://img.shields.io/badge/nepal-donate-yellow.svg)](http://www.nrcs.org/donate-nrcs "Donate to Nepal Red Cross Society")
 
