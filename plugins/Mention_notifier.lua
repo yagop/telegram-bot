@@ -1,11 +1,10 @@
 ﻿--[[ 
-This autoanswer script will let your bot answer automatically depending on some keywords. 
-
-For example, like how set on this script, you can let the bot greet everyone if someone on a random part of the message says "Hi all" (there is no case sensivity.) 
+This autoanswer script will let your bot write a message to your private chat, if some keyword listed is used, fox example when someone uses you nickname, but doesn't add @ before, so you won't get mentioned. 
 
 Update 2015_06_16: 
 - added a local enabled variable, in order to set it to 0, without having to delete the keywords, useful for temporary disable of that match.
 - added empty nickname checkings
+
 
 For questions: 
 Sempiternum, sempiternvm@gmail.com
@@ -27,26 +26,15 @@ local from_username = ('@' .. msg.from.username)
 end
 -- End of empty username check
 
-
--- Keyword autoanswer 
-if string.find(text, "Hi all") then
+-- notifier --
+elseif string.find(text, "YOUR_NICKNAME") or string.find(text, "YOUR_NICKNAME2") or string.find(text,"NICKNAME") then
 local enabled = "1"
 if string.find(enabled, "1") then 
-local botanswers = {"hey ".. from_username .. " !","hi ".. from_username .. " !"}
-return botanswers[math.random(#botanswers)]
+receiverid = 'user#id00000000'
+texttosend = "you got mentioned by  " .. from_username .." Chat_name:  " .. chat_name .. " Chat_id:  " .. chat_id
+do fwd_msg(receiverid, msg.id, ok_cb, false) end
+do send_msg(receiverid, texttosend, ok_cb, false)
+return 
 end
-
-
-else
-return
-end 
 end
-
-return {
- description = "Autoanswer",
- usage = "You write, i reply",
- patterns = {
- "^(.+)$"
- }, 
- run = run 
-}
+-- end of notifier --
