@@ -3,9 +3,8 @@ This autoanswer script will let your bot answer automatically depending on some 
 
 For example, like how set on this script, you can let the bot greet everyone if someone on a random part of the message says "Hi all" (there is no case sensivity.) 
 
-Update 2015_06_16: 
-- added a local enabled variable, in order to set it to 0, without having to delete the keywords, useful for temporary disable of that match.
-- added empty nickname checkings
+Update 2015_06_16: added a local enabled variable, in order to set it to 0, without having to delete the keywords, useful for temporary disable of that match.
+
 
 For questions: 
 Sempiternum, sempiternvm@gmail.com
