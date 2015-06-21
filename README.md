@@ -104,6 +104,11 @@ Bot Commands
       <td>!gif (term): Search and sends GIF from Giphy. If no param, sends a trending GIF.<br>!giphy (term): Search and sends GIF from Giphy. If no param, sends a trending GIF.<br></td>
     </tr>
     <tr>
+      <td>gnuplot.lua</td>
+      <td>Gnuplot plugin</td>
+      <td>!gnuplot [single variable function]: Plot single variable function.</td>
+    </tr>
+    <tr>
       <td>google.lua</td>
       <td>Searches Google and send results</td>
       <td>!google [terms]: Searches Google and send results</td>
