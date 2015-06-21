@@ -11,7 +11,7 @@ local wikiusage = {
 
 local Wikipedia = {
   -- http://meta.wikimedia.org/wiki/List_of_Wikipedias
-  wiki_server = "http://%s.wikipedia.org",
+  wiki_server = "https://%s.wikipedia.org",
   wiki_path = "/w/api.php",
   wiki_load_params = {
     action = "query",
