@@ -7,7 +7,7 @@ end
 
 local function run(msg)
   local joke = chuck()
-  return URL.unescape(joke)
+  return unescape_html(joke)
 end
 
 return {
