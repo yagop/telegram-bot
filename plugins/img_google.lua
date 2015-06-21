@@ -50,6 +50,7 @@ local function simple_google_table(google)
   local results = google.responseData.results
   for k,result in pairs(results) do
     new_table.responseData.results[k] = {}
+    new_table.responseData.results[k].unescapedUrl = result.unescapedUrl
     new_table.responseData.results[k].url = result.url
   end
   return new_table
@@ -82,7 +83,7 @@ local function process_google_data(google, receiver, query)
 
     -- Random image from table
     local i = math.random(#data.results)
-    local url = data.results[i].url
+    local url = data.results[i].unescapedUrl or data.results[i].url
     local old_timeout = http.TIMEOUT or 10
     http.TIMEOUT = 5
     send_photo_from_url(receiver, url)
