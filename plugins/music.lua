@@ -33,7 +33,7 @@ do
         -- Track id
         local trackId = track.id
 
-	-- remove that starting 't' in the id of element
+	-- Remove that starting 't' in the id of element
         trackId = trackId:sub(2)
 
         -- Parse track
@@ -42,11 +42,11 @@ do
 
         -- Track artist
         local artist = track:select('.artist')[1]
-        artist = artist:getcontent()
+        artist = unescape_html(artist:getcontent())
 
         -- Track title 
         local title = track:select('.title')[1]
-        title = title:getcontent()
+        title = unescape_html(title:getcontent())
 
         -- Track time
         local time = track:select('.time')[1]
