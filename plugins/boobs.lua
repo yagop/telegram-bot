@@ -38,21 +38,28 @@ local function getRandomBoobs(attempt)
 end
 
 local function run(msg, matches)
-  local url = nil
+  n = string.match(matches[1], '[0-9]+')
   
-  if matches[1] == "!boobs" then
-    url = getRandomBoobs()
-  end
-
-  if matches[1] == "!butts" then
-    url = getRandomButts()
-  end
-
-  if url ~= nil then
-    local receiver = get_receiver(msg)
-    send_photo_from_url(receiver, url)
+  if n ~= nil then
+    req = match_pattern("^![bosut]+", matches[1])
+    for i = 1,n do run(msg, req) end
   else
-    return 'Error getting boobs/butts for you, please try again later.' 
+	local url = nil
+	
+	if matches[1] == "!boobs" then
+	  url = getRandomBoobs()
+	end
+
+	if matches[1] == "!butts" then
+	  url = getRandomButts()
+	end
+
+	if url ~= nil then
+	  local receiver = get_receiver(msg)
+	  send_photo_from_url(receiver, url)
+	else
+	  return 'Error getting boobs/butts for you, please try again later.' 
+	end
   end
 end
 
@@ -64,7 +71,9 @@ return {
   },
   patterns = {
     "^!boobs$",
-    "^!butts$"
+    "^!butts$",
+	"^!boobs [0-9]+$",
+	"^!butts [0-9]+$"
   }, 
   run = run 
 }
