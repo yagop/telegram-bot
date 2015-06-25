@@ -48,7 +48,7 @@ local function run(msg, matches)
       txt = txt .. 'Character: ' .. post.tag_string_character .. '\n'
     end
     if post.file_size ~= '' then
-      txt = txt .. '[' .. math.ceil(post.file_size/1000) .. 'kb] ' .. URL .. post.file_url
+      txt = txt .. '[' .. math.ceil(post.file_size/1000) .. 'kb] '-- .. URL .. post.file_url
     end
     return txt
   end
