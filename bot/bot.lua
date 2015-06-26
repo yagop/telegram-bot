@@ -212,6 +212,7 @@ function create_config( )
       "google",
       "gps",
       "help",
+      "id",
       "images",
       "img_google",
       "location",
