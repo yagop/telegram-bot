@@ -38,28 +38,32 @@ local function getRandomBoobs(attempt)
 end
 
 local function run(msg, matches)
-  n = string.match(matches[1], '[0-9]+')
+  local n = string.match(matches[1], '[0-9]+')
   
   if n ~= nil then
-    req = match_pattern("^![bosut]+", matches[1])
-    for i = 1,n do run(msg, req) end
+    if tonumber(n) <= 20 then
+      req = match_pattern("^![bosut]+", matches[1])
+      for i = 1,n do run(msg, req) end
+    else
+      return "Too many pictures requested. Maximum 20 allowed."
+    end
   else
-	local url = nil
-	
-	if matches[1] == "!boobs" then
-	  url = getRandomBoobs()
-	end
+    local url = nil
+    
+    if matches[1] == "!boobs" then
+      url = getRandomBoobs()
+    end
 
-	if matches[1] == "!butts" then
-	  url = getRandomButts()
-	end
+    if matches[1] == "!butts" then
+      url = getRandomButts()
+    end
 
-	if url ~= nil then
-	  local receiver = get_receiver(msg)
-	  send_photo_from_url(receiver, url)
-	else
-	  return 'Error getting boobs/butts for you, please try again later.' 
-	end
+    if url ~= nil then
+      local receiver = get_receiver(msg)
+      send_photo_from_url(receiver, url)
+    else
+      return 'Error getting boobs/butts for you, please try again later.' 
+    end
   end
 end
 
