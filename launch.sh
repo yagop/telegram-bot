@@ -85,7 +85,7 @@ install() {
     RET=$?
   fi
   
-  RET=$?; if [ $RET -ne 0 ]; then
+  if [ $RET -ne 0 ]; then
     echo "Error. Exiting."; exit $RET;
   fi
   cd ..
