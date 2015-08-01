@@ -8,6 +8,7 @@ feedparser = require "feedparser"
 json = (loadfile "./libs/JSON.lua")()
 mimetype = (loadfile "./libs/mimetype.lua")()
 redis = (loadfile "./libs/redis.lua")()
+JSON = (loadfile "./libs/dkjson.lua")()
 
 http.TIMEOUT = 10
 
