@@ -105,8 +105,14 @@ end
 local function run(msg, matches)
 
   -- Silent ignore
-  if not is_sudo(msg) then
-    return nil
+  --if not is_sudo(msg) then
+    --return nil
+  --end
+  
+  if not is_momod(msg) then
+    if not is_sudo(msg) then
+      return nil
+    end
   end
 
   if matches[1] == 'ban' then
