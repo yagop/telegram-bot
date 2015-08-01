@@ -13,10 +13,10 @@ end
 
 
 return {
-  description = "Invite me into a group chat", 
-  usage = "!inviteme [invite link]",
+  description = "Invite bot into a group chat", 
+  usage = "!join [invite link]",
   patterns = {
-    "^!inviteme (.*)$"
+    "^!join (.*)$"
   }, 
   run = run
 }
