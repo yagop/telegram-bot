@@ -204,9 +204,7 @@ function create_config( )
   config = {
     enabled_plugins = {
       "9gag",
-      "eur",
       "echo",
-      "btc",
       "get",
       "giphy",
       "google",
@@ -224,7 +222,6 @@ function create_config( )
       "time",
       "version",
       "weather",
-      "xkcd",
       "youtube",
       "moderation"},
     sudo_users = {our_id},

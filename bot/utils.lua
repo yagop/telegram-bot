@@ -8,7 +8,7 @@ feedparser = require "feedparser"
 json = (loadfile "./libs/JSON.lua")()
 mimetype = (loadfile "./libs/mimetype.lua")()
 redis = (loadfile "./libs/redis.lua")()
-JSON = (loadfile "./libs/dkjson.lua")()
+JSON = (loadfile "./libs/dkjson.lua")() -- added
 
 http.TIMEOUT = 10
 
@@ -154,6 +154,19 @@ function is_sudo(msg)
   -- Check users id in config
   for v,user in pairs(_config.sudo_users) do
     if user == msg.from.id then
+      var = true
+    end
+  end
+  return var
+end
+
+-- user has moderator privileges
+function is_momod(msg)
+  local var = false
+  local data = load_data(_config.moderation.data)
+  local member = msg.from.username
+  if data[tostring(msg.to.id)] then
+    if data[tostring(msg.to.id)][tostring(member)] then
       var = true
     end
   end
@@ -387,6 +400,15 @@ end
 
 -- Check if user can use the plugin
 function user_allowed(plugin, msg)
+  --if plugin.privileged and not is_sudo(msg) then
+  --  return false
+  --end
+  --return true
+  if plugin.moderated and not is_momod(msg) then
+    if plugin.moderated and not is_sudo(msg) then
+      return false
+    end
+  end
   if plugin.privileged and not is_sudo(msg) then
     return false
   end
