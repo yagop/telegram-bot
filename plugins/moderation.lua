@@ -1,29 +1,11 @@
 do
 
-local function callback(extra, success, result)
-  vardump(success)
-  vardump(result)
-end
-
-local function user_print_name(user)
-   if user.print_name then
-      return user.print_name
-   end
-   local text = ''
-   if user.first_name then
-      text = user.last_name..' '
-   end
-   if user.lastname then
-      text = text..user.last_name
-   end
-   return text
-end
-
 local function modadd(msg)
+    -- superuser and admins only (because sudo are always has privilege)
+    if not is_admin(msg) then
+        return "You're not admin"
+    end
     local data = load_data(_config.moderation.data)
-
-	--if not _config.moderation.admins[msg.from.id] then return end
-
 	if data[tostring(msg.to.id)] then
 		return 'Group is already added.'
 	end
@@ -35,10 +17,12 @@ local function modadd(msg)
 end
 
 local function modrem(msg)
+    -- superuser and admins only (because sudo are always has privilege)
+    if not is_admin(msg) then
+        return "You're not admin"
+    end
     local data = load_data(_config.moderation.data)
     local receiver = get_receiver(msg)
-	--if not _config.moderation.admins[msg.from.id] then return end
-
 	if not data[tostring(msg.to.id)] then
 		return 'Group is not added.'
 	end
@@ -51,9 +35,6 @@ end
 
 local function promote(msg, member)
     local data = load_data(_config.moderation.data)
-
-	--if not _config.moderation.admins[msg.from.id] then return end
-
 	if not data[tostring(msg.to.id)] then
 		return 'Group is not added.'
 	end
@@ -70,9 +51,6 @@ end
 
 local function demote(msg, member)
     local data = load_data(_config.moderation.data)
-
-	--if not config.moderation.admins[msg.from.id] then return end
-
 	if not data[tostring(msg.to.id)] then
 		return 'Group is not added.'
 	end
@@ -94,16 +72,72 @@ local function modlist(msg)
 		return 'Group is not added.'
 	end
 
-	local message = 'List of moderators for ' .. msg.to.print_name .. ':\n'
-
+	local message = 'List of moderators for ' .. string.gsub(msg.to.print_name, '_', ' ') .. ':\n'
 	for k,v in pairs(data[tostring(msg.to.id)]) do
-		--message = message .. v .. ' (' .. k .. ')\n'
-		message = message .. v .. ' \n'
+		message = message .. '- ' .. v .. ' \n'
 	end
 
 	return message
 end
 	
+local function admin_promote(msg, admin_id)	
+	if not is_sudo(msg) then
+        return "Access denied!"
+    end
+	local data = load_data(_config.moderation.data)
+	local admins = 'admins'
+	if not data[tostring(admins)] then
+		data[tostring(admins)] = {}
+		save_data(_config.moderation.data, data)
+	end
+
+	if data[tostring(admins)][tostring(admin_id)] then
+		return admin_name..' is already an admin.'
+	end
+
+	data[tostring(admins)][tostring(admin_id)] = admin_id -- admin_id kedua harusnya nama
+	save_data(_config.moderation.data, data)
+
+	return admin_id..' has been promoted as admin.'
+end
+
+local function admin_demote(msg, admin_id)
+    if not is_sudo(msg) then
+        return "Access denied!"
+    end
+    local data = load_data(_config.moderation.data)
+	local admins = 'admins'
+	if not data[tostring(admins)] then
+		data[tostring(admins)] = {}
+		save_data(_config.moderation.data, data)
+	end
+
+	if not data[tostring(admins)][tostring(admin_id)] then
+		return admin_id..' is not an admin.'
+	end
+
+	data[tostring(admins)][tostring(admin_id)] = nil
+	save_data(_config.moderation.data, data)
+
+	return admin_id..' has been demoted from admin.'
+end
+
+local function admin_list(msg)
+    local data = load_data(_config.moderation.data)
+	local admins = 'admins'
+	if not data[tostring(admins)] then
+		data[tostring(admins)] = {}
+		save_data(_config.moderation.data, data)
+	end
+
+	local message = 'List for Bot admins:\n'
+	for k,v in pairs(data[tostring(admins)]) do
+	    --message = message .. '- ' .. k .. v .. ' \n'
+		message = message .. '- ' .. v .. ' \n'
+	end
+	return message
+end
+
 function run(msg, matches)
   if msg.to.type == 'user' then
     return "Only works on group"
@@ -128,8 +162,20 @@ function run(msg, matches)
     return demote(msg, member)
   end
   if matches[1] == 'modlist' then
-    print(modlist)
     return modlist(msg)
+  end
+  if matches[1] == 'adminprom' then
+    local admin_id = matches[2]
+    print("user "..admin_id.." has been promoted as admin")
+    return admin_promote(msg, admin_id)
+  end
+  if matches[1] == 'admindem' then
+    local admin_id = matches[2]
+    print("user "..admin_id.." has been demoted from admin")
+    return admin_demote(msg, admin_id)
+  end
+  if matches[1] == 'adminlist' then
+    return admin_list(msg)
   end
 end
 
@@ -149,9 +195,12 @@ return {
     "^!(promote) (.*)$",
     "^!(demote) (.*)$",
     "^!(modlist)$",
+    "^!(adminprom) (%d+)$", -- sudoer only
+    "^!(admindem) (%d+)$", -- sudoers only
+    "^!(adminlist)$",
   }, 
   run = run,
-  privileged = true
+  moderated = true
 }
 
 end

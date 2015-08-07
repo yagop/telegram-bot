@@ -8,7 +8,7 @@ feedparser = require "feedparser"
 json = (loadfile "./libs/JSON.lua")()
 mimetype = (loadfile "./libs/mimetype.lua")()
 redis = (loadfile "./libs/redis.lua")()
-JSON = (loadfile "./libs/dkjson.lua")() -- added
+JSON = (loadfile "./libs/dkjson.lua")()
 
 http.TIMEOUT = 10
 
@@ -148,7 +148,7 @@ function run_command(str)
   return result
 end
 
--- User has privileges
+-- User has superuser privileges
 function is_sudo(msg)
   local var = false
   -- Check users id in config
@@ -160,10 +160,30 @@ function is_sudo(msg)
   return var
 end
 
+-- user has admins privileges
+function is_admin(msg)
+  local var = false
+  local data = load_data(_config.moderation.data)
+  local user = msg.from.id
+  local admins = 'admins'
+  if data[tostring(admins)] then
+    if data[tostring(admins)][tostring(user)] then
+      var = true
+    end
+    for v,user in pairs(_config.sudo_users) do
+        if user == msg.from.id then
+            var = true
+        end
+    end
+  end
+  return var
+end
+
 -- user has moderator privileges
 function is_momod(msg)
   local var = false
   local data = load_data(_config.moderation.data)
+  --local member = msg.from.id
   local member = msg.from.username
   if data[tostring(msg.to.id)] then
     if data[tostring(msg.to.id)][tostring(member)] then
@@ -400,15 +420,15 @@ end
 
 -- Check if user can use the plugin
 function user_allowed(plugin, msg)
-  --if plugin.privileged and not is_sudo(msg) then
-  --  return false
-  --end
-  --return true
-  if plugin.moderated and not is_momod(msg) then
-    if plugin.moderated and not is_sudo(msg) then
-      return false
+  -- Berfungsi utk mengecek user jika plugin moderated = true
+  if plugin.moderated and not is_momod(msg) then --Cek apakah user adalah momod
+    if plugin.moderated and not is_admin(msg) then -- Cek apakah user adalah admin
+      if plugin.moderated and not is_sudo(msg) then -- Cek apakah user adalah sudoers
+        return false
+      end
     end
   end
+  -- Berfungsi mengecek user jika plugin privileged = true
   if plugin.privileged and not is_sudo(msg) then
     return false
   end

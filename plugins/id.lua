@@ -14,15 +14,18 @@ end
 
 local function returnids(cb_extra, success, result)
    local receiver = cb_extra.receiver
-   local chat_id = "chat#id"..result.id
+   --local chat_id = "chat#id"..result.id
+   local chat_id = result.id
    local chatname = result.print_name
 
    local text = 'IDs for chat '..chatname
       ..' ('..chat_id..')\n'
       ..'There are '..result.members_num..' members'
       ..'\n---------\n'
+      i = 0
    for k,v in pairs(result.members) do
-      text = text .. v.print_name .. " (user#id" .. v.id .. ")\n"
+      i = i+1
+      text = text .. i .. ". " .. string.gsub(v.print_name, "_", " ") .. " (" .. v.id .. ")\n"
    end
    send_large_msg(receiver, text)
 end
@@ -30,9 +33,9 @@ end
 local function run(msg, matches)
    local receiver = get_receiver(msg)
    if matches[1] == "!id" then
-      local text = user_print_name(msg.from) .. ' (user#id' .. msg.from.id .. ')'
+      local text = 'Name : '.. string.gsub(user_print_name(msg.from),'_', ' ') .. '\nID : ' .. msg.from.id
       if is_chat_msg(msg) then
-         text = text .. "\nYou are in group " .. user_print_name(msg.to) .. " (chat#id" .. msg.to.id  .. ")"
+         text = text .. "\n\nYou are in group " .. string.gsub(user_print_name(msg.to), '_', ' ') .. " (ID: " .. msg.to.id  .. ")"
       end
       return text
    elseif matches[1] == "chat" then
