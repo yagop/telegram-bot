@@ -170,10 +170,10 @@ function is_admin(msg)
     if data[tostring(admins)][tostring(user)] then
       var = true
     end
-    for v,user in pairs(_config.sudo_users) do
-        if user == msg.from.id then
-            var = true
-        end
+  end
+  for v,user in pairs(_config.sudo_users) do
+    if user == msg.from.id then
+        var = true
     end
   end
   return var
@@ -185,9 +185,22 @@ function is_momod(msg)
   local data = load_data(_config.moderation.data)
   --local member = msg.from.id
   local member = msg.from.username
+  local user = msg.from.id
+  local admins = 'admins'
+  local data_cat = 'moderators'
   if data[tostring(msg.to.id)] then
-    if data[tostring(msg.to.id)][tostring(member)] then
+    if data[tostring(msg.to.id)][data_cat][tostring(member)] then
       var = true
+    end
+  end
+  if data[tostring(admins)] then
+    if data[tostring(admins)][tostring(user)] then
+      var = true
+    end
+  end
+  for v,user in pairs(_config.sudo_users) do
+    if user == msg.from.id then
+        var = true
     end
   end
   return var
