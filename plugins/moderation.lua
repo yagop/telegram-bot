@@ -35,15 +35,19 @@ end
 
 local function promote(msg, member)
     local data = load_data(_config.moderation.data)
+    local data_cat = 'moderators'
 	if not data[tostring(msg.to.id)] then
 		return 'Group is not added.'
 	end
-
-	if data[tostring(msg.to.id)][tostring(member)] then
+	if not data[tostring(msg.to.id)][data_cat] then
+	   data[tostring(msg.to.id)][data_cat] = {}
+	   save_data(_config.moderation.data, data)
+	end
+	if data[tostring(msg.to.id)][data_cat][tostring(member)] then
 		return member..' is already a moderator.'
 	end
 
-	data[tostring(msg.to.id)][tostring(member)] = member
+	data[tostring(msg.to.id)][data_cat][tostring(member)] = member -- harusnya user.id atau data lain
 	save_data(_config.moderation.data, data)
 
 	return '@'..member..' has been promoted.'
@@ -51,15 +55,16 @@ end
 
 local function demote(msg, member)
     local data = load_data(_config.moderation.data)
+    local data_cat = 'moderators'
 	if not data[tostring(msg.to.id)] then
 		return 'Group is not added.'
 	end
 
-	if not data[tostring(msg.to.id)][tostring(member)] then
+	if not data[tostring(msg.to.id)][data_cat][tostring(member)] then
 		return member..' is not a moderator.'
 	end
 
-	data[tostring(msg.to.id)][tostring(member)] = nil
+	data[tostring(msg.to.id)][data_cat][tostring(member)] = nil
 	save_data(_config.moderation.data, data)
 
 	return '@'..member..' has been demoted.'
@@ -67,13 +72,15 @@ end
 
 local function modlist(msg)
     local data = load_data(_config.moderation.data)
-
+    local data_cat = 'moderators'
 	if not data[tostring(msg.to.id)] then
 		return 'Group is not added.'
 	end
-
+	if not data[tostring(msg.to.id)][data_cat] then
+		return 'No moderator in this group.'
+	end
 	local message = 'List of moderators for ' .. string.gsub(msg.to.print_name, '_', ' ') .. ':\n'
-	for k,v in pairs(data[tostring(msg.to.id)]) do
+	for k,v in pairs(data[tostring(msg.to.id)][data_cat]) do
 		message = message .. '- ' .. v .. ' \n'
 	end
 
@@ -144,7 +151,7 @@ function run(msg, matches)
   end
   if matches[1] == 'modadd' then
     print("group "..msg.to.print_name.."("..msg.to.id..") added")
-    vardump(msg)
+    --vardump(msg)
     return modadd(msg)
   end
   if matches[1] == 'modrem' then
@@ -183,11 +190,11 @@ end
 return {
   description = "Moderation plugin", 
   usage = {
-    "!modadd : add group to moderation list",
-    "!modrem : remove group from moderation list",
-    "!promote <@username> : promote user as moderator",
+    "!modadd : Add group to moderation list",
+    "!modrem : Remove group from moderation list",
+    "!promote <@username> : Promote user as moderator",
     "!demote <@username> : demote user from moderator",
-    "!modlist : list of moderators",
+    "!modlist : List of moderators",
     },
   patterns = {
     "^!(modadd)$",
@@ -195,7 +202,7 @@ return {
     "^!(promote) (.*)$",
     "^!(demote) (.*)$",
     "^!(modlist)$",
-    "^!(adminprom) (%d+)$", -- sudoer only
+    "^!(adminprom) (%d+)$", -- sudoers only
     "^!(admindem) (%d+)$", -- sudoers only
     "^!(adminlist)$",
   }, 
