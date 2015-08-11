@@ -189,8 +189,10 @@ function is_momod(msg)
   local admins = 'admins'
   local data_cat = 'moderators'
   if data[tostring(msg.to.id)] then
-    if data[tostring(msg.to.id)][data_cat][tostring(member)] then
-      var = true
+    if data[tostring(msg.to.id)][data_cat] then
+      if data[tostring(msg.to.id)][data_cat][tostring(member)] then
+        var = true
+      end
     end
   end
   if data[tostring(admins)] then
