@@ -45,15 +45,48 @@ function chat_new_user(msg)
    end
 end
 
+local function description_rules(msg, nama)
+   local data = load_data(_config.moderation.data)
+   if data[tostring(msg.to.id)] then
+      local about = ""
+      local rules = ""
+      if data[tostring(msg.to.id)]["description"] then
+         about = data[tostring(msg.to.id)]["description"]
+         about = "\nDeskripsi:\n"..about.."\n"
+      end
+      if data[tostring(msg.to.id)]["rules"] then
+         rules = data[tostring(msg.to.id)]["rules"]
+         rules = "\nPeraturan:\n"..rules.."\n"
+      end
+      local sambutan = "Saat ini kamu ada di group '"..string.gsub(msg.to.print_name, "_", " ").."'\n"
+      local text = sambutan..about..rules.."\n"
+      local text = text.."Silahkan "..nama.." memperkenalkan diri."
+      local receiver = get_receiver(msg)
+      send_large_msg(receiver, text, ok_cb, false)
+   end
+end
 
 local function run(msg, matches)
    if not msg.service then
       return "Are you trying to troll me?"
    end
+   --vardump(msg)
    if matches[1] == "chat_add_user" then
+      if not msg.action.user.username then
+          nama = string.gsub(msg.action.user.print_name, "_", " ")
+      else 
+          nama = "@"..msg.action.user.username
+      end
       chat_new_user(msg)
+      description_rules(msg, nama)
    elseif matches[1] == "chat_add_user_link" then
+      if not msg.from.username then
+          nama = string.gsub(msg.from.print_name, "_", " ")
+      else
+          nama = "@"..msg.from.username
+      end
       chat_new_user_link(msg)
+      description_rules(msg, nama)
    end
 end
 
@@ -62,7 +95,7 @@ return {
    usage = "",
    patterns = {
       "^!!tgservice (chat_add_user)$",
-      "^!!tgservice (chat_add_user_link)$"
+      "^!!tgservice (chat_add_user_link)$",
    },
    run = run
 }
