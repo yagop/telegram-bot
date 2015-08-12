@@ -14,20 +14,20 @@ install_luarocks() {
   git clone https://github.com/keplerproject/luarocks.git
   cd luarocks
   git checkout tags/v2.2.1 # Current stable
-   
+
   PREFIX="$THIS_DIR/.luarocks"
-  
+
   ./configure --prefix=$PREFIX --sysconfdir=$PREFIX/luarocks --force-config
-  
+
   RET=$?; if [ $RET -ne 0 ];
-    then echo "Error. Exiting."; exit $RET; 
+    then echo "Error. Exiting."; exit $RET;
   fi
 
   make build && make install
   RET=$?; if [ $RET -ne 0 ];
     then echo "Error. Exiting.";exit $RET;
   fi
-   
+
   cd ..
   rm -rf luarocks
 }
@@ -57,14 +57,36 @@ install_rocks() {
   RET=$?; if [ $RET -ne 0 ];
     then echo "Error. Exiting."; exit $RET;
   fi
+
+  ./.luarocks/bin/luarocks install xml
+  RET=$?; if [ $RET -ne 0 ];
+    then echo "Error. Exiting."; exit $RET;
+  fi
+
+  ./.luarocks/bin/luarocks install feedparser
+  RET=$?; if [ $RET -ne 0 ];
+    then echo "Error. Exiting."; exit $RET;
+  fi
+  
+  ./.luarocks/bin/luarocks install serpent
+  RET=$?; if [ $RET -ne 0 ];
+    then echo "Error. Exiting."; exit $RET;
+  fi
 }
 
 install() {
   git pull
   git submodule update --init --recursive
   cd tg && ./configure && make
-  RET=$?; if [ $RET -ne 0 ];
-    then echo "Error. Exiting."; exit $RET;
+  
+  RET=$?; if [ $RET -ne 0 ]; then
+    echo "Trying without Python...";
+    ./configure --disable-python && make
+    RET=$?
+  fi
+  
+  if [ $RET -ne 0 ]; then
+    echo "Error. Exiting."; exit $RET;
   fi
   cd ..
   install_luarocks

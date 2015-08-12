@@ -23,7 +23,7 @@ local function enable_channel(receiver)
 	_config.disabled_channels[receiver] = false
 
 	save_config()
-	return "Channel reenabled"
+	return "Channel re-enabled"
 end
 
 local function disable_channel( receiver )
@@ -40,7 +40,7 @@ end
 local function pre_process(msg)
 	local receiver = get_receiver(msg)
 	
-	-- If is sudo can reeanble the channel
+	-- If sender is sudo then re-enable the channel
 	if is_sudo(msg) then
 	  if msg.text == "!channel enable" then
 	    enable_channel(receiver)
