@@ -9,7 +9,7 @@ function getDulcinea( text )
   local b, code = http.request(query_url)
 
   if code ~= 200 then
-    return "Error: HTTP Connexion"
+    return "Error: HTTP Connection"
   end
 
   dulcinea = json:decode(b)
