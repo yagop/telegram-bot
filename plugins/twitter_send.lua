@@ -41,12 +41,12 @@ function run(msg, matches)
   if response_code ~= 200 then
     return "Error: "..response_code
   end
-  return "Tweet sended"
+  return "Tweet sent"
 end
 
 return {
   description = "Sends a tweet", 
-  usage = "!tw [text]: Sends the Tweet with the configured accout.",
+  usage = "!tw [text]: Sends the Tweet with the configured account.",
   patterns = {"^!tw (.+)"}, 
   run = run
 }

@@ -1,20 +1,21 @@
 
 --[[
 -- Translate text using Google Translate.
--- http://translate.google.com/translate_a/t?client=z&ie=UTF-8&oe=UTF-8&hl=en&tl=en&text=hello
+-- http://translate.google.com/translate_a/single?client=t&ie=UTF-8&oe=UTF-8&hl=en&dt=t&tl=en&sl=auto&text=hello
 --]]
 do
 
 function translate(source_lang, target_lang, text)
-  local path = "http://translate.google.com/translate_a/t"
+  local path = "http://translate.google.com/translate_a/single"
   -- URL query parameters
   local params = {
-    client = "z", -- JSON
+    client = "t",
     ie = "UTF-8",
     oe = "UTF-8",
     hl = "en",
+    dt = "t",
     tl = target_lang or "en",
-    sl = source_lang or "",
+    sl = source_lang or "auto",
     text = URL.escape(text)
   }
 
@@ -24,16 +25,9 @@ function translate(source_lang, target_lang, text)
   local res, code = https.request(url)
   -- Return nil if error
   if code > 200 then return nil end
-  
-  local trans = json:decode(res)
-  
-  local sentences = ""
-  -- Join multiple sencentes
-  for k,sentence in pairs(trans.sentences) do
-    sentences = sentences..sentence.trans..'\n'
-  end
+  local trans = res:gmatch("%[%[%[\"(.*)\"")():gsub("\"(.*)", "")
 
-  return sentences
+  return trans
 end
 
 function run(msg, matches)
@@ -52,7 +46,7 @@ function run(msg, matches)
     return translate(nil, target, text)
   end
 
-  -- Frist pattern
+  -- First pattern
   if #matches == 3 then
     print("Third")
     local source = matches[1]
@@ -66,7 +60,7 @@ end
 return {
   description = "Translate some text", 
   usage = {
-    "!translate text. Translate to english the text.",
+    "!translate text. Translate the text to English.",
     "!translate target_lang text.",
     "!translate source,target text",
   },

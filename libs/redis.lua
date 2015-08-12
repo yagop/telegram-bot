@@ -25,13 +25,15 @@ end)
 if not ok then
 
   local fake_func = function()
-    print('\27[31mRedis isn\'t installed, install it!\27[39m')
+    print('\27[31mCan\'t connect with Redis, install/configure it!\27[39m')
   end
-
   fake_func()
   fake = FakeRedis.new()
 
-  redis = setmetatable({}, {
+  print('\27[31mRedis addr: '..params.host..'\27[39m')
+  print('\27[31mRedis port: '..params.port..'\27[39m')
+
+  redis = setmetatable({fakeredis=true}, {
   __index = function(a, b)
     if b ~= 'data' and fake[b] then
       fake_func(b)
