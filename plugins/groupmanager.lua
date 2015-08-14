@@ -87,7 +87,7 @@ local function unlock_group_name(msg, data)
 	end
 end
 
---lock/unlock group member. bot automatically kick new added user when locked
+--lock/unlock group member. bot automatically kick/reinvite member when locked
 local function lock_group_member(msg, data)
     if not is_momod(msg) then
         return "For moderators only!"
@@ -194,6 +194,19 @@ function run(msg, matches)
 		    local to_rename = 'chat#id'..msg.to.id
 		    rename_chat(to_rename, group_name_set, ok_cb, false)
 		end
+		if matches[1] == 'chat_del_user' then
+		    if not msg.service then
+		        return "Are you trying to troll me?"
+		    end
+		    local group_member_lock = data[tostring(msg.to.id)]['settings']['lock_member']
+		    local user = 'user#id'..msg.action.user.id
+		    local chat = 'chat#id'..msg.to.id
+		    if group_member_lock == 'yes' then
+		        chat_add_user(chat, user, ok_cb, false)
+		    elseif group_member_lock == 'no' then
+                return nil
+            end
+		end
 		if matches[1] == 'chat_add_user' then
 		    if not msg.service then
 		        return "Are you trying to troll me?"
@@ -239,7 +252,8 @@ return {
     "^!(group) (unlock) (.*)$",
     "^!(group) (settings)$",
     "^!!tgservice (chat_rename)$",
-    "^!!tgservice (chat_add_user)$"
+    "^!!tgservice (chat_add_user)$",
+    "^!!tgservice (chat_del_user)$",
   }, 
   run = run,
 }
