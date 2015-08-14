@@ -9,8 +9,15 @@ local function modadd(msg)
 	if data[tostring(msg.to.id)] then
 		return 'Group is already added.'
 	end
-
-	data[tostring(msg.to.id)] = {}
+    -- create data array in moderation.json
+	data[tostring(msg.to.id)] = {
+	    moderators ={},
+	    settings = {
+	        set_name = string.gsub(msg.to.print_name, '_', ' '),
+	        lock_name = 'no',
+	        lock_member = 'no'
+	        }
+	    }
 	save_data(_config.moderation.data, data)
 
 	return 'Group has been added.'
@@ -39,10 +46,11 @@ local function promote(msg, member)
 	if not data[tostring(msg.to.id)] then
 		return 'Group is not added.'
 	end
-	if not data[tostring(msg.to.id)][data_cat] then
-	   data[tostring(msg.to.id)][data_cat] = {}
-	   save_data(_config.moderation.data, data)
-	end
+	-- created automatically on !modadd
+	--if not data[tostring(msg.to.id)][data_cat] then
+	--  data[tostring(msg.to.id)][data_cat] = {}
+	--   save_data(_config.moderation.data, data)
+	--end
 	if data[tostring(msg.to.id)][data_cat][tostring(member)] then
 		return member..' is already a moderator.'
 	end
@@ -76,7 +84,8 @@ local function modlist(msg)
 	if not data[tostring(msg.to.id)] then
 		return 'Group is not added.'
 	end
-	if not data[tostring(msg.to.id)][data_cat] then
+	-- determine if table is empty
+	if next(data[tostring(msg.to.id)][data_cat]) == nil then --fix way
 		return 'No moderator in this group.'
 	end
 	local message = 'List of moderators for ' .. string.gsub(msg.to.print_name, '_', ' ') .. ':\n'
