@@ -39,9 +39,9 @@ function run(msg, matches)
 
   local post = get_post(url)
 
-  local receiver = get_receiver(msg)
-  local img = URL .. post.large_file_url
-  send_photo_from_url(receiver, img)
+  -- local receiver = get_receiver(msg)
+  -- local img = URL .. post.large_file_url
+  -- send_photo_from_url(receiver, img)
 
   local txt = 'Artist: ' .. post.tag_string_artist .. '\n'
   txt = txt .. 'Character: ' .. post.tag_string_character .. '\n'
