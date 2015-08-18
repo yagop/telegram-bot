@@ -34,7 +34,7 @@ end
 
 local function run(msg, matches)
   local text = ''
-  local items = searchYoutubeVideos(text)
+  local items = searchYoutubeVideos(matches[1])
   if not items then
     return "Error!"
   end

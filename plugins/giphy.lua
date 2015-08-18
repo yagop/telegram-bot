@@ -38,16 +38,10 @@ local function search(text)
   return get_image(response)
 end
 
-local function send_gif(cb_extra, success, result)
-  local receiver = cb_extra.receiver
-  local gif_url = cb_extra.gif_url
-  send_document_from_url(receiver, gif_url)
-end
-
 local function run(msg, matches)
   local gif_url = nil
   
-  -- If no search data, a random trending GIF will be sended
+  -- If no search data, a random trending GIF will be sent
   if matches[1] == "!gif" or matches[1] == "!giphy" then
     gif_url = get_random_top()
   else
@@ -60,12 +54,8 @@ local function run(msg, matches)
 
   local receiver = get_receiver(msg)
   print("GIF URL"..gif_url)
-  local text = 'Preparing to make you laugh'
-  local cb_extra = {
-    gif_url = gif_url,
-    receiver = receiver
-  }
-  send_msg(receiver, text, send_gif, cb_extra)
+  
+  send_document_from_url(receiver, gif_url)
 end
 
 return {

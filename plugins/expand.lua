@@ -17,7 +17,7 @@ local function run(msg, patterns)
 end
 
 return {
-   description = "Expand a shorted URL to the original one.",
+   description = "Expand a shortened URL to the original one.",
    usage = "!expand [url]: Return the original URL",
    patterns = {
       "^!expand (https?://[%w-_%.%?%.:/%+=&]+)$"
