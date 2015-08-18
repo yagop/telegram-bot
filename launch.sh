@@ -78,8 +78,15 @@ install() {
   git pull
   git submodule update --init --recursive
   cd tg && ./configure && make
-  RET=$?; if [ $RET -ne 0 ];
-    then echo "Error. Exiting."; exit $RET;
+  
+  RET=$?; if [ $RET -ne 0 ]; then
+    echo "Trying without Python...";
+    ./configure --disable-python && make
+    RET=$?
+  fi
+  
+  if [ $RET -ne 0 ]; then
+    echo "Error. Exiting."; exit $RET;
   fi
   cd ..
   install_luarocks
