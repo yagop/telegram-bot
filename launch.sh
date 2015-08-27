@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 THIS_DIR=$(cd $(dirname $0); pwd)
-RAM=`grep MemTotal /proc/meminfo | awk '{print $2}'`
 cd $THIS_DIR
 
 update() {
@@ -63,19 +62,31 @@ install_rocks() {
   RET=$?; if [ $RET -ne 0 ];
     then echo "Error. Exiting."; exit $RET;
   fi
+
+  ./.luarocks/bin/luarocks install feedparser
+  RET=$?; if [ $RET -ne 0 ];
+    then echo "Error. Exiting."; exit $RET;
+  fi
+  
+  ./.luarocks/bin/luarocks install serpent
+  RET=$?; if [ $RET -ne 0 ];
+    then echo "Error. Exiting."; exit $RET;
+  fi
 }
 
 install() {
   git pull
   git submodule update --init --recursive
-  # If RAM is lower than 300MB disable extf queries
-  if [ $RAM -lt 307200 ]; then
-      cd tg && ./configure --disable-extf && make
-  else
-      cd tg && ./configure && make
+  cd tg && ./configure && make
+  
+  RET=$?; if [ $RET -ne 0 ]; then
+    echo "Trying without Python...";
+    ./configure --disable-python && make
+    RET=$?
   fi
-  RET=$?; if [ $RET -ne 0 ];
-    then echo "Error. Exiting."; exit $RET;
+  
+  if [ $RET -ne 0 ]; then
+    echo "Error. Exiting."; exit $RET;
   fi
   cd ..
   install_luarocks
