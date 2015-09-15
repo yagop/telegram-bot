@@ -39,7 +39,7 @@ end
 
 return {
   description = "When user sends media URL (ends with gif, mp4, pdf, etc.) download and send it to origin.", 
-  usage = "",
+  usage = "When user sends media URL (ends with gif, mp4, pdf, etc.) download and send it to origin.",
   patterns = {
     "(https?://[%w-_%.%?%.:/%+=&]+%.(gif))$",
     "(https?://[%w-_%.%?%.:/%+=&]+%.(mp4))$",

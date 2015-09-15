@@ -8,7 +8,7 @@ local function create_group(msg)
         return "You're not admin!"
     end
     local group_creator = msg.from.print_name
-    create_group_chat (group_creator, group_name, cb_extra, false)
+    create_group_chat (group_creator, group_name, ok_cb, false)
 	return 'Group '..string.gsub(group_name, '_', ' ')..' has been created.'
 end
 
@@ -116,13 +116,61 @@ local function unlock_group_member(msg, data)
 	end
 end
 
+--lock/unlock group photo. bot automatically keep group photo when locked
+local function lock_group_photo(msg, data)
+    if not is_momod(msg) then
+        return "For moderators only!"
+    end
+    local group_photo_lock = data[tostring(msg.to.id)]['settings']['lock_photo']
+	if group_photo_lock == 'yes' then
+	    return 'Group photo is already locked'
+	else
+	    data[tostring(msg.to.id)]['settings']['set_photo'] = 'waiting'
+	    save_data(_config.moderation.data, data)
+	end
+	return 'Please send me the group photo now'
+end
+
+local function unlock_group_photo(msg, data)
+    if not is_momod(msg) then
+        return "For moderators only!"
+    end
+    local group_photo_lock = data[tostring(msg.to.id)]['settings']['lock_photo']
+	if group_photo_lock == 'no' then
+	    return 'Group photo is not locked'
+	else
+	    data[tostring(msg.to.id)]['settings']['lock_photo'] = 'no'
+	    save_data(_config.moderation.data, data)
+	return 'Group photo has been unlocked'
+	end
+end
+
+local function set_group_photo(msg, success, result)
+  local data = load_data(_config.moderation.data)
+  local receiver = get_receiver(msg)
+  if success then
+    local file = 'data/photos/chat_photo_'..msg.to.id..'.jpg'
+    print('File downloaded to:', result)
+    os.rename(result, file)
+    print('File moved to:', file)
+    chat_set_photo (receiver, file, ok_cb, false)
+    data[tostring(msg.to.id)]['settings']['set_photo'] = file
+    save_data(_config.moderation.data, data)
+    data[tostring(msg.to.id)]['settings']['lock_photo'] = 'yes'
+    save_data(_config.moderation.data, data)
+    send_large_msg(receiver, 'Photo saved!', ok_cb, false)
+  else
+    print('Error downloading: '..msg.id)
+    send_large_msg(receiver, 'Failed, please try again!', ok_cb, false)
+  end
+end
+-- show group settings
 local function show_group_settings(msg, data)
     if not is_momod(msg) then
         return "For moderators only!"
     end
-    local group_name_lock = data[tostring(msg.to.id)]['settings']['lock_name']
-    local group_member_lock = data[tostring(msg.to.id)]['settings']['lock_member']
-    local text = "Group settings :\nLock group name = "..group_name_lock.."\nLock group member = "..group_member_lock
+    local settings = data[tostring(msg.to.id)]['settings']
+    local text = "Group settings:\nLock group name : "..settings.lock_name.."\nLock group photo : "..settings.lock_photo.."\nLock group member : "..settings.lock_member
     return text
 end
 
@@ -137,7 +185,13 @@ function run(msg, matches)
 	end
     local data = load_data(_config.moderation.data)
     local receiver = get_receiver(msg)
+    if msg.media then
+    	if msg.media.type == 'photo' and data[tostring(msg.to.id)]['settings']['set_photo'] == 'waiting' and is_chat_msg(msg) and is_momod(msg) then
+    		load_photo(msg.id, set_group_photo, msg)
+    	end
+    end
     if data[tostring(msg.to.id)] then
+		local settings = data[tostring(msg.to.id)]['settings']
 		if matches[1] == 'setabout' and matches[2] then
 		    deskripsi = matches[2]
 		    return set_description(msg, data)
@@ -159,6 +213,9 @@ function run(msg, matches)
 		    if matches[3] == 'member' then
 		        return lock_group_member(msg, data)
 		    end
+		    if matches[3] == 'photo' then
+		        return lock_group_photo(msg, data)
+		    end
 		end
 		if matches[1] == 'group' and matches[2] == 'unlock' then --group unlock *
 		    if matches[3] == 'name' then
@@ -166,6 +223,9 @@ function run(msg, matches)
 		    end
 		    if matches[3] == 'member' then
 		        return unlock_group_member(msg, data)
+		    end
+		    if matches[3] == 'photo' then
+		    	return unlock_group_photo(msg, data)
 		    end
 		end
 		if matches[1] == 'group' and matches[2] == 'settings' then
@@ -175,8 +235,8 @@ function run(msg, matches)
 		    if not msg.service then
 		        return "Are you trying to troll me?"
 		    end
-		    local group_name_set = data[tostring(msg.to.id)]['settings']['set_name']
-		    local group_name_lock = data[tostring(msg.to.id)]['settings']['lock_name']
+		    local group_name_set = settings.set_name
+		    local group_name_lock = settings.lock_name
 		    local to_rename = 'chat#id'..msg.to.id
 		    if group_name_lock == 'yes' then
 		        if group_name_set ~= tostring(msg.to.print_name) then
@@ -194,11 +254,16 @@ function run(msg, matches)
 		    local to_rename = 'chat#id'..msg.to.id
 		    rename_chat(to_rename, group_name_set, ok_cb, false)
 		end
+		if matches[1] == 'setphoto' and is_momod(msg) then
+		    data[tostring(msg.to.id)]['settings']['set_photo'] = 'waiting'
+	        save_data(_config.moderation.data, data)
+	        return 'Please send me new group photo now'
+		end
 		if matches[1] == 'chat_add_user' then
 		    if not msg.service then
 		        return "Are you trying to troll me?"
 		    end
-		    local group_member_lock = data[tostring(msg.to.id)]['settings']['lock_member']
+		    local group_member_lock = settings.lock_member
 		    local user = 'user#id'..msg.action.user.id
 		    local chat = 'chat#id'..msg.to.id
 		    if group_member_lock == 'yes' then
@@ -207,10 +272,28 @@ function run(msg, matches)
                 return nil
             end
 		end
-	elseif matches[1] == 'chat_rename' then
-        return nil
-    else    
-        return 'Group is not added!. Please check moderation plugin.'
+		if matches[1] == 'chat_delete_photo' then
+		    if not msg.service then
+		        return "Are you trying to troll me?"
+		    end
+		    local group_photo_lock = settings.lock_photo
+		    if group_photo_lock == 'yes' then
+		        chat_set_photo (receiver, settings.set_photo, ok_cb, false)
+		    elseif group_photo_lock == 'no' then
+                return nil
+            end
+		end
+		if matches[1] == 'chat_change_photo' and msg.from.id ~= 0 then
+		    if not msg.service then
+		        return "Are you trying to troll me?"
+		    end
+		    local group_photo_lock = settings.lock_photo
+		    if group_photo_lock == 'yes' then
+		        chat_set_photo (receiver, settings.set_photo, ok_cb, false)
+		    elseif group_photo_lock == 'no' then
+		    	return nil
+		    end
+		 end
     end
 end
 
@@ -218,14 +301,16 @@ end
 return {
   description = "Plugin to manage group chat.", 
   usage = {
-    "!creategroup <group_name> : Create a new group",
+    "!creategroup <group_name> : Create a new group (admin only)",
     "!setabout <description> : Set group description",
     "!about : Read group description",
     "!setrules <rules> : Set group rules",
     "!rules : Read group rules",
     "!setname <new_name> : Set group name",
+    "!setphoto : Set group photo",
     "!group <lock|unlock> name : Lock/unlock group name",
-	"!group <lock|unlock> member : Lock/unlock group member",		
+    "!group <lock|unlock> photo : Lock/unlock group photo",
+    "!group <lock|unlock> member : Lock/unlock group member",		
     "!group settings : Show group settings"
     },
   patterns = {
@@ -235,11 +320,12 @@ return {
     "^!(setrules) (.*)$",
     "^!(rules)$",
     "^!(setname) (.*)$",
+    "^!(setphoto)$",
     "^!(group) (lock) (.*)$",
     "^!(group) (unlock) (.*)$",
     "^!(group) (settings)$",
-    "^!!tgservice (chat_rename)$",
-    "^!!tgservice (chat_add_user)$"
+    "^!!tgservice (.+)$",
+    "%[(photo)%]",
   }, 
   run = run,
 }

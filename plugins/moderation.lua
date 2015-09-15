@@ -1,5 +1,43 @@
 do
 
+local function automodadd(msg)
+    local data = load_data(_config.moderation.data)
+	if msg.action.type == 'chat_created' then
+	    data[tostring(msg.to.id)] = {
+	    moderators ={},
+	    settings = {
+	        set_name = string.gsub(msg.to.print_name, '_', ' '),
+	        lock_name = 'no',
+	        lock_photo = 'no',
+	        lock_member = 'no'
+	        }
+	    }
+    	save_data(_config.moderation.data, data)
+	    return 'Group has been added, but no one have been promoted yet.'
+	else
+	    if data[tostring(msg.to.id)] then
+		    return 'Group is already added.'
+	    end
+	    if msg.from.username then
+	        username = msg.from.username
+	    else
+	        username = msg.from.print_name
+	    end
+        -- create data array in moderation.json
+	    data[tostring(msg.to.id)] = {
+	        moderators ={[tostring(msg.from.id)] = username},
+	        settings = {
+	            set_name = string.gsub(msg.to.print_name, '_', ' '),
+	            lock_name = 'no',
+	            lock_photo = 'no',
+	            lock_member = 'no'
+	            }
+	        }
+	    save_data(_config.moderation.data, data)
+	    return 'Group has been added, and @'..username..' has been promoted as moderator for group.'
+	 end
+end
+
 local function modadd(msg)
     -- superuser and admins only (because sudo are always has privilege)
     if not is_admin(msg) then
@@ -15,6 +53,7 @@ local function modadd(msg)
 	    settings = {
 	        set_name = string.gsub(msg.to.print_name, '_', ' '),
 	        lock_name = 'no',
+	        lock_photo = 'no',
 	        lock_member = 'no'
 	        }
 	    }
@@ -40,169 +79,188 @@ local function modrem(msg)
 	return 'Group has been removed'
 end
 
-local function promote(msg, member)
+local function promote(receiver, member_username, member_id)
     local data = load_data(_config.moderation.data)
-    local data_cat = 'moderators'
-	if not data[tostring(msg.to.id)] then
-		return 'Group is not added.'
+    local group = string.gsub(receiver, 'chat#id', '')
+	if not data[group] then
+		return send_large_msg(receiver, 'Group is not added.')
 	end
-	-- created automatically on !modadd
-	--if not data[tostring(msg.to.id)][data_cat] then
-	--  data[tostring(msg.to.id)][data_cat] = {}
-	--   save_data(_config.moderation.data, data)
-	--end
-	if data[tostring(msg.to.id)][data_cat][tostring(member)] then
-		return member..' is already a moderator.'
-	end
-
-	data[tostring(msg.to.id)][data_cat][tostring(member)] = member -- harusnya user.id atau data lain
-	save_data(_config.moderation.data, data)
-
-	return '@'..member..' has been promoted.'
+	if data[group]['moderators'][tostring(member_id)] then
+		return send_large_msg(receiver, member_username..' is already a moderator.')
+    end
+    data[group]['moderators'][tostring(member_id)] = member_username
+    save_data(_config.moderation.data, data)
+    return send_large_msg(receiver, '@'..member_username..' has been promoted.')
 end
 
-local function demote(msg, member)
+local function demote(receiver, member_username, member_id)
     local data = load_data(_config.moderation.data)
-    local data_cat = 'moderators'
-	if not data[tostring(msg.to.id)] then
-		return 'Group is not added.'
+    local group = string.gsub(receiver, 'chat#id', '')
+	if not data[group] then
+		return send_large_msg(receiver, 'Group is not added.')
+	end
+	if not data[group]['moderators'][tostring(member_id)] then
+		return send_large_msg(receiver, member_username..' is not a moderator.')
+	end
+	data[group]['moderators'][tostring(member_id)] = nil
+	save_data(_config.moderation.data, data)
+	return send_large_msg(receiver, '@'..member_username..' has been demoted.')
+end
+
+local function admin_promote(receiver, member_username, member_id)	
+	local data = load_data(_config.moderation.data)
+	if not data['admins'] then
+		data['admins'] = {}
+		save_data(_config.moderation.data, data)
 	end
 
-	if not data[tostring(msg.to.id)][data_cat][tostring(member)] then
-		return member..' is not a moderator.'
+	if data['admins'][tostring(member_id)] then
+		return send_large_msg(receiver, member_username..' is already as admin.')
+	end
+	
+	data['admins'][tostring(member_id)] = member_username
+	save_data(_config.moderation.data, data)
+	return send_large_msg(receiver, '@'..member_username..' has been promoted as admin.')
+end
+
+local function admin_demote(receiver, member_username, member_id)
+    local data = load_data(_config.moderation.data)
+	if not data['admins'] then
+		data['admins'] = {}
+		save_data(_config.moderation.data, data)
 	end
 
-	data[tostring(msg.to.id)][data_cat][tostring(member)] = nil
+	if not data['admins'][tostring(member_id)] then
+		return send_large_msg(receiver, member_username..' is not an admin.')
+	end
+
+	data['admins'][tostring(member_id)] = nil
 	save_data(_config.moderation.data, data)
 
-	return '@'..member..' has been demoted.'
+	return send_large_msg(receiver, 'Admin '..member_username..' has been demoted.')
+end
+
+local function username_id(cb_extra, success, result)
+   local mod_cmd = cb_extra.mod_cmd
+   local receiver = cb_extra.receiver
+   local member = cb_extra.member
+   local text = 'No user @'..member..' in this group.'
+   for k,v in pairs(result.members) do
+      vusername = v.username
+      if vusername == member then
+      	member_username = member
+      	member_id = v.id
+      	if mod_cmd == 'promote' then
+      	    return promote(receiver, member_username, member_id)
+      	elseif mod_cmd == 'demote' then
+      	    return demote(receiver, member_username, member_id)
+      	elseif mod_cmd == 'adminprom' then
+      	    return admin_promote(receiver, member_username, member_id)
+      	elseif mod_cmd == 'admindem' then
+      	    return admin_demote(receiver, member_username, member_id)
+      	end
+      end
+   end
+   send_large_msg(receiver, text)
 end
 
 local function modlist(msg)
     local data = load_data(_config.moderation.data)
-    local data_cat = 'moderators'
 	if not data[tostring(msg.to.id)] then
 		return 'Group is not added.'
 	end
 	-- determine if table is empty
-	if next(data[tostring(msg.to.id)][data_cat]) == nil then --fix way
+	if next(data[tostring(msg.to.id)]['moderators']) == nil then --fix way
 		return 'No moderator in this group.'
 	end
 	local message = 'List of moderators for ' .. string.gsub(msg.to.print_name, '_', ' ') .. ':\n'
-	for k,v in pairs(data[tostring(msg.to.id)][data_cat]) do
-		message = message .. '- ' .. v .. ' \n'
+	for k,v in pairs(data[tostring(msg.to.id)]['moderators']) do
+		message = message .. '- '..v..' [' ..k.. '] \n'
 	end
 
 	return message
 end
-	
-local function admin_promote(msg, admin_id)	
-	if not is_sudo(msg) then
-        return "Access denied!"
-    end
-	local data = load_data(_config.moderation.data)
-	local admins = 'admins'
-	if not data[tostring(admins)] then
-		data[tostring(admins)] = {}
-		save_data(_config.moderation.data, data)
-	end
-
-	if data[tostring(admins)][tostring(admin_id)] then
-		return admin_name..' is already an admin.'
-	end
-
-	data[tostring(admins)][tostring(admin_id)] = admin_id -- admin_id kedua harusnya nama
-	save_data(_config.moderation.data, data)
-
-	return admin_id..' has been promoted as admin.'
-end
-
-local function admin_demote(msg, admin_id)
-    if not is_sudo(msg) then
-        return "Access denied!"
-    end
-    local data = load_data(_config.moderation.data)
-	local admins = 'admins'
-	if not data[tostring(admins)] then
-		data[tostring(admins)] = {}
-		save_data(_config.moderation.data, data)
-	end
-
-	if not data[tostring(admins)][tostring(admin_id)] then
-		return admin_id..' is not an admin.'
-	end
-
-	data[tostring(admins)][tostring(admin_id)] = nil
-	save_data(_config.moderation.data, data)
-
-	return admin_id..' has been demoted from admin.'
-end
 
 local function admin_list(msg)
     local data = load_data(_config.moderation.data)
-	local admins = 'admins'
-	if not data[tostring(admins)] then
-		data[tostring(admins)] = {}
+	if not data['admins'] then
+		data['admins'] = {}
 		save_data(_config.moderation.data, data)
 	end
-
+	if next(data['admins']) == nil then --fix way
+		return 'No admin available.'
+	end
 	local message = 'List for Bot admins:\n'
-	for k,v in pairs(data[tostring(admins)]) do
-	    --message = message .. '- ' .. k .. v .. ' \n'
-		message = message .. '- ' .. v .. ' \n'
+	for k,v in pairs(data['admins']) do
+		message = message .. '- ' .. v ..' ['..k..'] \n'
 	end
 	return message
 end
 
 function run(msg, matches)
-  if msg.to.type == 'user' then
+  if not is_chat_msg(msg) then
     return "Only works on group"
   end
+  local mod_cmd = matches[1]
+  local receiver = get_receiver(msg)
   if matches[1] == 'modadd' then
-    print("group "..msg.to.print_name.."("..msg.to.id..") added")
-    --vardump(msg)
     return modadd(msg)
   end
   if matches[1] == 'modrem' then
-    print("group "..msg.to.print_name.."("..msg.to.id..") removed")
     return modrem(msg)
   end
   if matches[1] == 'promote' and matches[2] then
-    local member = string.gsub(matches[2], "@", "")
-    print("User "..member.." has been promoted")
-    return promote(msg, member)
+    if not is_momod(msg) then
+        return "Only moderator can demote"
+    end
+	local member = string.gsub(matches[2], "@", "")
+    chat_info(receiver, username_id, {mod_cmd= mod_cmd, receiver=receiver, member=member})
   end
   if matches[1] == 'demote' and matches[2] then
-    local member = string.gsub(matches[2], "@", "")
-    print("user "..member.." has been demoted")
-    return demote(msg, member)
+    if not is_momod(msg) then
+        return "Only moderator can demote"
+    end
+	local member = string.gsub(matches[2], "@", "")
+    chat_info(receiver, username_id, {mod_cmd= mod_cmd, receiver=receiver, member=member})
   end
   if matches[1] == 'modlist' then
     return modlist(msg)
   end
   if matches[1] == 'adminprom' then
-    local admin_id = matches[2]
-    print("user "..admin_id.." has been promoted as admin")
-    return admin_promote(msg, admin_id)
+    if not is_admin(msg) then
+        return "Only sudo can promote user as admin"
+    end
+	local member = string.gsub(matches[2], "@", "")
+    chat_info(receiver, username_id, {mod_cmd= mod_cmd, receiver=receiver, member=member})
   end
   if matches[1] == 'admindem' then
-    local admin_id = matches[2]
-    print("user "..admin_id.." has been demoted from admin")
-    return admin_demote(msg, admin_id)
+    if not is_admin(msg) then
+        return "Only sudo can promote user as admin"
+    end
+    local member = string.gsub(matches[2], "@", "")
+    chat_info(receiver, username_id, {mod_cmd= mod_cmd, receiver=receiver, member=member})
   end
   if matches[1] == 'adminlist' then
+    if not is_admin(msg) then
+        return 'Admin only!'
+    end
     return admin_list(msg)
   end
+  if matches[1] == 'chat_add_user' and msg.action.user.id == our_id then
+    return automodadd(msg)
+  end
+  if matches[1] == 'chat_created' and msg.from.id == 0 then
+    return automodadd(msg)
+  end
 end
-
 
 return {
   description = "Moderation plugin", 
   usage = {
     "!modadd : Add group to moderation list",
     "!modrem : Remove group from moderation list",
-    "!promote <@username> : Promote user as moderator",
-    "!demote <@username> : demote user from moderator",
+    "!promote <username> : Promote user as moderator",
+    "!demote <username> : demote user from moderator",
     "!modlist : List of moderators",
     },
   patterns = {
@@ -211,12 +269,12 @@ return {
     "^!(promote) (.*)$",
     "^!(demote) (.*)$",
     "^!(modlist)$",
-    "^!(adminprom) (%d+)$", -- sudoers only
-    "^!(admindem) (%d+)$", -- sudoers only
+    "^!(adminprom) (.*)$", -- sudoers only
+    "^!(admindem) (.*)$", -- sudoers only
     "^!(adminlist)$",
+    "^!!tgservice (chat_add_user)$",
   }, 
   run = run,
-  moderated = true
 }
 
 end
