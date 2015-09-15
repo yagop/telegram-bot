@@ -183,20 +183,16 @@ end
 function is_momod(msg)
   local var = false
   local data = load_data(_config.moderation.data)
-  --local member = msg.from.id
-  local member = msg.from.username
   local user = msg.from.id
-  local admins = 'admins'
-  local data_cat = 'moderators'
   if data[tostring(msg.to.id)] then
-    if data[tostring(msg.to.id)][data_cat] then
-      if data[tostring(msg.to.id)][data_cat][tostring(member)] then
+    if data[tostring(msg.to.id)]['moderators'] then
+      if data[tostring(msg.to.id)]['moderators'][tostring(user)] then
         var = true
       end
     end
   end
-  if data[tostring(admins)] then
-    if data[tostring(admins)][tostring(user)] then
+  if data['admins'] then
+    if data['admins'][tostring(user)] then
       var = true
     end
   end
@@ -288,7 +284,7 @@ function _send_photo(receiver, file_path, cb_function, cb_extra)
     cb_extra = cb_extra
   }
   -- Call to remove with optional callback
-  send_photo(receiver, file_path, rmtmp_cb, cb_extra)
+  send_photo(receiver, file_path, cb_function, cb_extra)
 end
 
 -- Download the image and send to receiver, it will be deleted.
