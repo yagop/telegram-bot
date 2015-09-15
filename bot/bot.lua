@@ -4,7 +4,7 @@ package.cpath = package.cpath .. ';.luarocks/lib/lua/5.2/?.so'
 
 require("./bot/utils")
 
-VERSION = '0.14.4'
+VERSION = '0.14.6'
 
 -- This function is called when tg receive a msg
 function on_msg_receive (msg)
@@ -203,12 +203,10 @@ function create_config( )
   -- A simple config with basic plugins and ourselves as privileged user
   config = {
     enabled_plugins = {
-      "9gag",
       "echo",
       "get",
-      "giphy",
       "google",
-      "gps",
+      "groupmanager",
       "help",
       "id",
       "images",
@@ -223,6 +221,7 @@ function create_config( )
       "version",
       "weather",
       "youtube",
+      "media_handler",
       "moderation"},
     sudo_users = {our_id},
     disabled_channels = {},
