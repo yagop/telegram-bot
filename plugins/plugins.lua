@@ -21,16 +21,45 @@ local function plugin_exists( name )
   return false
 end
 
-local function list_plugins(only_enabled)
+local function list_all_plugins(only_enabled)
   local text = ''
+  local nsum = 0
   for k, v in pairs( plugins_names( )) do
     --  ✔ enabled, ❌ disabled
     local status = '❌'
+    nsum = nsum+1
+    nact = 0
     -- Check if is enabled
     for k2, v2 in pairs(_config.enabled_plugins) do
       if v == v2..'.lua' then 
         status = '✔' 
       end
+      nact = nact+1
+    end
+    if not only_enabled or status == '✔' then
+      -- get the name
+      v = string.match (v, "(.*)%.lua")
+      text = text..nsum..'. '..v..'  '..status..'\n'
+    end
+  end
+  local text = text..'\nThere are '..nsum..' plugins installed.\n'..nact..' plugins enabled and '..nsum-nact..' disabled'
+  return text
+end
+
+local function list_plugins(only_enabled)
+  local text = ''
+  local nsum = 0
+  for k, v in pairs( plugins_names( )) do
+    --  ✔ enabled, ❌ disabled
+    local status = '❌'
+    nsum = nsum+1
+    nact = 0
+    -- Check if is enabled
+    for k2, v2 in pairs(_config.enabled_plugins) do
+      if v == v2..'.lua' then 
+        status = '✔' 
+      end
+      nact = nact+1
     end
     if not only_enabled or status == '✔' then
       -- get the name
@@ -38,6 +67,7 @@ local function list_plugins(only_enabled)
       text = text..v..'  '..status..'\n'
     end
   end
+  local text = text..'\n'..nact..' plugins enabled from '..nsum..' plugins installed.'
   return text
 end
 
@@ -123,7 +153,7 @@ end
 local function run(msg, matches)
   -- Show the available plugins 
   if matches[1] == '!plugins' and is_sudo(msg) then --after changed to moderator mode, set only sudo
-    return list_plugins()
+    return list_all_plugins()
   end
 
   -- Re-enable a plugin for this chat
