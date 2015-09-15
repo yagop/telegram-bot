@@ -4,7 +4,7 @@ local function template_add_user(base, to_username, from_username, chat_name, ch
    base = base or ''
    to_username = '@' .. (to_username or '')
    from_username = '@' .. (from_username or '')
-   chat_name = chat_name or ''
+   chat_name = string.gsub(chat_name, '_', ' ') or ''
    chat_id = "chat#id" .. (chat_id or '')
    if to_username == "@" then
       to_username = ''
@@ -22,7 +22,7 @@ end
 function chat_new_user_link(msg)
    local pattern = add_user_cfg.initial_chat_msg
    local to_username = msg.from.username
-   local from_username = '[link](@' .. (msg.action.link_issuer.username or '') .. ')'
+   local from_username = 'link (@' .. (msg.action.link_issuer.username or '') .. ')'
    local chat_name = msg.to.print_name
    local chat_id = msg.to.id
    pattern = template_add_user(pattern, to_username, from_username, chat_name, chat_id)
@@ -52,15 +52,15 @@ local function description_rules(msg, nama)
       local rules = ""
       if data[tostring(msg.to.id)]["description"] then
          about = data[tostring(msg.to.id)]["description"]
-         about = "\nDeskripsi:\n"..about.."\n"
+         about = "\nDescription :\n"..about.."\n"
       end
       if data[tostring(msg.to.id)]["rules"] then
          rules = data[tostring(msg.to.id)]["rules"]
-         rules = "\nPeraturan:\n"..rules.."\n"
+         rules = "\nRules :\n"..rules.."\n"
       end
-      local sambutan = "Saat ini kamu ada di group '"..string.gsub(msg.to.print_name, "_", " ").."'\n"
+      local sambutan = "You are in group '"..string.gsub(msg.to.print_name, "_", " ").."'\n"
       local text = sambutan..about..rules.."\n"
-      local text = text.."Silahkan "..nama.." memperkenalkan diri."
+      local text = text.."Please welcome "..nama
       local receiver = get_receiver(msg)
       send_large_msg(receiver, text, ok_cb, false)
    end
@@ -95,7 +95,7 @@ end
 
 return {
    description = "Service plugin that sends a custom message when an user enters a chat.",
-   usage = "",
+   usage = "Welcoming new member.",
    patterns = {
       "^!!tgservice (chat_add_user)$",
       "^!!tgservice (chat_add_user_link)$",
