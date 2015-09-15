@@ -47,9 +47,9 @@ local function plugin_help(name,number)
       for ku,usage in pairs(plugin.usage) do
         text = text..usage..'\n'
       end
-      text = text..'\n'
+      text = text..'======================\n'
     elseif has_usage_data(plugin) then -- Is not empty
-      text = text..plugin.usage..'\n\n'
+      text = text..plugin.usage..'\n======================\n'
     end
     return text
 end
