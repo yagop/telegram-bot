@@ -32,5 +32,6 @@ return {
     '%[(video)%]',
     '%[(audio)%]'
   },
+  hide = true,
   pre_process = pre_process
 }
