@@ -8,7 +8,7 @@ end
 
 return {
   description = "When user sends image URL (ends with png, jpg, jpeg) download and send it to origin.", 
-  usage = "",
+  usage = "When user sends image URL (ends with png, jpg, jpeg), bot will download and return it. ",
   patterns = {
     "(https?://[%w-_%.%?%.:/%+=&]+%.png)$",
     "(https?://[%w-_%.%?%.:/%+=&]+%.jpg)$",

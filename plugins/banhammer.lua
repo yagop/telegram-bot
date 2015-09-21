@@ -102,21 +102,62 @@ local function pre_process(msg)
   return msg
 end
 
-local function run(msg, matches)
+local function username_id(cb_extra, success, result)
+   local get_cmd = cb_extra.get_cmd
+   local receiver = cb_extra.receiver
+   local chat_id = cb_extra.chat_id
+   local member = cb_extra.member
+   local text = 'No user @'..member..' in this group.'
+   for k,v in pairs(result.members) do
+      vusername = v.username
+      if vusername == member then
+      	member_username = member
+      	member_id = v.id
+      	if get_cmd == 'kick' then
+      	    return kick_user(member_id, chat_id)
+      	elseif get_cmd == 'ban user' then
+      	    send_large_msg(receiver, 'User @'..member..' ['..member_id..'] banned')
+      	    return ban_user(member_id, chat_id)
+      	elseif get_cmd == 'whitelist user' then
+      	    local hash = 'whitelist:user#id'..member_id
+      	    redis:set(hash, true)
+      	    return send_large_msg(receiver, 'User @'..member..' ['..member_id..'] whitelisted')
+      	elseif get_cmd == 'whitelist delete user' then
+      	    local hash = 'whitelist:user#id'..member_id
+      	    redis:del(hash)
+      	    return send_large_msg(receiver, 'User @'..member..' ['..member_id..'] removed from whitelist')
+      	end
+      end
+   end
+   return send_large_msg(receiver, text)
+end
 
-  -- Silent ignore
-  if not is_sudo(msg) then
-    return nil
+local function run(msg, matches)
+  if not is_momod(msg) then
+    if not is_sudo(msg) then
+      return nil
+    end
+  end
+  local receiver = get_receiver(msg)
+  if matches[4] then
+      get_cmd = matches[1]..' '..matches[2]..' '..matches[3]
+  elseif matches[3] then
+      get_cmd = matches[1]..' '..matches[2]
+  else
+      get_cmd = matches[1]
   end
 
   if matches[1] == 'ban' then
     local user_id = matches[3]
     local chat_id = msg.to.id
-
     if msg.to.type == 'chat' then
       if matches[2] == 'user' then
-        ban_user(user_id, chat_id)
-        return 'User '..user_id..' banned'
+        if string.match(matches[3], '^%d+$') then
+            ban_user(user_id, chat_id)
+        else
+            local member = string.gsub(matches[3], '@', '')
+            chat_info(receiver, username_id, {get_cmd=get_cmd, receiver=receiver, chat_id=chat_id, member=member})
+        end
       end
       if matches[2] == 'delete' then
         local hash =  'banned:'..chat_id..':'..user_id
@@ -130,29 +171,39 @@ local function run(msg, matches)
 
   if matches[1] == 'kick' then
     if msg.to.type == 'chat' then
-      kick_user(matches[2], msg.to.id)
+      if string.match(matches[2], '^%d+$') then
+          kick_user(matches[2], msg.to.id)
+      else
+          local member = string.gsub(matches[2], '@', '')
+          chat_info(receiver, username_id, {get_cmd=get_cmd, receiver=receiver, chat_id=msg.to.id, member=member})
+      end
     else
       return 'This isn\'t a chat group'
     end
   end
 
   if matches[1] == 'whitelist' then
-    if matches[2] == 'enable' then
+    if matches[2] == 'enable' and is_sudo(msg) then
       local hash = 'whitelist:enabled'
       redis:set(hash, true)
       return 'Enabled whitelist'
     end
 
-    if matches[2] == 'disable' then
+    if matches[2] == 'disable' and is_sudo(msg) then
       local hash = 'whitelist:enabled'
       redis:del(hash)
       return 'Disabled whitelist'
     end
 
     if matches[2] == 'user' then
-      local hash = 'whitelist:user#id'..matches[3]
-      redis:set(hash, true)
-      return 'User '..msg.from.id..' whitelisted'
+      if string.match(matches[3], '^%d+$') then
+          local hash = 'whitelist:user#id'..matches[3]
+          redis:set(hash, true)
+          return 'User '..matches[3]..' whitelisted'
+      else
+          local member = string.gsub(matches[3], '@', '')
+          chat_info(receiver, username_id, {get_cmd=get_cmd, receiver=receiver, chat_id=msg.to.id, member=member})
+      end
     end
 
     if matches[2] == 'chat' then
@@ -161,13 +212,18 @@ local function run(msg, matches)
       end
       local hash = 'whitelist:chat#id'..msg.to.id
       redis:set(hash, true)
-      return 'Chat '..msg.to.id..' whitelisted'
+      return 'Chat '..msg.to.print_name..' ['..msg.to.id..'] whitelisted'
     end
 
     if matches[2] == 'delete' and matches[3] == 'user' then
-      local hash = 'whitelist:user#id'..matches[4]
-      redis:del(hash)
-      return 'User '..matches[4]..' removed from whitelist'
+      if string.match(matches[4], '^%d+$') then
+          local hash = 'whitelist:user#id'..matches[4]
+          redis:del(hash)
+          return 'User '..matches[4]..' removed from whitelist'
+      else
+          local member = string.gsub(matches[4], '@', '')
+          chat_info(receiver, username_id, {get_cmd=get_cmd, receiver=receiver, chat_id=msg.to.id, member=member})
+      end
     end
 
     if matches[2] == 'delete' and matches[3] == 'chat' then
@@ -176,7 +232,7 @@ local function run(msg, matches)
       end
       local hash = 'whitelist:chat#id'..msg.to.id
       redis:del(hash)
-      return 'Chat '..msg.to.id..' removed from whitelist'
+      return 'Chat '..msg.to.print_name..' ['..msg.to.id..'] removed from whitelist'
     end
 
   end
@@ -187,23 +243,26 @@ return {
   usage = {
     "!whitelist <enable>/<disable>: Enable or disable whitelist mode",
     "!whitelist user <user_id>: Allow user to use the bot when whitelist mode is enabled",
+    "!whitelist user <username>: Allow user to use the bot when whitelist mode is enabled",
     "!whitelist chat: Allow everybody on current chat to use the bot when whitelist mode is enabled",
     "!whitelist delete user <user_id>: Remove user from whitelist",
     "!whitelist delete chat: Remove chat from whitelist",
     "!ban user <user_id>: Kick user from chat and kicks it if joins chat again",
+    "!ban user <username>: Kick user from chat and kicks it if joins chat again",
     "!ban delete <user_id>: Unban user",
-    "!kick <user_id> Kick user from chat group"
+    "!kick <user_id> Kick user from chat group by id",
+    "!kick <username> Kick user from chat group by username"
   },
   patterns = {
     "^!(whitelist) (enable)$",
     "^!(whitelist) (disable)$",
-    "^!(whitelist) (user) (%d+)$",
+    "^!(whitelist) (user) (.*)$",
     "^!(whitelist) (chat)$",
-    "^!(whitelist) (delete) (user) (%d+)$",
+    "^!(whitelist) (delete) (user) (.*)$",
     "^!(whitelist) (delete) (chat)$",
-    "^!(ban) (user) (%d+)$",
-    "^!(ban) (delete) (%d+)$",
-    "^!(kick) (%d+)$",
+    "^!(ban) (user) (.*)$",
+    "^!(ban) (delete) (.*)$",
+    "^!(kick) (.*)$",
     "^!!tgservice (.+)$",
   }, 
   run = run,
