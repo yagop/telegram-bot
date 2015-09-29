@@ -228,7 +228,7 @@ function run(msg, matches)
   end
   if matches[1] == 'promote' and matches[2] then
     if not is_momod(msg) then
-        return "Only moderator can demote"
+        return "Only moderator can promote"
     end
   local member = string.gsub(matches[2], "@", "")
     chat_info(receiver, username_id, {mod_cmd= mod_cmd, receiver=receiver, member=member})
