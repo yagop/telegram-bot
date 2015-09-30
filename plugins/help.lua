@@ -18,7 +18,7 @@ function pairsByKeys(t, f)
 local function has_usage_data(dict)
   if (dict.usage == nil or dict.usage == '') then
     return false
-  end
+  endh
   return true
 end
  
@@ -28,7 +28,7 @@ local function plugin_help(name,number)
   if number then
     local i = 0
     for name in pairsByKeys(plugins) do
-      if plugins[name].hide then
+      if plugins[name].hidden then
         name = nil
       else
         i = i + 1
@@ -61,7 +61,7 @@ local function telegram_help()
   local text = "Plugins list:\n\n"
   -- Plugins names
   for name in pairsByKeys(plugins) do
-    if plugins[name].hide then
+    if plugins[name].hidden then
       name = nil
     else
     i = i + 1
@@ -79,7 +79,7 @@ end
 local function help_all()
   local ret = ""
   for name in pairsByKeys(plugins) do
-    if plugins[name].hide then
+    if plugins[name].hidden then
       name = nil
     else
       ret = ret .. plugin_help(name)
