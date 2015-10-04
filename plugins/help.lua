@@ -18,7 +18,7 @@ function pairsByKeys(t, f)
 local function has_usage_data(dict)
   if (dict.usage == nil or dict.usage == '') then
     return false
-  endh
+  end
   return true
 end
  
