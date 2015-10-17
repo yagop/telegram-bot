@@ -42,7 +42,7 @@ local function pre_process(msg)
 	
 	-- If sender is moderator then re-enable the channel
 	--if is_sudo(msg) then
-	if is_momod then
+	if is_momod(msg) then
 	  if msg.text == "!channel enable" then
 	    enable_channel(receiver)
 	  end
