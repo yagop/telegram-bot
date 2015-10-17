@@ -23,12 +23,12 @@ local function has_usage_data(dict)
 end
  
 -- Get commands for that plugin
-local function plugin_help(name,number)
+local function plugin_help(name,number,requester)
   local plugin = ""
   if number then
     local i = 0
     for name in pairsByKeys(plugins) do
-      if plugins[name].hide then
+      if plugins[name].hidden then
         name = nil
       else
         i = i + 1
@@ -45,7 +45,47 @@ local function plugin_help(name,number)
     local text = ""
     if (type(plugin.usage) == "table") then
       for ku,usage in pairs(plugin.usage) do
-        text = text..usage..'\n'
+          if ku == 'user' then -- usage for user
+              if (type(plugin.usage.user) == "table") then
+                  for k,v in pairs(plugin.usage.user) do
+                      text = text..v..'\n'
+                  end
+              elseif has_usage_data(plugin) then -- Is not empty
+                  text = text..plugin.usage.user..'\n'
+              end
+          elseif ku == 'moderator' then -- usage for moderator
+              if requester == 'moderator' or requester == 'admin' or requester == 'sudo' then
+                  if (type(plugin.usage.moderator) == "table") then
+                      for k,v in pairs(plugin.usage.moderator) do
+                          text = text..v..'\n'
+                      end
+                  elseif has_usage_data(plugin) then -- Is not empty
+                      text = text..plugin.usage.moderator..'\n'
+                  end
+              end
+          elseif ku == 'admin' then -- usage for admin
+              if requester == 'admin' or requester == 'sudo' then
+                  if (type(plugin.usage.admin) == "table") then
+                      for k,v in pairs(plugin.usage.admin) do
+                          text = text..v..'\n'
+                      end
+                  elseif has_usage_data(plugin) then -- Is not empty
+                      text = text..plugin.usage.admin..'\n'
+                  end
+              end
+          elseif ku == 'sudo' then -- usage for sudo
+              if requester == 'sudo' then
+                  if (type(plugin.usage.sudo) == "table") then
+                      for k,v in pairs(plugin.usage.sudo) do
+                          text = text..v..'\n'
+                      end
+                  elseif has_usage_data(plugin) then -- Is not empty
+                      text = text..plugin.usage.sudo..'\n'
+                  end
+              end
+          else
+              text = text..usage..'\n'
+          end
       end
       text = text..'======================\n'
     elseif has_usage_data(plugin) then -- Is not empty
@@ -61,14 +101,14 @@ local function telegram_help()
   local text = "Plugins list:\n\n"
   -- Plugins names
   for name in pairsByKeys(plugins) do
-    if plugins[name].hide then
+    if plugins[name].hidden then
       name = nil
     else
     i = i + 1
     text = text..i..'. '..name..'\n'
     end
   end
-  text = text..'\n'..'There are '..i..' plugins enabled.'
+  text = text..'\n'..'There are '..i..' plugins help available.'
   text = text..'\n'..'Write "!help [plugin name]" or "!help [plugin number]" for more info.'
   text = text..'\n'..'Or "!help all" to show all info.'
   return text
@@ -76,30 +116,38 @@ end
  
  
 -- !help all command
-local function help_all()
+local function help_all(requester)
   local ret = ""
   for name in pairsByKeys(plugins) do
-    if plugins[name].hide then
+    if plugins[name].hidden then
       name = nil
     else
-      ret = ret .. plugin_help(name)
+      ret = ret .. plugin_help(name, nil, requester)
     end
   end
   return ret
 end
  
 local function run(msg, matches)
+  if is_sudo(msg) then
+      requester = "sudo"
+  elseif is_admin(msg) then
+      requester = "admin"
+  elseif is_momod(msg) then
+      requester = "moderator"
+  else
+      requester = "user"
+  end
   if matches[1] == "!help" then
     return telegram_help()
   elseif matches[1] == "!help all" then
-    return help_all()
+    return help_all(requester)
   else
- 
     local text = ""
     if tonumber(matches[1])  then
-      text = plugin_help(nil,matches[1])
+      text = plugin_help(nil, matches[1], requester)
     else
-      text = plugin_help(matches[1])
+      text = plugin_help(matches[1], nil, requester)
     end
     if not text then
       text = telegram_help()
