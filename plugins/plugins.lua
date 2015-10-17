@@ -181,6 +181,9 @@ local function run(msg, matches)
 
   -- Disable a plugin
   if matches[1] == 'disable' and is_sudo(msg) then --after changed to moderator mode, set only sudo
+    if matches[2] == 'plugins' then
+    	return 'This plugin can\'t be disabled'
+    end
     print("disable: "..matches[2])
     return disable_plugin(matches[2])
   end
@@ -194,11 +197,16 @@ end
 return {
   description = "Plugin to manage other plugins. Enable, disable or reload.", 
   usage = {
-    "!plugins: list all plugins.", 
-    "!plugins enable [plugin]: enable plugin.",
-    "!plugins disable [plugin]: disable plugin.",
-    "!plugins disable [plugin] chat: disable plugin only this chat.",
-    "!plugins reload: reloads all plugins." },
+      moderator = {
+          "!plugins disable [plugin] chat : disable plugin only this chat.",
+          "!plugins enable [plugin] chat : enable plugin only this chat.",
+          },
+      sudo = {
+          "!plugins : list all plugins.",
+          "!plugins enable [plugin] : enable plugin.",
+          "!plugins disable [plugin] : disable plugin.",
+          "!plugins reload : reloads all plugins." },
+          },
   patterns = {
     "^!plugins$",
     "^!plugins? (enable) ([%w_%.%-]+)$",
