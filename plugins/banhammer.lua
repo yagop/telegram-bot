@@ -152,7 +152,7 @@ local function run(msg, matches)
     if matches[2] == 'user' then
       local hash = 'whitelist:user#id'..matches[3]
       redis:set(hash, true)
-      return 'User '..msg.from.id..' whitelisted'
+      return 'User '..matches[3]..' whitelisted'
     end
 
     if matches[2] == 'chat' then
