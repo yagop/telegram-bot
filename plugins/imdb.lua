@@ -12,10 +12,16 @@ local function imdb(movie)
 
   if #response > 0 then
     local r = json:decode(response)
+    vardump(r)
+    if r.Error then
+      return r.Error
+    end
     r['Url'] = "http://omdb.com/title/" .. r.imdbID
     local t = ""
-    for k, v in pairs(r) do t = t .. k .. ": " .. v .. ", " end
-    return t:sub(1, -3)
+    for k, v in pairs(r) do
+      t = t..k..": "..v.. "\n"
+    end
+    return t
   end
   return nil
 end
