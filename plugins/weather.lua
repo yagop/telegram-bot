@@ -3,8 +3,8 @@ do
 local BASE_URL = "http://api.openweathermap.org/data/2.5/weather"
 
 local function get_weather(location)
-  print("Finding weather in ", location)
   location = string.gsub(location," ","+")
+  print("Finding weather in ", location)
   local url = BASE_URL
   url = url..'?q='..location
   url = url..'&units=metric'
