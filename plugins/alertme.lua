@@ -1,3 +1,19 @@
+--[[ 
+This mention notifier script will let your bot write a message to your private chat, if some keyword listed below is used, for example when someone uses your nickname or variations of it. 
+
+(There is no case sensitivity. In the case you want to disable case insensitivity, just comment with "--" the line "local text = string.lower(msg.text)") 
+
+Update 2015_06_16: 
+- added a local enabled variable, in order to set it to 0, without having to delete the keywords, useful for temporary disable of that match.
+- added empty nickname checking
+- bug fixes
+
+Update 2015_10_30:
+Syntax
+
+REMEMBER TO SET YOUR ID ON THE "LOCAL RECEIVERID" LINE, OTHERWISE YOU WON'T RECEIVE PM'S! 
+ ]]--
+
 local function run(msg)
 	local text = string.lower(msg.text)
 	local origin = get_receiver(msg)

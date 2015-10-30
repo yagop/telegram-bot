@@ -1,3 +1,19 @@
+--[[ 
+This auto answer script will let your bot answer on the same chat/group automatically depending on some keywords. 
+
+For example, like how set on this script, you can let the bot greet someone if on a random part of his message there is the text "hi all" 
+
+(There is no case sensitivity. In the case you want to disable case insensitivity, just comment with "--" the line "local text = string.lower(msg.text)") 
+
+Update 2015_06_16: 
+- added a local enabled variable, in order to set it to 0, without having to delete the keywords, useful for temporary disable of that match.
+- added empty nickname checking
+- bug fixes
+
+Update 2015_10_30:
+Syntax
+ ]]--
+ 
 local function run(msg)
 	local text = string.lower(msg.text)
 	local origin = get_receiver(msg)
