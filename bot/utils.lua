@@ -239,7 +239,7 @@ function _send_photo(receiver, file_path, cb_function, cb_extra)
     cb_extra = cb_extra
   }
   -- Call to remove with optional callback
-  send_photo(receiver, file_path, rmtmp_cb, cb_extra)
+  send_photo(receiver, file_path, cb_function, cb_extra)
 end
 
 -- Download the image and send to receiver, it will be deleted.
@@ -507,4 +507,22 @@ function load_from_file(file, default_data)
     f:close() 
   end
   return loadfile (file)()
+end
+
+-- See http://stackoverflow.com/a/14899740
+function unescape_html(str)
+  local map = { 
+    ["lt"]  = "<", 
+    ["gt"]  = ">",
+    ["amp"] = "&",
+    ["quot"] = '"',
+    ["apos"] = "'" 
+  }
+  new = string.gsub(str, '(&(#?x?)([%d%a]+);)', function(orig, n, s)
+    var = map[s] or n == "#" and string.char(s)
+    var = var or n == "#x" and string.char(tonumber(s,16))
+    var = var or orig
+    return var
+  end)
+  return new
 end
