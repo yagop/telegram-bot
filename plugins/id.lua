@@ -47,6 +47,29 @@ local function run(msg, matches)
       local chat = get_receiver(msg)
       chat_info(chat, returnids, {receiver=receiver})
     end
+  elseif matches[1] == "member" and matches[2] == "@" then
+    local nick = matches[3]
+    local chat = get_receiver(msg)
+    if not is_chat_msg(msg) then
+      return "You are not in a group."
+    end
+    chat_info(chat, function (extra, success, result)
+      local receiver = extra.receiver
+      local nick = extra.nick
+      print("Searching: "..nick)
+      local found
+      for k,user in pairs(result.members) do
+        if user.username == nick then
+          found = user
+        end
+      end
+      if not found then
+        send_msg(receiver, "User not found on this chat.", ok_cb, false)
+      else
+        local text = "ID: "..found.id
+        send_msg(receiver, text, ok_cb, false)
+      end
+    end, {receiver=chat, nick=nick})
   end
 end
 
@@ -55,12 +78,14 @@ return {
   usage = {
     "!id: Return your ID and the chat id if you are in one.",
     "!ids chat: Return the IDs of the current chat members.",
-    "!ids chat <chat_id>: Return the IDs of the <chat_id> members."
+    "!ids chat <chat_id>: Return the IDs of the <chat_id> members.",
+    "!id member @<user_name>: Return the member @<user_name> ID from the current chat"
   },
   patterns = {
     "^!id$",
     "^!ids? (chat) (%d+)$",
-    "^!ids? (chat)$"
+    "^!ids? (chat)$",
+    "^!id (member) (@)(.+)"
   },
   run = run
 }
