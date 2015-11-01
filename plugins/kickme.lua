@@ -14,7 +14,7 @@ local function run (msg, matches)
 
   if msg.to.type ~= 'chat' then
     return "Not a chat group!"
-  elseif user == our_id then
+  elseif user == tostring(our_id) then
     --[[ A robot must protect its own existence as long as such protection does
     not conflict with the First or Second Laws. ]]--
     return "I won't kick myself!"
