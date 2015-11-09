@@ -57,7 +57,7 @@ local function pre_process (msg)
           print("Flood in not a chat group!")
         elseif user == tostring(our_id) then
           print('I won\'t kick myself')
-        elseif is_sudo(msg) and false then
+        elseif is_sudo(msg) then
           print('I won\'t kick an admin!')
         else
           kick_user(user, chat)
