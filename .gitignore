@@ -1,4 +1,3 @@
 tg/
-data/*
-data/photos/*
+data/
 .luarocks
