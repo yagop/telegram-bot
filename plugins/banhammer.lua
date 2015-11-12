@@ -35,6 +35,18 @@ local function is_banned(user_id, chat_id)
   return banned or false
 end
 
+local function kick_by_reply(extra, success, result)
+  vardump(extra)
+  vardump(result)
+  local msg = result
+  if result.to.type == 'chat' and not is_sudo(msg) then
+    local chat = 'chat#id'..result.to.id
+    chat_del_user(chat, 'user#id'..result.from.id, ok_cb, false)
+  else
+    return 'Use This in Your Groups'
+  end
+end
+
 local function pre_process(msg)
 
   -- SERVICE MESSAGE
@@ -135,7 +147,11 @@ local function run(msg, matches)
 
   if matches[1] == 'kick' then
     if msg.to.type == 'chat' then
-      kick_user(matches[2], msg.to.id)
+      if msg.reply_id then
+        msgr = get_message(msg.reply_id, kick_by_reply, false)
+      else
+        kick_user(matches[2], msg.to.id)
+      end
     else
       return 'This isn\'t a chat group'
     end
@@ -208,6 +224,7 @@ return {
     "^!(whitelist) (delete) (chat)$",
     "^!(ban) (user) (%d+)$",
     "^!(ban) (delete) (%d+)$",
+    "^!(kick)$",
     "^!(kick) (%d+)$",
     "^!!tgservice (.+)$",
   },

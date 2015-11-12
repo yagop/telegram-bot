@@ -36,8 +36,8 @@ end
 return {
   description = "Invite other user to the chat group", 
   usage = {
-    "!invite name [user_name]", 
-    "!invite id [user_id]" },
+    '!invite name [user_name]', 
+    '!invite id [user_id]'},
   patterns = {
     "^!invite (name) (.*)$",
     "^!invite (id) (%d+)$"

@@ -74,17 +74,36 @@ install_rocks() {
   fi
 }
 
+upstart() {
+  sed -i "s/yourusername/$(whoami)/g" etc/telegram.conf
+  sed -i "s_merbotpath_$(pwd)_g" etc/telegram.conf
+  sudo cp etc/telegram.conf /etc/init/merbot.conf
+
+  printf "%s\n" '
+
+  Upstart script installed to /etc/init/merbot.conf.
+  Now you can start merbot with:
+
+    sudo start merbot
+
+  Or stop merbot with:
+
+    sudo stop merbot  
+
+'
+}
+
 install() {
   git pull
   git submodule update --init --recursive
-  patch -i "patches/disable-python-and-libjansson.patch" -p 0 --batch --forward
+  patch -i "patches/lua-tg.get_message.block_user.res_user.export_chat_link.patch" -p 0 --batch --forward
   RET=$?;
 
   cd tg
   if [ $RET -ne 0 ]; then
     autoconf -i
   fi
-  ./configure && make
+  ./configure --enable-liblua --enable-json --disable-python && make
 
   RET=$?; if [ $RET -ne 0 ]; then
     echo "Error. Exiting."; exit $RET;
@@ -98,6 +117,8 @@ if [ "$1" = "install" ]; then
   install
 elif [ "$1" = "update" ]; then
   update
+elif [ "$1" = "upstart" ]; then
+  upstart
 else
   if [ ! -f ./tg/telegram.h ]; then
     echo "tg not found"

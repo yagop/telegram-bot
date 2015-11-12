@@ -44,10 +44,10 @@ end
 
 function msg_valid(msg)
   -- Don't process outgoing messages
-  if msg.out then
-    print('\27[36mNot valid: msg from us\27[39m')
-    return false
-  end
+--  if msg.out then
+--    print('\27[36mNot valid: msg from us\27[39m')
+--    return false
+--  end
 
   -- Before bot was started
   if msg.date < now then
@@ -70,10 +70,10 @@ function msg_valid(msg)
     return false
   end
 
-  if msg.from.id == our_id then
-    print('\27[36mNot valid: Msg from our id\27[39m')
-    return false
-  end
+--  if msg.from.id == our_id then
+--    print('\27[36mNot valid: Msg from our id\27[39m')
+--    return false
+--  end
 
   if msg.to.type == 'encr_chat' then
     print('\27[36mNot valid: Encrypted chat\27[39m')
@@ -205,31 +205,18 @@ function create_config( )
   -- A simple config with basic plugins and ourselves as privileged user
   config = {
     enabled_plugins = {
-      "9gag",
-      "eur",
-      "echo",
-      "btc",
-      "get",
-      "giphy",
-      "google",
-      "gps",
+      "anti-flood",
+      "banhammer",
+      "channels",
+      "groupmanager",
       "help",
       "id",
-      "images",
-      "img_google",
-      "location",
-      "media",
+      "invite",
       "plugins",
-      "channels",
-      "set",
-      "stats",
-      "time",
-      "version",
-      "weather",
-      "xkcd",
-      "youtube" },
+      "version"},
     sudo_users = {our_id},
-    disabled_channels = {}
+    disabled_channels = {},
+    moderation = {data = 'data/moderation.json'}
   }
   serialize_to_file(config, './data/config.lua')
   print ('saved config into ./data/config.lua')
@@ -270,6 +257,30 @@ function load_plugins()
     end
 
   end
+end
+
+-- custom add
+function load_data(filename)
+
+	local f = io.open(filename)
+	if not f then
+		return {}
+	end
+	local s = f:read('*all')
+	f:close()
+	local data = JSON.decode(s)
+
+	return data
+
+end
+
+function save_data(filename, data)
+
+	local s = JSON.encode(data)
+	local f = io.open(filename, 'w')
+	f:write(s)
+	f:close()
+
 end
 
 -- Call and postpone execution for cron plugins
