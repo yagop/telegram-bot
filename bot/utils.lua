@@ -8,6 +8,7 @@ feedparser = require "feedparser"
 json = (loadfile "./libs/JSON.lua")()
 mimetype = (loadfile "./libs/mimetype.lua")()
 redis = (loadfile "./libs/redis.lua")()
+JSON = (loadfile "./libs/dkjson.lua")()
 
 http.TIMEOUT = 10
 
@@ -374,14 +375,14 @@ end
 -- Check if user can use the plugin and warns user
 -- Returns true if user was warned and false if not warned (is allowed)
 function warns_user_not_allowed(plugin, msg)
-  if not user_allowed(plugin, msg) then
-    local text = 'This plugin requires privileged user'
-    local receiver = get_receiver(msg)
-    send_msg(receiver, text, ok_cb, false)
-    return true
-  else
+--  if not user_allowed(plugin, msg) then
+--    local text = 'This plugin requires privileged user'
+--    local receiver = get_receiver(msg)
+--    send_msg(receiver, text, ok_cb, false)
+--    return true
+--  else
     return false
-  end
+--  end
 end
 
 -- Check if user can use the plugin
