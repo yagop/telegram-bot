@@ -185,9 +185,11 @@ function run(msg, matches)
 	end
     local data = load_data(_config.moderation.data)
     local receiver = get_receiver(msg)
-    if msg.media then
-    	if msg.media.type == 'photo' and data[tostring(msg.to.id)]['settings']['set_photo'] == 'waiting' and is_chat_msg(msg) and is_momod(msg) then
-    		load_photo(msg.id, set_group_photo, msg)
+    if msg.media and is_chat_msg(msg) and is_momod(msg) then
+    	if msg.media.type == 'photo' and data[tostring(msg.to.id)] then
+    		if data[tostring(msg.to.id)]['settings']['set_photo'] == 'waiting' then
+    			load_photo(msg.id, set_group_photo, msg)
+    		end
     	end
     end
     if data[tostring(msg.to.id)] then
