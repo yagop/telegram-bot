@@ -7,7 +7,6 @@
 *Merbot* is dedicated as a group manager bot, so it's have no unnecessary plugins other than listed below. You can always add plugins as you need.
 
 1. Banhammer
-
 Plugin to manage bans, kicks and white/black lists.
 
   * Enable or disable whitelist mode.
@@ -20,14 +19,12 @@ Plugin to manage bans, kicks and white/black lists.
   * Kick user from chat group.
 
 2. Channels
-  
 Plugin to manage channels. Enable or disable channel.
 
   * Enable current channel.
   * Disable current channel.
 
 3. Group Manager
-
 Plugin to manage group chat.
 
   * Read group description.
@@ -44,15 +41,13 @@ Plugin to manage group chat.
   * Set group rules.
 
 4. Help
-
-Help plugin. Get info from other plugins. 
+Help plugin. Get info from other plugins.
 
   * Show list of plugins.
   * Show all commands for every plugin.
   * Commands for that plugin.
 
 5. Id
-
 Know your id or the id of a chat members.
 
   * Return your ID and the chat id if you are in one.
@@ -62,11 +57,9 @@ Know your id or the id of a chat members.
   * Search for users with `text` on `first_name`, `print_name` or `username` on current chat.
 
 6. Invite
-
 Invite other user to the chat group.
 
 7. Plugins
-
 Plugin to manage other plugins. Enable, disable or reload.
 
   * List all plugins.
@@ -76,13 +69,11 @@ Plugin to manage other plugins. Enable, disable or reload.
   * Reloads all plugins.
 
 8. Version
-
 Shows bot version.
 
-[Installation](https</code>://github.com/yagop/telegram-bot/wiki/Installation)
-------------
+### [Installation](https</code>://github.com/yagop/telegram-bot/wiki/Installation)
 
-# Dependencies
+### Dependencies
 
 Tested on Ubuntu 14.04, for other OSs check out https://github.com/yagop/telegram-bot/wiki/Installation.
 
@@ -90,7 +81,7 @@ Tested on Ubuntu 14.04, for other OSs check out https://github.com/yagop/telegra
 sudo apt-get install libreadline-dev libconfig-dev libssl-dev lua5.2 liblua5.2-dev libevent-dev make unzip git redis-server g++ libjansson-dev libpython-dev expat libexpat1-dev
 ```
 
-# Installation
+### Installation
 
 After those dependencies, lets install the bot.
 
@@ -111,7 +102,7 @@ If you use Ubuntu, which is use `upstart`, you can create an `upstart` script to
 And then, start `merbot` by executing `sudo start merbot`. And stop `merbot` by `sudo stop merbot`.
 
 
-# Enable more [`plugins`](https</code>://github.com/rizaumami/merbot/tree/master/plugins)
+### Enable more [`plugins`](https</code>://github.com/rizaumami/merbot/tree/master/plugins)
 
 See the plugins list with `!plugins` command.
 
