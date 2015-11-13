@@ -1,6 +1,7 @@
 # <p align="center">merbot
 
-<p align="center">A Telegram Group Peace Keeper Bot
+<p align="center">**A Telegram Group Peace Keeper Bot**
+
 
 **Merbot** is Telegram group guardian bot based on [telegram-bot](https://github.com/yagop/telegram-bot).
 
@@ -8,14 +9,14 @@
 
 1. **Banhammer**. Plugin to manage bans, kicks and white/black lists.
 
-  * Enable or disable whitelist mode.
-  * Allow user to use the bot when whitelist mode is enabled.
   * Allow everybody on current chat to use the bot when whitelist mode is enabled.
-  * Remove user from whitelist.
-  * Remove chat from whitelist.
+  * Allow user to use the bot when whitelist mode is enabled.
+  * Ban/unban user.
+  * Enable or disable whitelist mode.
   * Kick user from chat and kicks it if joins chat again.
-  * Unban user.
   * Kick user from chat group.
+  * Remove chat from whitelist.
+  * Remove user from whitelist.
 
 2. **Channels**. Plugin to manage channels. Enable or disable channel.
 
@@ -24,41 +25,41 @@
 
 3. **Group Manager**. Plugin to manage group chat.
 
-  * Read group description.
-  * {Dis}allow APIs bots.
+  * Allow/disallow APIs bots to enter group.
+  * Get or revoke invite link.
   * Lock/unlock group member.
   * Lock/unlock group name.
   * Lock/unlock group photo.
-  * Show group settings.
-  * Get or revoke invite link.
+  * Read group description.
   * Read group rules.
   * Set group description.
   * Set group name.
   * Set group photo.
   * Set group rules.
+  * Show group settings.
 
 4. **Help**. Help plugin. Get info from other plugins.
 
-  * Show list of plugins.
   * Show all commands for every plugin.
-  * Commands for that plugin.
+  * Show Commands for that plugin.
+  * Show list of plugins.
 
 5. **Id**. Know your id or the id of a chat members.
 
-  * Return your ID and the chat id if you are in one.
-  * Return the IDs of the current chat members.
   * Return the IDs of the `chat_id` members.
+  * Return the IDs of the current chat members.
   * Return the member `@user_name` ID from the current chat.
+  * Return your ID and the chat id if you are in one.
   * Search for users with `text` on `first_name`, `print_name` or `username` on current chat.
 
 6. **Invite**. Invite other user to the chat group.
 
 7. **Plugins**. Plugin to manage other plugins. Enable, disable or reload.
 
-  * List all plugins.
-  * Enable plugin.
   * Disable plugin.
   * Disable plugin only this chat.
+  * Enable plugin.
+  * List all plugins.
   * Reloads all plugins.
 
 8. **Version**. Shows bot version.
