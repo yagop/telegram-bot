@@ -35,26 +35,47 @@ local function is_banned(user_id, chat_id)
   return banned or false
 end
 
-local function ban_by_reply(extra, success, result)
-  vardump(extra)
-  vardump(result)
+local function action_by_reply(extra, success, result)
   local msg = result
+  local chat = msg.to.id
+  local user = msg.from.id
   if result.to.type == 'chat' and not is_sudo(msg) then
-    local chat = result.to.id
-    -- Save to redis
-    local hash =  'banned:'..chat..':'..result.from.id
-    redis:set(hash, true)
-    chat_del_user('chat#id'..chat, 'user#id'..result.from.id, ok_cb, false)
+    if extra.match == 'kick' then
+      chat_del_user('chat#id'..chat, 'user#id'..user, ok_cb, false)
+    elseif extra.match == 'ban' then
+      -- Save to redis
+      local hash =  'banned:'..chat..':'..user
+      redis:set(hash, true)
+      chat_del_user('chat#id'..chat, 'user#id'..user, ok_cb, false)
+      send_msg(chat, 'User '..user..' banned', ok_cb,  true)
+    end
   else
     return 'Use This in Your Groups'
   end
 end
 
-local function kick_by_reply(extra, success, result)
-  local msg = result
-  if result.to.type == 'chat' and not is_sudo(msg) then
-    local chat = 'chat#id'..result.to.id
-    chat_del_user(chat, 'user#id'..result.from.id, ok_cb, false)
+local function res_user_callback(extra, success, result)
+  vardump(extra)
+  local msg = extra.msg
+  local chat = msg.to.id
+  local user = result.id
+  if msg.to.type == 'chat' then
+    -- check if user is a sudoer
+    for v,user_id in pairs(_config.sudo_users) do
+      if user_id ~= user then
+        if extra.match == 'kick' then
+          chat_del_user('chat#id'..chat, 'user#id'..user, ok_cb, false)
+        elseif extra.match == 'ban' then
+          -- Save to redis
+          local hash =  'banned:'..chat..':'..user
+          redis:set(hash, true)
+          chat_del_user('chat#id'..chat, 'user#id'..user, ok_cb, false)
+        elseif extra.match == 'delete' then
+          local hash =  'banned:'..chat..':'..user
+          redis:del(hash)
+        end
+      end
+    end
   else
     return 'Use This in Your Groups'
   end
@@ -145,14 +166,24 @@ local function run(msg, matches)
 
     if msg.to.type == 'chat' then
       if msg.reply_id then
-        msgr = get_message(msg.reply_id, ban_by_reply, false)
-      elseif matches[2] == 'user' then
-        ban_user(user_id, chat_id)
-        return 'User '..user_id..' banned'
+        msgr = get_message(msg.reply_id, action_by_reply, {msg=msg, match=matches[1]})
+      elseif string.match(matches[2], '^%d+$') then
+        ban_user(matches[2], chat_id)
+        return 'User '..matches[2]..' banned'
+      elseif string.match(matches[2], '^@.+$') then
+        local user = string.gsub(matches[2], '@', '')
+        msgr = res_user(user, res_user_callback, {msg=msg, match=matches[1]})
+        return 'User '..matches[2]..' banned'
       end
+
       if matches[2] == 'delete' then
-        local hash =  'banned:'..chat_id..':'..user_id
-        redis:del(hash)
+        if string.match(user_id, '^@.+$') then
+          local user = string.gsub(user_id, '@', '')
+          msgr = res_user(user, res_user_callback, {msg=msg, match=matches[2]})
+        else
+          local hash =  'banned:'..chat_id..':'..user_id
+          redis:del(hash)
+        end        
         return 'User '..user_id..' unbanned'
       end
     else
@@ -163,9 +194,12 @@ local function run(msg, matches)
   if matches[1] == 'kick' then
     if msg.to.type == 'chat' then
       if msg.reply_id then
-        msgr = get_message(msg.reply_id, kick_by_reply, false)
-      else
+        msgr = get_message(msg.reply_id, action_by_reply, {msg=msg, match=matches[1]})
+      elseif string.match(matches[2], '^%d+$') then
         kick_user(matches[2], msg.to.id)
+      else
+        local user = string.gsub(matches[2], '@', '')
+        msgr = res_user(user, res_user_callback, {msg=msg, match=matches[1]})
       end
     else
       return 'This isn\'t a chat group'
@@ -221,28 +255,32 @@ end
 return {
   description = "Plugin to manage bans, kicks and white/black lists.",
   usage = {
-    "!whitelist <enable>/<disable>: Enable or disable whitelist mode",
-    "!whitelist user <user_id>: Allow user to use the bot when whitelist mode is enabled",
+    "!ban : If type in reply, will ban user from chat group.",
+    "!ban delete <user_id>/<@username>: Unban user",
+    "!ban <user_id>/<@username>: Kick user from chat and kicks it if joins chat again",
+    "!kick : If type in reply, will kick user from chat group.",
+    "!kick <user_id>/<@username>: Kick user from chat group",
     "!whitelist chat: Allow everybody on current chat to use the bot when whitelist mode is enabled",
-    "!whitelist delete user <user_id>: Remove user from whitelist",
     "!whitelist delete chat: Remove chat from whitelist",
-    "!ban user <user_id>: Kick user from chat and kicks it if joins chat again",
-    "!ban delete <user_id>: Unban user",
-    "!kick <user_id> Kick user from chat group"
+    "!whitelist delete user <user_id>: Remove user from whitelist",
+    "!whitelist <enable>/<disable>: Enable or disable whitelist mode",
+    "!whitelist user <user_id>: Allow user to use the bot when whitelist mode is enabled"
   },
   patterns = {
-    "^/(whitelist) (enable)$",
-    "^/(whitelist) (disable)$",
-    "^/(whitelist) (user) (%d+)$",
-    "^/(whitelist) (chat)$",
-    "^/(whitelist) (delete) (user) (%d+)$",
-    "^/(whitelist) (delete) (chat)$",
-    "^/(ban) (user) (%d+)$",
-    "^/(ban) (delete) (%d+)$",
-    "^/(ban)$",
-    "^/(kick)$",
-    "^/(kick) (%d+)$",
-    "^/!tgservice (.+)$",
+    "^!(ban) (@.+)$",
+    "^!(ban)$",
+    "^!(ban) (%d+)$",
+    "^!(ban) (delete) (@.+)$",
+    "^!(ban) (delete) (%d+)$",
+    "^!(kick) (.+)$",
+    "^!(kick)$",
+    "^!!tgservice (.+)$",
+    "^!(whitelist) (chat)$",
+    "^!(whitelist) (delete) (chat)$",
+    "^!(whitelist) (delete) (user) (%d+)$",
+    "^!(whitelist) (disable)$",
+    "^!(whitelist) (enable)$",
+    "^!(whitelist) (user) (%d+)$"
   },
   run = run,
   pre_process = pre_process
