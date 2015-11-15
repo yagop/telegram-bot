@@ -62,7 +62,7 @@ local function pre_process (msg)
         else
           -- Ban user
           -- TODO: Check on this plugin bans
-          local bhash =  'banned:'...msg.to.id..':'..msg.from.id
+          local bhash = 'banned:'..msg.to.id..':'..msg.from.id
           redis:set(bhash, true)
           kick_user(user, chat)
         end
