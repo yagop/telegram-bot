@@ -22,11 +22,16 @@ local function kick_user(user_id, chat_id)
 end
 
 local function ban_user(user_id, chat_id)
-  -- Save to redis
-  local hash =  'banned:'..chat_id..':'..user_id
-  redis:set(hash, true)
-  -- Kick from chat
-  kick_user(user_id, chat_id)
+  local chat = 'chat#id'..chat_id
+  if user_id == tostring(our_id) then
+    send_msg(chat, "I won't kick myself!", ok_cb,  true)
+  else
+    -- Save to redis
+    local hash =  'banned:'..chat_id..':'..user_id
+    redis:set(hash, true)
+    -- Kick from chat
+    kick_user(user_id, chat_id)
+  end
 end
 
 local function is_banned(user_id, chat_id)
