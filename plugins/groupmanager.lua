@@ -243,7 +243,7 @@ local function show_group_settings(msg, data)
     return "For moderators only!"
   end
   local settings = data[tostring(msg.to.id)]['settings']
-  local text = "Group settings:\nLock group bot : "..settings.lock_bots.."\nLock group name : "..settings.lock_name.."\nLock group photo : "..settings.lock_photo.."\nLock group member : "..settings.lock_member
+  local text = "Group settings:\n\nLock group from bot : "..settings.lock_bots.."\nLock group name : "..settings.lock_name.."\nLock group photo : "..settings.lock_photo.."\nLock group member : "..settings.lock_member.."\nFlood protection : "..settings.anti_flood
   return text
 end
 
