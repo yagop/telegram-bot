@@ -313,7 +313,7 @@ function run(msg, matches)
           return link
         else
           local chat = 'chat#id'..msg.to.id
-          msgr = export_chat_link('chat#id'..msg.to.id, export_chat_link_callback, {receiver=receiver, data=data, chat_id=msg.to.id})
+          msgr = export_chat_link('chat#id'..msg.to.id, export_chat_link_callback, {receiver=receiver, data=data, chat_id=msg.to.id, group_name=msg.to.print_name})
         end
       end
       if matches[2] == 'set' and is_sudo(msg) then
