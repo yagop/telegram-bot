@@ -60,6 +60,10 @@ local function pre_process (msg)
         elseif is_sudo(msg) then
           print('I won\'t kick an admin!')
         else
+          -- Ban user
+          -- TODO: Check on this plugin bans
+          local bhash =  'banned:'...msg.to.id..':'..msg.from.id
+          redis:set(bhash, true)
           kick_user(user, chat)
         end
         msg = nil
