@@ -55,28 +55,22 @@ function run(msg, matches)
 
   if matches[1] == 'antiflood' then
   local data = load_data(_config.moderation.data)
+  local anti_flood_stat = data[tostring(msg.to.id)]['settings']['anti_flood']
     if matches[2] == 'kick' then
-      local anti_flood_stat = data[tostring(msg.to.id)]['settings']['anti_flood']
-      if anti_flood_stat == 'kick' then
-        return 'Anti flood protection already enabled.\nFlooder will be kicked.'
-      else
+      if anti_flood_stat ~= 'kick' then
         data[tostring(msg.to.id)]['settings']['anti_flood'] = 'kick'
         save_data(_config.moderation.data, data)
       end
-      return 'Anti flood  protection has been enabled.\nFlooder will be kicked.'
+      return 'Anti flood protection already enabled.\nFlooder will be kicked.'
     end
     if matches[2] == 'ban' then
-      local anti_flood_stat = data[tostring(msg.to.id)]['settings']['anti_flood']
-      if anti_flood_stat == 'ban' then
-        return 'Anti flood  protection already enabled.\nFlooder will be banned.'
-      else
+      if anti_flood_stat ~= 'ban' then
         data[tostring(msg.to.id)]['settings']['anti_flood'] = 'ban'
         save_data(_config.moderation.data, data)
       end
-      return 'Anti flood  protection has been enabled.\nFlooder will be banned.'
+      return 'Anti flood  protection already enabled.\nFlooder will be banned.'
     end
     if matches[2] == 'disable' then
-      local anti_flood_stat = data[tostring(msg.to.id)]['settings']['anti_flood']
       if anti_flood_stat == 'no' then
         return 'Anti flood  protection is not enabled.'
       else
