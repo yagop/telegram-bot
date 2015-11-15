@@ -257,6 +257,7 @@ end
 
 function run(msg, matches)
   --vardump(msg)
+
   if not is_chat_msg(msg) then
 	    return "This is not a group chat."
 	end
@@ -264,10 +265,12 @@ function run(msg, matches)
   local data = load_data(_config.moderation.data)
   local receiver = get_receiver(msg)
 
+  -- add a group to be moderated
   if matches[1] == 'gpadd' then
     return gpadd(msg)
   end
 
+  -- remove group from moderation
   if matches[1] == 'gprem' then
     return gprem(msg)
   end
@@ -319,6 +322,7 @@ function run(msg, matches)
       end
 	  end
 
+    -- lock {bot|name|member|photo}
 		if matches[1] == 'group' and matches[2] == 'lock' then --group lock *
       if matches[3] == 'bot' then
         return disallow_api_bots(msg, data)
@@ -334,6 +338,7 @@ function run(msg, matches)
       end
 		end
 
+    -- unlock {bot|name|member|photo}
 		if matches[1] == 'group' and matches[2] == 'unlock' then --group unlock *
       if matches[3] == 'bot' then
         return allow_api_bots(msg, data)
@@ -349,10 +354,12 @@ function run(msg, matches)
       end
 		end
 
+    -- view group settings
 		if matches[1] == 'group' and matches[2] == 'settings' then
       return show_group_settings(msg, data)
 		end
 
+    -- if group name is renamed
     if matches[1] == 'chat_rename' then
       if not msg.service then
         return "Are you trying to troll me?"
@@ -369,6 +376,7 @@ function run(msg, matches)
       end
 		end
 
+    -- set group name
 		if matches[1] == 'setname' and is_sudo(msg) then
       local new_name = string.gsub(matches[2], '_', ' ')
       data[tostring(msg.to.id)]['settings']['set_name'] = new_name
@@ -378,12 +386,14 @@ function run(msg, matches)
       rename_chat(to_rename, group_name_set, ok_cb, false)
 		end
 
+    -- set group photo
 		if matches[1] == 'setphoto' and is_sudo(msg) then
       data[tostring(msg.to.id)]['settings']['set_photo'] = 'waiting'
       save_data(_config.moderation.data, data)
       return 'Please send me new group photo now'
 		end
 
+    -- if a user is added to group
 		if matches[1] == 'chat_add_user' then
       if not msg.service then
         return "Are you trying to troll me?"
@@ -394,6 +404,7 @@ function run(msg, matches)
       local chat = 'chat#id'..msg.to.id
       if group_member_lock == 'yes' then
         chat_del_user(chat, user, ok_cb, true)
+      -- no APIs bot are allowed to enter chat group.
       elseif group_bot_lock == 'yes' and msg.action.user.flags == 4352 and msg.from.id ~= 0 then
         chat_del_user(chat, user, ok_cb, true)
       elseif group_bot_lock == 'no' or group_member_lock == 'no' then
@@ -401,6 +412,7 @@ function run(msg, matches)
       end
     end
 
+    -- if group photo is deleted
 		if matches[1] == 'chat_delete_photo' then
       if not msg.service then
         return "Are you trying to troll me?"
@@ -413,6 +425,7 @@ function run(msg, matches)
       end
 		end
 
+    -- if group photo is changed
 		if matches[1] == 'chat_change_photo' and msg.from.id ~= 0 then
       if not msg.service then
         return "Are you trying to troll me?"
