@@ -109,7 +109,7 @@ local function allow_api_bots(msg, data)
 	else
     data[tostring(msg.to.id)]['settings']['lock_bots'] = 'no'
     save_data(_config.moderation.data, data)
-    return 'Group is locked from bots.'
+    return 'Group is open for bots.'
 	end
 end
 
@@ -323,7 +323,7 @@ function run(msg, matches)
 	  end
 
     -- lock {bot|name|member|photo}
-		if matches[1] == 'group' and matches[2] == 'lock' then --group lock *
+		if matches[1] == 'group' and matches[2] == 'lock' then
       if matches[3] == 'bot' then
         return disallow_api_bots(msg, data)
       end
@@ -339,7 +339,7 @@ function run(msg, matches)
 		end
 
     -- unlock {bot|name|member|photo}
-		if matches[1] == 'group' and matches[2] == 'unlock' then --group unlock *
+		if matches[1] == 'group' and matches[2] == 'unlock' then
       if matches[3] == 'bot' then
         return allow_api_bots(msg, data)
       end
@@ -405,7 +405,7 @@ function run(msg, matches)
       if group_member_lock == 'yes' then
         chat_del_user(chat, user, ok_cb, true)
       -- no APIs bot are allowed to enter chat group.
-      elseif group_bot_lock == 'yes' and msg.action.user.flags == 4352 and msg.from.id ~= 0 then
+      elseif group_bot_lock == 'yes' and msg.action.user.flags == 4352 then
         chat_del_user(chat, user, ok_cb, true)
       elseif group_bot_lock == 'no' or group_member_lock == 'no' then
         return nil
