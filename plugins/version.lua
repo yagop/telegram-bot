@@ -1,8 +1,8 @@
 do
 
 function run(msg, matches)
-  return 'Telegram Bot '.. VERSION .. [[ 
-  Checkout http://git.io/6jdjGg
+  return 'Merbot '.. VERSION .. [[ 
+  Checkout http://git.io/v4Oi0
   GNU GPL v2 license.]]
 end
 
