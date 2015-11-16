@@ -7,7 +7,11 @@
 
 **Merbot** is dedicated as a group manager bot, so it's have no unnecessary plugins other than listed below. You can always add plugins as you need.
 
-1. **Banhammer**. Plugin to manage bans, kicks and white/black lists.
+1. **Anti flood**. Plugin to kick flooders from group.
+  
+  * Kick/ban flooders.
+
+2. **Banhammer**. Plugin to manage bans, kicks and white/black lists.
 
   * Allow everybody on current chat to use the bot when whitelist mode is enabled.
   * Allow user to use the bot when whitelist mode is enabled.
@@ -18,33 +22,30 @@
   * Remove chat from whitelist.
   * Remove user from whitelist.
 
-2. **Channels**. Plugin to manage channels. Enable or disable channel.
+3. **Channels**. Plugin to manage channels. Enable or disable channel.
 
-  * Enable current channel.
-  * Disable current channel.
+  * Enable/disable current channel.
 
-3. **Group Manager**. Plugin to manage group chat.
+4. **Group Manager**. Plugin to manage group chat.
 
   * Allow/disallow APIs bots to enter group.
   * Get or revoke invite link.
   * Lock/unlock group member.
   * Lock/unlock group name.
   * Lock/unlock group photo.
-  * Read group description.
-  * Read group rules.
-  * Set group description.
+  * Set/read group description.
+  * Set/read group rules.
   * Set group name.
   * Set group photo.
-  * Set group rules.
   * Show group settings.
 
-4. **Help**. Help plugin. Get info from other plugins.
+5. **Help**. Help plugin. Get info from other plugins.
 
   * Show all commands for every plugin.
   * Show Commands for that plugin.
   * Show list of plugins.
 
-5. **Id**. Know your id or the id of a chat members.
+6. **Id**. Know your id or the id of a chat members.
 
   * Return the IDs of the `chat_id` members.
   * Return the IDs of the current chat members.
@@ -52,23 +53,25 @@
   * Return your ID and the chat id if you are in one.
   * Search for users with `text` on `first_name`, `print_name` or `username` on current chat.
 
-6. **Invite**. Invite other user to the chat group.
+7. **Invite**. Invite other user to the chat group.
 
-7. **Plugins**. Plugin to manage other plugins. Enable, disable or reload.
+  * Invite user by `print_name`, `username` and `id`.
+
+8. **Plugins**. Plugin to manage other plugins. Enable, disable or reload.
 
   * Disable plugin.
-  * Disable plugin only this chat.
+  * Disable plugin only in this chat.
   * Enable plugin.
   * List all plugins.
   * Reloads all plugins.
 
-8. **Version**. Shows bot version.
+9. **Version**. Shows bot version.
 
-#### [Installation](https</code>://github.com/yagop/telegram-bot/wiki/Installation)
+#### [Installation](https://github.com/rizaumami/merbot/wiki/Installation)
 
 #### Dependencies
 
-Tested on Ubuntu 14.04, for other OSs check out https://github.com/yagop/telegram-bot/wiki/Installation.
+Tested on Ubuntu 14.04, for other OSs check out https://github.com/rizaumami/merbot/wiki/Installation.
 
 ```bash
 sudo apt-get install libreadline-dev libconfig-dev libssl-dev lua5.2 liblua5.2-dev libevent-dev make unzip git redis-server g++ libjansson-dev libpython-dev expat libexpat1-dev
@@ -95,7 +98,7 @@ If you use Ubuntu, which is use `upstart`, you can create an `upstart` script to
 And then, start `merbot` by executing `sudo start merbot`. And stop `merbot` by `sudo stop merbot`.
 
 
-#### Enable more [`plugins`](https</code>://github.com/rizaumami/merbot/tree/master/plugins)
+#### Enable more [`plugins`](https://github.com/rizaumami/merbot/tree/master/plugins)
 
 See the plugins list with `!plugins` command.
 
