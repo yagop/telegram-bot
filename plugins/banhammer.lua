@@ -55,7 +55,7 @@ local function action_by_reply(extra, success, result)
 end
 
 local function res_user_callback(extra, success, result)
-  vardump(extra)
+  --vardump(extra)
   local msg = extra.msg
   local chat = msg.to.id
   local user = result.id
