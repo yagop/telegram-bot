@@ -1,3 +1,20 @@
+-- data saved to moderation.json
+do
+
+-- make sure to set with value that not higher than stats.lua
+local NUM_MSG_MAX = 5  -- Max number of messages per TIME_CHECK seconds
+local TIME_CHECK = 5
+
+local function is_anti_flood(msg)
+	local data = load_data(_config.moderation.data)
+	local anti_flood_stat = data[tostring(msg.to.id)]['settings']['anti_flood']
+	if anti_flood_stat == 'kick' or anti_flood_stat == 'ban' then
+		return true
+	else
+		return false
+	end
+end
+
 local function is_user_whitelisted(id)
   local hash = 'whitelist:user#id'..id
   local white = redis:get(hash) or false
@@ -83,6 +100,33 @@ end
 
 local function pre_process(msg)
 
+  local user_id = msg.from.id
+  local chat_id = msg.to.id
+
+  -- ANTI FLOOD
+  local post_count = 'floodc:'..user_id..':'..chat_id
+  redis:incr(post_count)
+  if msg.from.type == 'user' then
+    local post_count = 'user:'..user_id..':floodc'
+    local msgs = tonumber(redis:get(post_count) or 0)
+    local text = 'User '..user_id..' is flooding'
+    if msgs > NUM_MSG_MAX and not is_sudo(msg) then
+      local data = load_data(_config.moderation.data)
+      local anti_flood_stat = data[tostring(chat_id)]['settings']['anti_flood']
+      if anti_flood_stat == 'kick' then
+        send_large_msg(get_receiver(msg), text)
+        kick_user(user_id, chat_id)
+        msg = nil
+      elseif anti_flood_stat == 'ban' then
+        send_large_msg(get_receiver(msg), text)
+        ban_user(user_id, chat_id)
+        send_msg('chat#id'..chat_id, 'User '..user_id..' banned', ok_cb,  true)
+        msg = nil
+      end
+    end
+    redis:setex(post_count, TIME_CHECK, msgs+1)
+  end
+
   -- SERVICE MESSAGE
   if msg.action and msg.action.type then
     local action = msg.action.type
@@ -107,8 +151,6 @@ local function pre_process(msg)
 
   -- BANNED USER TALKING
   if msg.to.type == 'chat' then
-    local user_id = msg.from.id
-    local chat_id = msg.to.id
     local banned = is_banned(user_id, chat_id)
     if banned then
       print('Banned user talking!')
@@ -129,13 +171,13 @@ local function pre_process(msg)
     local allowed = is_user_whitelisted(msg.from.id)
 
     if not allowed then
-      print('User '..msg.from.id..' not whitelisted')
+      print('User '..user_id..' not whitelisted')
       if msg.to.type == 'chat' then
         allowed = is_chat_whitelisted(msg.to.id)
         if not allowed then
-          print ('Chat '..msg.to.id..' not whitelisted')
+          print ('Chat '..chat_id..' not whitelisted')
         else
-          print ('Chat '..msg.to.id..' whitelisted :)')
+          print ('Chat '..chat_id..' whitelisted :)')
         end
       end
     else
@@ -183,7 +225,7 @@ local function run(msg, matches)
         else
           local hash =  'banned:'..chat_id..':'..user_id
           redis:del(hash)
-        end        
+        end
         return 'User '..user_id..' unbanned'
       end
     else
@@ -203,6 +245,34 @@ local function run(msg, matches)
       end
     else
       return 'This isn\'t a chat group'
+    end
+  end
+
+  if matches[1] == 'antiflood' then
+  local data = load_data(_config.moderation.data)
+  local anti_flood_stat = data[tostring(msg.to.id)]['settings']['anti_flood']
+    if matches[2] == 'kick' then
+      if anti_flood_stat ~= 'kick' then
+        data[tostring(msg.to.id)]['settings']['anti_flood'] = 'kick'
+        save_data(_config.moderation.data, data)
+      end
+      return 'Anti flood protection already enabled.\nFlooder will be kicked.'
+    end
+    if matches[2] == 'ban' then
+      if anti_flood_stat ~= 'ban' then
+        data[tostring(msg.to.id)]['settings']['anti_flood'] = 'ban'
+        save_data(_config.moderation.data, data)
+      end
+      return 'Anti flood  protection already enabled.\nFlooder will be banned.'
+    end
+    if matches[2] == 'disable' then
+      if anti_flood_stat == 'no' then
+        return 'Anti flood  protection is not enabled.'
+      else
+        data[tostring(msg.to.id)]['settings']['anti_flood'] = 'no'
+        save_data(_config.moderation.data, data)
+        return 'Anti flood  protection has been disabled.'
+      end
     end
   end
 
@@ -255,6 +325,9 @@ end
 return {
   description = "Plugin to manage bans, kicks and white/black lists.",
   usage = {
+    "!antiflood kick : Enable flood protection. Flooder will be kicked.",
+    "!antiflood ban : Enable flood protection. Flooder will be banned.",
+    "!antiflood disable : Disable flood protection",
     "!ban : If type in reply, will ban user from chat group.",
     "!ban delete <user_id>/<@username>: Unban user",
     "!ban <user_id>/<@username>: Kick user from chat and kicks it if joins chat again",
@@ -267,6 +340,7 @@ return {
     "!whitelist user <user_id>: Allow user to use the bot when whitelist mode is enabled"
   },
   patterns = {
+    "^!(antiflood) (.*)$",
     "^!(ban) (@.+)$",
     "^!(ban)$",
     "^!(ban) (%d+)$",
@@ -283,5 +357,8 @@ return {
     "^!(whitelist) (user) (%d+)$"
   },
   run = run,
-  pre_process = pre_process
+  pre_process = pre_process,
+  privileged = true
 }
+
+end
