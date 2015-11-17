@@ -7,62 +7,24 @@
 
 **Merbot** is dedicated as a group manager bot, so it's have no unnecessary plugins other than listed below. You can always add plugins as you need.
 
-1. **Banhammer**. Plugin to manage bans, kicks and white/black lists.
+1. **Banhammer**  
+Plugin to manage bans, kicks and white/black lists.
+2. **Channels**  
+Plugin to manage channels. Enable or disable channel.
+3. **Group Manager**  
+Plugin to manage group chat.
+4. **Help**  
+Help plugin. Get info from other plugins.
+5. **Id**  
+Know your id or the id of a chat members.
+6. **Invite**  
+Invite other user to the chat group.
+7. **Plugins**  
+Plugin to manage other plugins. Enable, disable or reload.
+8. **Version**  
+Shows bot version.
 
-  * Allow everybody on current chat to use the bot when whitelist mode is enabled.
-  * Allow user to use the bot when whitelist mode is enabled.
-  * Ban/unban user.
-  * Enable or disable whitelist mode.
-  * Kick user from chat and kicks it if joins chat again.
-  * Kick user from chat group.
-  * Kick/ban flooders.
-  * Remove chat from whitelist.
-  * Remove user from whitelist.
-
-2. **Channels**. Plugin to manage channels. Enable or disable channel.
-
-  * Enable/disable current channel.
-
-3. **Group Manager**. Plugin to manage group chat.
-
-  * Allow/disallow APIs bots to enter group.
-  * Get or revoke invite link.
-  * Lock/unlock group member.
-  * Lock/unlock group name.
-  * Lock/unlock group photo.
-  * Set/read group description.
-  * Set/read group rules.
-  * Set group name.
-  * Set group photo.
-  * Show group settings.
-
-4. **Help**. Help plugin. Get info from other plugins.
-
-  * Show all commands for every plugin.
-  * Show Commands for that plugin.
-  * Show list of plugins.
-
-5. **Id**. Know your id or the id of a chat members.
-
-  * Return the IDs of the `chat_id` members.
-  * Return the IDs of the current chat members.
-  * Return the member `@user_name` ID from the current chat.
-  * Return your ID and the chat id if you are in one.
-  * Search for users with `text` on `first_name`, `print_name` or `username` on current chat.
-
-6. **Invite**. Invite other user to the chat group.
-
-  * Invite user by `print_name`, `username` and `id`.
-
-7. **Plugins**. Plugin to manage other plugins. Enable, disable or reload.
-
-  * Disable plugin.
-  * Disable plugin only in this chat.
-  * Enable plugin.
-  * List all plugins.
-  * Reloads all plugins.
-
-8. **Version**. Shows bot version.
+Consult [wiki](https://github.com/rizaumami/merbot/wiki/Plugins) to know how to use those plugins.
 
 #### [Installation](https://github.com/rizaumami/merbot/wiki/Installation)
 
