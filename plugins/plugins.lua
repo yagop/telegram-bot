@@ -177,7 +177,8 @@ return {
     "^!plugins? (disable) ([%w_%.%-]+) (chat)",
     "^!plugins? (reload)$" },
   run = run,
-  privileged = true
+  privileged = true,
+  hide = true
 }
 
 end

@@ -57,7 +57,8 @@ return {
     "^!invite (.*)$",
     "^!invite (%d+)$"
   }, 
-  run = run 
+  run = run,
+  privileged = true
 }
 
 end

@@ -128,5 +128,6 @@ return {
     "^!id (member) (@)(.+)",
     "^!id (members) (name) (.+)"
   },
-  run = run
+  run = run,
+  privileged = true
 }
