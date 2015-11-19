@@ -93,6 +93,42 @@ upstart() {
 '
 }
 
+systemd() {
+
+  printf "%s\n" "
+[Unit]
+Description=Merbot systemd service for $(whoami)
+
+[Service]
+ExecStart=$(pwd)/merbot
+
+[Install]
+WantedBy=default.target
+" > $HOME/.config/systemd/user/merbot.service
+
+  systemctl --user enable merbot.service
+
+  printf "%s\n" "
+
+  Systemd unit installed to:
+  $HOME/.config/systemd/user/merbot.service
+  And has been enabled.
+
+  To start merbot:
+    systemctl --user start merbot
+
+  To stop merbot:
+    systemctl --user stop merbot
+
+  To shows merbot status:
+    systemctl --user status merbot
+
+  To disable merbot service:
+    systemctl --user disable merbot.service
+
+"
+}
+
 install() {
   git pull
   git submodule update --init --recursive
@@ -119,6 +155,8 @@ elif [ "$1" = "update" ]; then
   update
 elif [ "$1" = "upstart" ]; then
   upstart
+elif [ "$1" = "systemd" ]; then
+  systemd
 else
   if [ ! -f ./tg/telegram.h ]; then
     echo "tg not found"
