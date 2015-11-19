@@ -28,34 +28,7 @@ Consult [wiki](https://github.com/rizaumami/merbot/wiki/Plugins) to know how to 
 
 #### [Installation](https://github.com/rizaumami/merbot/wiki/Installation)
 
-#### Dependencies
-
-Tested on Ubuntu 14.04, for other OSs check out https://github.com/rizaumami/merbot/wiki/Installation.
-
-```bash
-sudo apt-get install libreadline-dev libconfig-dev libssl-dev lua5.2 liblua5.2-dev libevent-dev make unzip git redis-server g++ libjansson-dev libpython-dev expat libexpat1-dev
-```
-
-#### Installation
-
-After those dependencies, lets install the bot.
-
-```bash
-cd $HOME
-git clone https://github.com/rizaumami/merbot.git
-cd merbot
-./merbot install
-./merbot # Will ask you for a phone number & confirmation code.
-```
-
-If you use Ubuntu, which is use `upstart`, you can create an `upstart` script to manage `merbot`.
-
-```bash
-./merbot upstart
-```
-
-And then, start `merbot` by executing `sudo start merbot`. And stop `merbot` by `sudo stop merbot`.
-
+Check https://github.com/rizaumami/merbot/wiki/Installation to deploy `merbot` on your distributions.
 
 #### Enable more [`plugins`](https://github.com/rizaumami/merbot/tree/master/plugins)
 
