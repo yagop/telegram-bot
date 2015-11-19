@@ -18,7 +18,8 @@ local function gpadd(msg)
       lock_bots = 'no',
       lock_name = 'no',
       lock_photo = 'no',
-      lock_member = 'no'
+      lock_member = 'no',
+      anti_flood = 'no'
       }
     }
   save_data(_config.moderation.data, data)
@@ -307,17 +308,16 @@ function run(msg, matches)
 
     -- group link {get|set}
     if matches[1] == 'link' then
+      local chat = 'chat#id'..msg.to.id
       if matches[2] == 'get' then
         if data[tostring(msg.to.id)]['link'] then
           local link = data[tostring(msg.to.id)]['link']
           return link
         else
-          local chat = 'chat#id'..msg.to.id
           msgr = export_chat_link('chat#id'..msg.to.id, export_chat_link_callback, {receiver=receiver, data=data, chat_id=msg.to.id, group_name=msg.to.print_name})
         end
       end
       if matches[2] == 'set' and is_sudo(msg) then
-        local chat = 'chat#id'..msg.to.id
         msgr = export_chat_link('chat#id'..msg.to.id, export_chat_link_callback, {receiver=receiver, data=data, chat_id=msg.to.id, group_name=msg.to.print_name})
       end
 	  end
