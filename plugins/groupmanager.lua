@@ -74,8 +74,7 @@ local function get_description(msg, data)
     return 'No description available.'
 	end
   local about = data[tostring(msg.to.id)][data_cat]
-  local about = string.gsub(msg.to.print_name, "_", " ")..':\n\n'..about
-  return 'About '..about
+  return string.gsub(msg.to.print_name, "_", " ")..':\n\n'..about
 end
 
 local function set_rules(msg, data)
@@ -311,8 +310,9 @@ function run(msg, matches)
       local chat = 'chat#id'..msg.to.id
       if matches[2] == 'get' then
         if data[tostring(msg.to.id)]['link'] then
+          local about = get_description(msg, data)
           local link = data[tostring(msg.to.id)]['link']
-          return link
+          return about.."\n\n"..link
         else
           msgr = export_chat_link('chat#id'..msg.to.id, export_chat_link_callback, {receiver=receiver, data=data, chat_id=msg.to.id, group_name=msg.to.print_name})
         end
