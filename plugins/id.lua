@@ -88,7 +88,7 @@ local function run(msg, matches)
       end
     elseif matches[1] == "chat" then
       if matches[2] and is_sudo(msg) then
-        local chat = 'chat#id41710448'
+        local chat = 'chat#id'..matches[2]
         chat_info(chat, returnids, {receiver=receiver})
       else
         chat_info(receiver, returnids, {receiver=receiver})
@@ -113,8 +113,8 @@ return {
     "!id chat: Return the IDs of the current chat members.",
     "!id chat <chat_id>: Return the IDs of the current <chat_id> members.",
     "!id <id>: Return the IDs of the <id>.",
-    "!id @<user_name>: Return the member @<user_name> ID from the current chat",
-    "!id <text>: Search for users with <text> on print_name on current chat"
+    "!id @<user_name>: Return the member @<user_name> ID from the current chat.",
+    "!id <text>: Search for users with <text> on print_name on current chat."
   },
   patterns = {
     "^!id$",
