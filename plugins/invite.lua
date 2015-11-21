@@ -7,9 +7,6 @@ do
 
 -- Think it's kind of useless. Just to suppress '*** lua: attempt to call a nil value'
 local function callback(extra, success, result)
-  vardump(success)
-  vardump(result)
-  vardump(extra)
   if success == 0 then
     return send_large_msg(chat, "Can't invite user to this group.")
   else

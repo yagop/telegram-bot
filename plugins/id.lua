@@ -15,8 +15,6 @@ local function user_print_name(user)
 end
 
 local function scan_name(extra, success, result)
-  vardump(extra)
-  vardump(result)
   local founds = {}
   for k,member in pairs(result.members) do
     local fields = {'first_name', 'print_name', 'username'}
@@ -24,7 +22,6 @@ local function scan_name(extra, success, result)
         if member[field] and type(member[field]) == "string" then
           if member[field]:match(extra.user) then
             local id = tostring(member.id)
-            print(id, member.id)
             founds[id] = member
           end
         end
@@ -64,8 +61,6 @@ local function action_by_reply(extra, success, result)
 end
 
 local function returnids(extra, success, result)
-  vardump(result)
-  vardump(extra)
   local text = 'IDs for chat '.. string.gsub(result.print_name, '_', ' ')
   ..' ('..result.id..')\n'
   ..'There are '..result.members_num..' members'
@@ -81,7 +76,6 @@ end
 local function run(msg, matches)
   local receiver = get_receiver(msg)
   local user = matches[1]
-  print(tostring(matches))
   local text = "ID for "..user.." is: "
   if msg.to.type == 'chat' then
     if msg.text == '!id' then
@@ -95,7 +89,6 @@ local function run(msg, matches)
     elseif matches[1] == "chat" then
       if matches[2] and is_sudo(msg) then
         local chat = 'chat#id41710448'
-        print(chat)
         chat_info(chat, returnids, {receiver=receiver})
       else
         chat_info(receiver, returnids, {receiver=receiver})
