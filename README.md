@@ -43,4 +43,4 @@ Those commands require a privileged user, privileged users are defined inside `d
 #### Contact me
 
 Please open a [github issue](https://github.com/rizaumami/merbot/issues) if you found an issue with `merbot`.
-Or you can contact me in [merbot discussion group](https://telegram.me/joinchat/AfB26wGZCnfOe5qJyL_GfQ).
+Or you can contact me in [merbot discussion group](https://telegram.me/joinchat/AfB26wGZCncqP8GjKOhrcw).
