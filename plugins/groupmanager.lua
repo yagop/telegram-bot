@@ -50,7 +50,7 @@ local function export_chat_link_callback(extra, success, result)
   local chat_id = extra.chat_id
   local group_name = extra.group_name
   if success == 0 then
-    return send_large_msg(receiver, "Can't generate invite link for this group")
+    return send_large_msg(receiver, "Can't generate invite link for this group.\nMake sure you're the admin or sudoer.")
   end
   data[tostring(chat_id)]['link'] = result
   save_data(_config.moderation.data, data)
@@ -314,7 +314,7 @@ function run(msg, matches)
           local link = data[tostring(msg.to.id)]['link']
           return about.."\n\n"..link
         else
-          msgr = export_chat_link('chat#id'..msg.to.id, export_chat_link_callback, {receiver=receiver, data=data, chat_id=msg.to.id, group_name=msg.to.print_name})
+          return "Invite link is not exist.\nTry !link set to generate it."
         end
       end
       if matches[2] == 'set' and is_sudo(msg) then
