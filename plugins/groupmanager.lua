@@ -19,7 +19,8 @@ local function gpadd(msg)
       lock_name = 'no',
       lock_photo = 'no',
       lock_member = 'no',
-      anti_flood = 'no'
+      anti_flood = 'no',
+      welcome = 'no'
       }
     }
   save_data(_config.moderation.data, data)
@@ -243,7 +244,12 @@ local function show_group_settings(msg, data)
     return "For moderators only!"
   end
   local settings = data[tostring(msg.to.id)]['settings']
-  local text = "Group settings:\n\nLock group from bot : "..settings.lock_bots.."\nLock group name : "..settings.lock_name.."\nLock group photo : "..settings.lock_photo.."\nLock group member : "..settings.lock_member.."\nFlood protection : "..settings.anti_flood
+  local text = "Group settings:\n\nLock group from bot : "..settings.lock_bots
+        .."\nLock group name : "..settings.lock_name
+        .."\nLock group photo : "..settings.lock_photo
+        .."\nLock group member : "..settings.lock_member
+        .."\nFlood protection : "..settings.anti_flood
+        .."\nWelcome service : "..settings.welcome
   return text
 end
 
