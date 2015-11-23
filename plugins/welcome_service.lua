@@ -17,9 +17,9 @@ local function welcome_message(msg, new_member)
       rules = "\nRules :\n"..rules.."\n"
     end
     local welcomes = "Welcome "..new_member..".\nYou are in group '"..string.gsub(msg.to.print_name, "_", " ").."'\n"
-    if welcome_stat == 'gp' then
+    if welcome_stat == 'group' then
       receiver = get_receiver(msg)
-    elseif welcome_stat == 'pm' then
+    elseif welcome_stat == 'private' then
       receiver = 'user#id'..msg.from.id
     end
     send_large_msg(receiver, welcomes..about..rules.."\n", ok_cb, false)
@@ -33,15 +33,15 @@ local function run(msg, matches)
 
   if matches[1] == 'welcome' then
     if matches[2] == 'group' then
-      if welcome_stat ~= 'gp' then
-        data[tostring(msg.to.id)]['settings']['welcome'] = 'gp'
+      if welcome_stat ~= 'group' then
+        data[tostring(msg.to.id)]['settings']['welcome'] = 'group'
         save_data(_config.moderation.data, data)
       end
       return 'Welcome service already enabled.\nWelcome message will shown in group.'
     end
-    if matches[2] == 'pm' then
+    if matches[2] == 'private' then
       if welcome_stat ~= 'pm' then
-        data[tostring(msg.to.id)]['settings']['welcome'] = 'pm'
+        data[tostring(msg.to.id)]['settings']['welcome'] = 'private'
         save_data(_config.moderation.data, data)
       end
       return 'Welcome service already enabled.\nWelcome message will send as private message to new member.'
