@@ -39,8 +39,8 @@ local function run(msg, matches)
       end
       return 'Welcome service already enabled.\nWelcome message will shown in group.'
     end
-    if matches[2] == 'private' then
-      if welcome_stat ~= 'pm' then
+    if matches[2] == 'pm' then
+      if welcome_stat ~= 'private' then
         data[tostring(msg.to.id)]['settings']['welcome'] = 'private'
         save_data(_config.moderation.data, data)
       end
