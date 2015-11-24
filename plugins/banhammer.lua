@@ -5,16 +5,6 @@ do
 local NUM_MSG_MAX = 5  -- Max number of messages per TIME_CHECK seconds
 local TIME_CHECK = 5
 
-local function is_anti_flood(msg)
-	local data = load_data(_config.moderation.data)
-	local anti_flood_stat = data[tostring(msg.to.id)]['settings']['anti_flood']
-	if anti_flood_stat == 'kick' or anti_flood_stat == 'ban' then
-		return true
-	else
-		return false
-	end
-end
-
 local function is_user_whitelisted(id)
   local hash = 'whitelist:user#id'..id
   local white = redis:get(hash) or false
@@ -46,6 +36,11 @@ local function ban_user(user_id, chat_id)
   kick_user(user_id, chat_id)
 end
 
+local function unban_user(user_id, chat_id)
+  local hash = 'banned:'..chat_id..':'..user_id
+  redis:del(hash)
+end
+
 local function is_banned(user_id, chat_id)
   local hash =  'banned:'..chat_id..':'..user_id
   local banned = redis:get(hash)
@@ -54,47 +49,50 @@ end
 
 local function action_by_reply(extra, success, result)
   local msg = result
-  local chat = msg.to.id
-  local user = msg.from.id
+  local chat_id = msg.to.id
+  local user_id = msg.from.id
+  local chat = 'chat#id'..msg.to.id
+  local user = 'user#id'..msg.from.id
   if result.to.type == 'chat' and not is_sudo(msg) then
     if extra.match == 'kick' then
-      chat_del_user('chat#id'..chat, 'user#id'..user, ok_cb, false)
+      chat_del_user(chat, user, ok_cb, false)
     elseif extra.match == 'ban' then
-      -- Save to redis
-      local hash =  'banned:'..chat..':'..user
-      redis:set(hash, true)
-      chat_del_user('chat#id'..chat, 'user#id'..user, ok_cb, false)
-      send_msg(chat, 'User '..user..' banned', ok_cb,  true)
+      ban_user(user_id, chat_id)
+      send_msg(chat, 'User '..user_id..' banned', ok_cb,  true)
+    elseif extra.match == 'unban' then
+      unban_user(user_id, chat_id)
+      send_msg(chat, 'User '..user_id..' unbanned', ok_cb,  true)
     end
   else
     return 'Use This in Your Groups'
   end
 end
 
-local function res_user_callback(extra, success, result)
-  --vardump(extra)
-  local msg = extra.msg
-  local chat = msg.to.id
-  local user = result.id
-  if msg.to.type == 'chat' then
-    -- check if user is a sudoer
-    for v,user_id in pairs(_config.sudo_users) do
-      if user_id ~= user then
-        if extra.match == 'kick' then
-          chat_del_user('chat#id'..chat, 'user#id'..user, ok_cb, false)
-        elseif extra.match == 'ban' then
-          -- Save to redis
-          local hash =  'banned:'..chat..':'..user
-          redis:set(hash, true)
-          chat_del_user('chat#id'..chat, 'user#id'..user, ok_cb, false)
-        elseif extra.match == 'delete' then
-          local hash =  'banned:'..chat..':'..user
-          redis:del(hash)
+local function resolve_username(extra, success, result)
+  if success == 1 then
+    local msg = extra.msg
+    local chat_id = msg.to.id
+    local user_id = result.id
+    local chat = 'chat#id'..msg.to.id
+    local user = 'user#id'..result.id
+    if msg.to.type == 'chat' then
+      -- check if user is a sudoer
+      for v,userid in pairs(_config.sudo_users) do
+        if userid ~= user_id then
+          if extra.match == 'kick' then
+            chat_del_user(chat, user, ok_cb, false)
+          elseif extra.match == 'ban' then
+            ban_user(user_id, chat_id)
+            send_msg(chat, 'User @'..result.username..' banned', ok_cb,  true)
+          elseif extra.match == 'unban' then
+            unban_user(user_id, chat_id)
+            send_msg(chat, 'User @'..result.username..' unbanned', ok_cb,  true)
+          end
         end
       end
+    else
+      return 'Use This in Your Groups.'
     end
-  else
-    return 'Use This in Your Groups'
   end
 end
 
@@ -102,6 +100,8 @@ local function pre_process(msg)
 
   local user_id = msg.from.id
   local chat_id = msg.to.id
+  local chat = 'chat#id'..msg.to.id
+  local user = 'user#id'..msg.to.id
 
   -- ANTI FLOOD
   local post_count = 'floodc:'..user_id..':'..chat_id
@@ -120,7 +120,7 @@ local function pre_process(msg)
       elseif anti_flood_stat == 'ban' then
         send_large_msg(get_receiver(msg), text)
         ban_user(user_id, chat_id)
-        send_msg('chat#id'..chat_id, 'User '..user_id..' banned', ok_cb,  true)
+        send_msg(chat, 'User '..user_id..' banned', ok_cb,  true)
         msg = nil
       end
     end
@@ -171,7 +171,7 @@ local function pre_process(msg)
     local allowed = is_user_whitelisted(msg.from.id)
 
     if not allowed then
-      print('User '..user_id..' not whitelisted')
+      print('User '..user..' not whitelisted')
       if msg.to.type == 'chat' then
         allowed = is_chat_whitelisted(msg.to.id)
         if not allowed then
@@ -181,7 +181,7 @@ local function pre_process(msg)
         end
       end
     else
-      print('User '..msg.from.id..' allowed :)')
+      print('User '..user_id..' allowed :)')
     end
 
     if not allowed then
@@ -202,65 +202,59 @@ local function run(msg, matches)
     return nil
   end
 
-  if matches[1] == 'ban' then
-    local user_id = matches[3]
-    local chat_id = msg.to.id
+  local user_id = matches[2]
+  local chat_id = msg.to.id
+  local chat = 'chat#id'..msg.to.id
+  local user = 'user#id'..msg.to.id
 
-    if msg.to.type == 'chat' then
+  if msg.to.type == 'chat' then
+    if matches[1] == 'ban' then
       if msg.reply_id then
         msgr = get_message(msg.reply_id, action_by_reply, {msg=msg, match=matches[1]})
-      elseif string.match(matches[2], '^%d+$') then
-        ban_user(matches[2], chat_id)
-        return 'User '..matches[2]..' banned'
-      elseif string.match(matches[2], '^@.+$') then
-        local user = string.gsub(matches[2], '@', '')
-        msgr = res_user(user, res_user_callback, {msg=msg, match=matches[1]})
-        return 'User '..matches[2]..' banned'
+      elseif string.match(user_id, '^%d+$') then
+        ban_user(user_id, chat_id)
+        return 'User '..user_id..' banned'
+      elseif string.match(user_id, '^@.+$') then
+        local user = string.gsub(user_id, '@', '')
+        msgr = res_user(user, resolve_username, {msg=msg, match=matches[1]})
       end
-
-      if matches[2] == 'delete' then
-        if string.match(user_id, '^@.+$') then
-          local user = string.gsub(user_id, '@', '')
-          msgr = res_user(user, res_user_callback, {msg=msg, match=matches[2]})
-        else
-          local hash =  'banned:'..chat_id..':'..user_id
-          redis:del(hash)
-        end
+    elseif matches[1] == 'unban' then
+      if msg.reply_id then
+        msgr = get_message(msg.reply_id, action_by_reply, {msg=msg, match=matches[1]})
+      elseif string.match(user_id, '^%d+$') then
+        unban_user(user_id, chat_id)
         return 'User '..user_id..' unbanned'
+      elseif string.match(user_id, '^@.+$') then
+        local user = string.gsub(user_id, '@', '')
+        msgr = res_user(user, resolve_username, {msg=msg, match=matches[1]})
       end
-    else
-      return 'This isn\'t a chat group'
-    end
-  end
-
-  if matches[1] == 'kick' then
-    if msg.to.type == 'chat' then
+    elseif matches[1] == 'kick' then
       if msg.reply_id then
         msgr = get_message(msg.reply_id, action_by_reply, {msg=msg, match=matches[1]})
-      elseif string.match(matches[2], '^%d+$') then
-        kick_user(matches[2], msg.to.id)
-      else
-        local user = string.gsub(matches[2], '@', '')
-        msgr = res_user(user, res_user_callback, {msg=msg, match=matches[1]})
+      elseif string.match(user_id, '^%d+$') then
+        kick_user(user_id, msg.to.id)
+      elseif string.match(user_id, '^@.+$') then
+        local user = string.gsub(user_id, '@', '')
+        msgr = res_user(user, resolve_username, {msg=msg, match=matches[1]})
       end
-    else
-      return 'This isn\'t a chat group'
     end
+  else
+    return 'This is not a chat group'
   end
 
   if matches[1] == 'antiflood' then
   local data = load_data(_config.moderation.data)
-  local anti_flood_stat = data[tostring(msg.to.id)]['settings']['anti_flood']
+  local anti_flood_stat = data[tostring(chat_id)]['settings']['anti_flood']
     if matches[2] == 'kick' then
       if anti_flood_stat ~= 'kick' then
-        data[tostring(msg.to.id)]['settings']['anti_flood'] = 'kick'
+        data[tostring(chat_id)]['settings']['anti_flood'] = 'kick'
         save_data(_config.moderation.data, data)
       end
       return 'Anti flood protection already enabled.\nFlooder will be kicked.'
     end
     if matches[2] == 'ban' then
       if anti_flood_stat ~= 'ban' then
-        data[tostring(msg.to.id)]['settings']['anti_flood'] = 'ban'
+        data[tostring(chat_id)]['settings']['anti_flood'] = 'ban'
         save_data(_config.moderation.data, data)
       end
       return 'Anti flood  protection already enabled.\nFlooder will be banned.'
@@ -269,7 +263,7 @@ local function run(msg, matches)
       if anti_flood_stat == 'no' then
         return 'Anti flood  protection is not enabled.'
       else
-        data[tostring(msg.to.id)]['settings']['anti_flood'] = 'no'
+        data[tostring(chat_id)]['settings']['anti_flood'] = 'no'
         save_data(_config.moderation.data, data)
         return 'Anti flood  protection has been disabled.'
       end
@@ -297,11 +291,11 @@ local function run(msg, matches)
 
     if matches[2] == 'chat' then
       if msg.to.type ~= 'chat' then
-        return 'This isn\'t a chat group'
+        return 'This is not a chat group'
       end
-      local hash = 'whitelist:chat#id'..msg.to.id
+      local hash = 'whitelist:chat#id'..chat_id
       redis:set(hash, true)
-      return 'Chat '..msg.to.id..' whitelisted'
+      return 'Chat '..chat_id..' whitelisted'
     end
 
     if matches[2] == 'delete' and matches[3] == 'user' then
@@ -312,11 +306,11 @@ local function run(msg, matches)
 
     if matches[2] == 'delete' and matches[3] == 'chat' then
       if msg.to.type ~= 'chat' then
-        return 'This isn\'t a chat group'
+        return 'This is not a chat group'
       end
-      local hash = 'whitelist:chat#id'..msg.to.id
+      local hash = 'whitelist:chat#id'..chat_id
       redis:del(hash)
-      return 'Chat '..msg.to.id..' removed from whitelist'
+      return 'Chat '..chat_id..' removed from whitelist'
     end
 
   end
@@ -329,8 +323,9 @@ return {
     "!antiflood ban : Enable flood protection. Flooder will be banned.",
     "!antiflood disable : Disable flood protection",
     "!ban : If type in reply, will ban user from chat group.",
-    "!ban delete <user_id>/<@username>: Unban user",
     "!ban <user_id>/<@username>: Kick user from chat and kicks it if joins chat again",
+    "!unban : If type in reply, will unban user from chat group.",
+    "!unban <user_id>/<@username>: Unban user",
     "!kick : If type in reply, will kick user from chat group.",
     "!kick <user_id>/<@username>: Kick user from chat group",
     "!whitelist chat: Allow everybody on current chat to use the bot when whitelist mode is enabled",
@@ -341,11 +336,10 @@ return {
   },
   patterns = {
     "^!(antiflood) (.*)$",
-    "^!(ban) (@.+)$",
+    "^!(ban) (.*)$",
     "^!(ban)$",
-    "^!(ban) (%d+)$",
-    "^!(ban) (delete) (@.+)$",
-    "^!(ban) (delete) (%d+)$",
+    "^!(unban) (.*)$",
+    "^!(unban)$",
     "^!(kick) (.+)$",
     "^!(kick)$",
     "^!!tgservice (.+)$",
