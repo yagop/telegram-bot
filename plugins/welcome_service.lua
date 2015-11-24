@@ -1,4 +1,24 @@
+--[[
+Sends a custom message when a user enters or leave a chat.
+
+!welcome group
+The custom message will send to the group. Recommended way.
+
+!welcome pm
+The custom message will send to private chat newly joins member.
+Not recommended as a privacy concern and the possibility of user reporting the bot.
+
+!welcome disable
+Disable welcome service. Also, you can just disable welcome_service plugin.
+--]]
+
 do
+
+local function is_banned(user_id, chat_id)
+  local hash =  'banned:'..chat_id..':'..user_id
+  local banned = redis:get(hash)
+  return banned or false
+end
 
 local function welcome_message(msg, new_member)
 
@@ -58,6 +78,11 @@ local function run(msg, matches)
   end
 
   if welcome_stat ~= 'no' and msg.service then
+    -- do not greeting banned user
+    if is_banned(msg.action.user.id, msg.to.id) then
+      print('User is banned!')
+      return nil
+    end
     if matches[1] == "chat_add_user" then
       if not msg.action.user.username then
         new_member = string.gsub(msg.action.user.print_name, '_', ' ')
