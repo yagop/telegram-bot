@@ -24,18 +24,18 @@ end
 local function list_plugins(only_enabled)
   local text = ''
   for k, v in pairs( plugins_names( )) do
-    --  ✔ enabled, ❌ disabled
+    --  ✅ enabled, ❌ disabled
     local status = '❌'
     -- Check if is enabled
     for k2, v2 in pairs(_config.enabled_plugins) do
-      if v == v2..'.lua' then 
-        status = '✔' 
+      if v == v2..'.lua' then
+        status = '✅'
       end
     end
-    if not only_enabled or status == '✔' then
+    if not only_enabled or status == '✅' then
       -- get the name
       v = string.match (v, "(.*)%.lua")
-      text = text..v..'  '..status..'\n'
+      text = text..status..'  '..v..'\n'
     end
   end
   return text
@@ -80,7 +80,7 @@ local function disable_plugin( name, chat )
   -- Disable and reload
   table.remove(_config.enabled_plugins, k)
   save_config( )
-  return reload_plugins(true)    
+  return reload_plugins(true)
 end
 
 local function disable_plugin_on_chat(receiver, plugin)
@@ -121,7 +121,7 @@ local function reenable_plugin_on_chat(receiver, plugin)
 end
 
 local function run(msg, matches)
-  -- Show the available plugins 
+  -- Show the available plugins
   if matches[1] == '!plugins' then
     return list_plugins()
   end
@@ -162,9 +162,9 @@ local function run(msg, matches)
 end
 
 return {
-  description = "Plugin to manage other plugins. Enable, disable or reload.", 
+  description = "Plugin to manage other plugins. Enable, disable or reload.",
   usage = {
-    "!plugins: list all plugins.", 
+    "!plugins: list all plugins.",
     "!plugins enable [plugin]: enable plugin.",
     "!plugins disable [plugin]: disable plugin.",
     "!plugins disable [plugin] chat: disable plugin only this chat.",
