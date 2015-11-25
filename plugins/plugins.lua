@@ -23,14 +23,18 @@ end
 
 local function list_plugins(only_enabled)
   local text = ''
+  local psum = 0
   for k, v in pairs( plugins_names( )) do
     --  ✅ enabled, ❌ disabled
     local status = '❌'
+    psum = psum+1
+    pact = 0
     -- Check if is enabled
     for k2, v2 in pairs(_config.enabled_plugins) do
       if v == v2..'.lua' then
         status = '✅'
       end
+      pact = pact+1
     end
     if not only_enabled or status == '✅' then
       -- get the name
@@ -38,6 +42,8 @@ local function list_plugins(only_enabled)
       text = text..status..'  '..v..'\n'
     end
   end
+  local text = text..'\n'..psum..'  plugins installed.\n✅  '
+              ..pact..' enabled.\n❌  '..psum-pact..' disabled.'
   return text
 end
 
