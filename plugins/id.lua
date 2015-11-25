@@ -54,21 +54,20 @@ local function res_user_callback(extra, success, result)
 end
 
 local function action_by_reply(extra, success, result)
-  local text = 'Name : '.. string.gsub(result.from.print_name, '_', ' ') .. '\n'
-                ..'User name: @' .. (result.from.username or "") ..'\n'
-                ..'ID : ' .. result.from.id
+  local text = 'Name : '..(result.from.first_name or '')..' '..(result.from.last_name or '')..'\n'
+               ..'User name: @'..(result.from.username or '')..'\n'
+               ..'ID : '..result.from.id
   send_msg(extra.receiver, text, ok_cb,  true)
 end
 
 local function returnids(extra, success, result)
-  local text = 'IDs for chat '.. string.gsub(result.print_name, '_', ' ')
-  ..' ('..result.id..')\n'
-  ..'There are '..result.members_num..' members'
-  ..'\n---------\n'
+  local text = '['..result.id..'] '..string.gsub(result.print_name, '_', ' ')..'.\n'
+               ..result.members_num..' members.\n\n'
   i = 0
   for k,v in pairs(result.members) do
     i = i+1
-    text = text .. i .. ". "..v.id.." ⋆ @"..(v.username or "")..' ⋆ '.. string.gsub(v.print_name, '_', ' ') .."\n"
+    text = text .. i .. '. '..v.id..' ⋆ @'..(v.username or '')..' ⋆ '
+           ..(v.first_name or '')..' '..(v.last_name or '')..'\n'
   end
   send_large_msg(extra.receiver, text)
 end
@@ -82,9 +81,11 @@ local function run(msg, matches)
       if msg.reply_id then
         msgr = get_message(msg.reply_id, action_by_reply, {receiver=receiver})
       else
-        local text = 'Name : '.. string.gsub(user_print_name(msg.from),'_', ' ') .. '\nID : ' .. msg.from.id
-        local text = text .. "\n\nYou are in group " .. string.gsub(user_print_name(msg.to), '_', ' ') .. " (ID: " .. msg.to.id  .. ")"
-        return text
+        local text = 'Name : '..(first_name or '')..' '..(v.last_name or '')..'\n'
+                     ..'ID : ' .. msg.from.id
+        local text = text.."\n\nYou are in group "
+                     ..string.gsub(user_print_name(msg.to), '_', ' ').." (ID: "
+                     .. msg.to.id  .. ")"
       end
     elseif matches[1] == "chat" then
       if matches[2] and is_sudo(msg) then
