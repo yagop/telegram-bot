@@ -66,8 +66,11 @@ local function returnids(extra, success, result)
   i = 0
   for k,v in pairs(result.members) do
     i = i+1
-    text = text .. i .. '. '..v.id..' ⋆ @'..(v.username or '')..' ⋆ '
-           ..(v.first_name or '')..' '..(v.last_name or '')..'\n'
+    text = text..i..'. '..v.id..' ⋆ '..string.gsub(v.print_name, '_', ' ')..'\n'
+
+-- Too large. Need a way to split the text.
+--    text = text .. i .. '. '..v.id..' ⋆ @'..(v.username or '')..' ⋆ '
+--           ..(v.first_name or '')..' '..(v.last_name or '')..'\n'
   end
   send_large_msg(extra.receiver, text)
 end
@@ -81,11 +84,12 @@ local function run(msg, matches)
       if msg.reply_id then
         msgr = get_message(msg.reply_id, action_by_reply, {receiver=receiver})
       else
-        local text = 'Name : '..(first_name or '')..' '..(v.last_name or '')..'\n'
+        local text = 'Name : '..(msg.from.first_name or '')..' '..(msg.from.last_name or '')..'\n'
                      ..'ID : ' .. msg.from.id
         local text = text.."\n\nYou are in group "
                      ..string.gsub(user_print_name(msg.to), '_', ' ').." (ID: "
                      .. msg.to.id  .. ")"
+        return text
       end
     elseif matches[1] == "chat" then
       if matches[2] and is_sudo(msg) then
