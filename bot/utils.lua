@@ -538,5 +538,12 @@ function backward_msg_format (msg)
     msg[name].peer_id = longid
     msg[name].type = msg[name].peer_type
   end
+  if msg.action and (msg.action.user or msg.action.link_issuer) then
+    local user = msg.action.user or msg.action.link_issuer
+    local longid = user.id
+    user.id = user.peer_id
+    user.peer_id = longid
+    user.type = user.peer_type
+  end
   return msg
 end
