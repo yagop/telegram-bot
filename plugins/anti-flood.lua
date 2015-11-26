@@ -13,7 +13,7 @@ local function kick_user(user_id, chat_id)
 end
 
 local function run (msg, matches)
-  if msg.to.type ~= 'chat' then
+  if msg.to.type ~= 'chat' and msg.to.type ~= 'channel' then
     return 'Anti-flood works only on channels'
   else
     local chat = msg.to.id
@@ -53,7 +53,7 @@ local function pre_process (msg)
         local chat = msg.to.id
 
         send_msg(receiver, text, ok_cb, nil)
-        if msg.to.type ~= 'chat' then
+        if msg.to.type ~= 'chat' and msg.to.type ~= 'channel' then
           print("Flood in not a chat group!")
         elseif user == tostring(our_id) then
           print('I won\'t kick myself')
