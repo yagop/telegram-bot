@@ -76,18 +76,23 @@ local function resolve_username(extra, success, result)
     local chat = 'chat#id'..msg.to.id
     local user = 'user#id'..result.id
     if msg.to.type == 'chat' then
-      -- check if user is a sudoer
-      for v,userid in pairs(_config.sudo_users) do
-        if userid ~= user_id then
-          if extra.match == 'kick' then
-            chat_del_user(chat, user, ok_cb, false)
-          elseif extra.match == 'ban' then
-            ban_user(user_id, chat_id)
-            send_msg(chat, 'User @'..result.username..' banned', ok_cb,  true)
-          elseif extra.match == 'unban' then
-            unban_user(user_id, chat_id)
-            send_msg(chat, 'User @'..result.username..' unbanned', ok_cb,  true)
-          end
+      -- check if sudo users
+      local is_sudoers = false
+      for v,username in pairs(_config.sudo_users) do
+        if username == user_id then
+          is_sudoers = true
+        end
+      end
+      -- if not sudo users
+      if not is_sudoers then
+        if extra.match == 'kick' then
+          chat_del_user(chat, user, ok_cb, false)
+        elseif extra.match == 'ban' then
+          ban_user(user_id, chat_id)
+          send_msg(chat, 'User @'..result.username..' banned', ok_cb,  true)
+        elseif extra.match == 'unban' then
+          unban_user(user_id, chat_id)
+          send_msg(chat, 'User @'..result.username..' unbanned', ok_cb,  true)
         end
       end
     else
