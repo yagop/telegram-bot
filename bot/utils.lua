@@ -516,7 +516,7 @@ function unescape_html(str)
     ["gt"]  = ">",
     ["amp"] = "&",
     ["quot"] = '"',
-    ["apos"] = "'" 
+    ["apos"] = "'"
   }
   new = string.gsub(str, '(&(#?x?)([%d%a]+);)', function(orig, n, s)
     var = map[s] or n == "#" and string.char(s)
@@ -525,4 +525,15 @@ function unescape_html(str)
     return var
   end)
   return new
+end
+
+-- Workarrond to format the message as previously was received
+function backward_msg_format (msg)
+  for k,name in ipairs({'from', 'to'}) do
+    local longid = msg[name].id
+    msg[name].id = msg[name].peer_id
+    msg[name].peer_id = longid
+    msg[name].type = msg[name].peer_type
+  end
+  return msg
 end
