@@ -125,7 +125,7 @@ return {
     '!id chat <chat_id>: Return the IDs of the current <chat_id> members.',
     '!id <id>: Return the IDs of the <id>.',
     '!id @<user_name>: Return the member @<user_name> ID from the current chat.',
-    '!id <text>: Search for users with <text> on print_name on current chat."
+    '!id <text>: Search for users with <text> on print_name on current chat.'
   },
   patterns = {
     "^!id$",
