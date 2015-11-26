@@ -39,6 +39,11 @@ local function isABot (user)
   return result == binFlagIsBot
 end
 
+local function isABotBadWay (user)
+  local username = user.username or ''
+  return username:match("[Bb]ot$")
+end
+
 local function kickUser(userId, chatId)
   local chat = 'chat#id'..chatId
   local user = 'user#id'..userId
@@ -50,9 +55,10 @@ local function kickUser(userId, chatId)
 end
 
 local function run (msg, matches)
+
   -- We wont return text if is a service msg
   if matches[1] ~= 'chat_add_user' and matches[1] ~= 'chat_add_user_link' then
-    if msg.to.type ~= 'chat' then
+    if msg.to.type ~= 'chat' and msg.to.type ~= 'channel' then
       return 'Anti-flood works only on channels'
     end
   end
@@ -78,7 +84,7 @@ local function run (msg, matches)
   end
   if matches[1] == 'chat_add_user' or matches[1] == 'chat_add_user_link' then
     local user = msg.action.user or msg.from
-    if isABot(user) then
+    if isABotBadWay(user) then
       print('It\'s a bot!')
       if isAntiBotEnabled(chatId) then
         print('Anti bot is enabled')
