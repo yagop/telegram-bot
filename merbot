@@ -74,12 +74,22 @@ install_rocks() {
   fi
 }
 
-upstart() {
-  sed -i "s/yourusername/$(whoami)/g" etc/telegram.conf
-  sed -i "s_merbotpath_$(pwd)_g" etc/telegram.conf
-  sudo cp etc/telegram.conf /etc/init/merbot.conf
+merbot_upstart() {
 
-  printf "%s\n" '
+  printf "%s\n" "
+description "Merbots upstart script."
+
+respawn
+respawn limit 15 5
+
+start on runlevel [2345]
+stop on shutdown
+
+setuid $(whoami)
+exec /bin/sh $(pwd)/merbot
+" | sudo tee /etc/init/merbot.conf > /dev/null
+
+  [[ -f /etc/init/merbot.conf ]] && printf "%s\n" '
 
   Upstart script installed to /etc/init/merbot.conf.
   Now you can start merbot with:
@@ -88,12 +98,16 @@ upstart() {
 
   Or stop merbot with:
 
-    sudo stop merbot  
+    sudo stop merbot
 
 '
 }
 
-systemd() {
+merbot_systemd() {
+
+  SVCDIR="$HOME/.config/systemd/user"
+
+  [[ -d $SVCDIR ]] || mkdir -p $SVCDIR
 
   printf "%s\n" "
 [Unit]
@@ -104,11 +118,11 @@ ExecStart=$(pwd)/merbot
 
 [Install]
 WantedBy=default.target
-" > $HOME/.config/systemd/user/merbot.service
+" > $SVCDIR/merbot.service
 
   systemctl --user enable merbot.service
 
-  printf "%s\n" "
+  [[ -f $SVCDIR/merbot.service ]] && printf "%s\n" "
 
   Systemd unit installed to:
   $HOME/.config/systemd/user/merbot.service
@@ -127,6 +141,7 @@ WantedBy=default.target
     systemctl --user disable merbot.service
 
 "
+
 }
 
 install() {
@@ -154,9 +169,9 @@ if [ "$1" = "install" ]; then
 elif [ "$1" = "update" ]; then
   update
 elif [ "$1" = "upstart" ]; then
-  upstart
+  merbot_upstart
 elif [ "$1" = "systemd" ]; then
-  systemd
+  merbot_systemd
 else
   if [ ! -f ./tg/telegram.h ]; then
     echo "tg not found"
