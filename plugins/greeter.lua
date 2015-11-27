@@ -14,6 +14,7 @@ Disable welcome service. Also, you can just disable welcome_service plugin.
 
 do
 
+-- do not greeting banned user
 local function is_banned(user_id, chat_id)
   local hash =  'banned:'..chat_id..':'..user_id
   local banned = redis:get(hash)
@@ -78,27 +79,22 @@ local function run(msg, matches)
   end
 
   if welcome_stat ~= 'no' and msg.service then
-    -- do not greeting banned user
-    if is_banned(msg.action.user.id, msg.to.id) then
-      print('User is banned!')
-      return nil
-    end
-    if matches[1] == "chat_add_user" then
+    if matches[1] == "chat_add_user" and not is_banned(msg.action.user.id, msg.to.id) then
       if not msg.action.user.username then
-        new_member = string.gsub(msg.action.user.print_name, '_', ' ')
+        new_member = msg.action.user.first_name..' '..(msg.action.user.last_name or '')
       else
         new_member = '@'..msg.action.user.username
       end
       welcome_message(msg, new_member)
-    elseif matches[1] == "chat_add_user_link" then
+    elseif matches[1] == "chat_add_user_link" and not is_banned(msg.from.id, msg.to.id) then
       if not msg.from.username then
-        new_member = string.gsub(msg.from.print_name, '_', ' ')
+        new_member = msg.from.first_name..' '..(msg.from.last_name or '')
       else
         new_member = '@'..msg.from.username
       end
       welcome_message(msg, new_member)
-    elseif matches[1] == "chat_del_user" then
-      local bye_name = msg.action.user.first_name
+    elseif matches[1] == "chat_del_user" and not is_banned(msg.action.user.id, msg.to.id) then
+      local bye_name = msg.action.user.first_name..' '..(msg.action.user.last_name or '')
       return 'Bye '..bye_name..'!'
     end
   end
