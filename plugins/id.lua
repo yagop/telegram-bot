@@ -61,7 +61,7 @@ local function action_by_reply(extra, success, result)
 end
 
 local function returnids(extra, success, result)
-  local text = '['..result.id..'] '..string.gsub(result.print_name, '_', ' ')..'.\n'
+  local text = '['..result.id..'] '..result.title..'.\n'
                ..result.members_num..' members.\n\n'
   i = 0
   for k,v in pairs(result.members) do
@@ -93,8 +93,7 @@ local function run(msg, matches)
         local text = 'Name : '..(msg.from.first_name or '')..' '..(msg.from.last_name or '')..'\n'
                      ..'ID : ' .. msg.from.id
         local text = text..'\n\nYou are in group '
-                     ..string.gsub(user_print_name(msg.to), '_', ' ')..' (ID: '
-                     ..msg.to.id..')'
+                     ..msg.to.title..' (ID: '..msg.to.id..')'
         return text
       end
     elseif matches[1] == 'chat' then
