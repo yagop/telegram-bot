@@ -244,12 +244,43 @@ local function show_group_settings(msg, data)
     return "For moderators only!"
   end
   local settings = data[tostring(msg.to.id)]['settings']
-  local text = "Group settings:\n\nLock group from bot : "..settings.lock_bots
-        .."\nLock group name : "..settings.lock_name
-        .."\nLock group photo : "..settings.lock_photo
-        .."\nLock group member : "..settings.lock_member
-        .."\nFlood protection : "..settings.anti_flood
-        .."\nWelcome service : "..settings.welcome
+  if settings.lock_bots == 'yes' then
+    lock_bots_state = '🔒'
+  elseif settings.lock_bots == 'no' then
+    lock_bots_state = '🔓'
+  end
+  if settings.lock_name == 'yes' then
+    lock_name_state = '🔒'
+  elseif settings.lock_name == 'no' then
+    lock_name_state = '🔓'
+  end
+  if settings.lock_photo == 'yes' then
+    lock_photo_state = '🔒'
+  elseif settings.lock_photo == 'no' then
+    lock_photo_state = '🔓'
+  end
+  if settings.lock_member == 'yes' then
+    lock_member_state = '🔒'
+  elseif settings.lock_member == 'no' then
+    lock_member_state = '🔓'
+  end
+  if settings.anti_flood ~= 'no' then
+    antiflood_state = '🔒'
+  elseif settings.anti_flood == 'no' then
+    antiflood_state = '🔓'
+  end
+  if settings.welcome ~= 'no' then
+    greeting_state = '🔒'
+  elseif settings.welcome == 'no' then
+    greeting_state = '🔓'
+  end
+  local text = 'Group settings:\n'
+        ..'\n'..lock_bots_state..' Lock group from bot : '..settings.lock_bots
+        ..'\n'..lock_name_state..' Lock group name : '..settings.lock_name
+        ..'\n'..lock_photo_state..' Lock group photo : '..settings.lock_photo
+        ..'\n'..lock_member_state..' Lock group member : '..settings.lock_member
+        ..'\n'..antiflood_state..' Flood protection : '..settings.anti_flood
+        ..'\n'..greeting_state..' Welcome message : '..settings.welcome
   return text
 end
 
@@ -262,7 +293,6 @@ local function pre_process(msg)
 end
 
 function run(msg, matches)
-  --vardump(msg)
 
   if not is_chat_msg(msg) then
 	    return "This is not a group chat."
@@ -386,7 +416,7 @@ function run(msg, matches)
 		if matches[1] == 'setname' and is_sudo(msg) then
       local new_name = string.gsub(matches[2], '_', ' ')
       data[tostring(msg.to.id)]['settings']['set_name'] = new_name
-      save_data(_config.moderation.data, data) 
+      save_data(_config.moderation.data, data)
       local group_name_set = data[tostring(msg.to.id)]['settings']['set_name']
       local to_rename = 'chat#id'..msg.to.id
       rename_chat(to_rename, group_name_set, ok_cb, false)
@@ -448,11 +478,11 @@ function run(msg, matches)
 end
 
 return {
-  description = "Plugin to manage group chat.", 
+  description = "Plugin to manage group chat.",
   usage = {
     "!about : Read group description",
     "!group <lock|unlock> bot : {Dis}allow APIs bots",
-    "!group <lock|unlock> member : Lock/unlock group member",		
+    "!group <lock|unlock> member : Lock/unlock group member",
     "!group <lock|unlock> name : Lock/unlock group name",
     "!group <lock|unlock> photo : Lock/unlock group photo",
     "!group settings : Show group settings",
@@ -482,7 +512,7 @@ return {
     "^!(setrules) (.*)$",
     "^!!tgservice (.+)$",
     "%[(video)%]"
-  }, 
+  },
   run = run,
   privileged = true,
   hide = true,
