@@ -32,12 +32,12 @@ function is_chat_msg( msg )
 end
 
 function string.random(length)
-   local str = "";
-   for i = 1, length do
-      math.random(97, 122)
-      str = str..string.char(math.random(97, 122));
-   end
-   return str;
+  local str = "";
+  for i = 1, length do
+    math.random(97, 122)
+    str = str..string.char(math.random(97, 122));
+  end
+  return str;
 end
 
 function string:split(sep)
@@ -199,9 +199,9 @@ function serialize_to_file(data, file, uglify)
   local serialized
   if not uglify then
     serialized = serpent.block(data, {
-        comment = false,
-        name = '_'
-      })
+      comment = false,
+      name = '_'
+    })
   else
     serialized = serpent.dump(data)
   end
@@ -375,14 +375,14 @@ end
 -- Check if user can use the plugin and warns user
 -- Returns true if user was warned and false if not warned (is allowed)
 function warns_user_not_allowed(plugin, msg)
---  if not user_allowed(plugin, msg) then
---    local text = 'This plugin requires privileged user'
---    local receiver = get_receiver(msg)
---    send_msg(receiver, text, ok_cb, false)
---    return true
---  else
+  if not user_allowed(plugin, msg) then
+    local text = '' --'This plugin requires privileged user.'
+    local receiver = get_receiver(msg)
+    send_msg(receiver, text, ok_cb, false)
+    return true
+  else
     return false
---  end
+  end
 end
 
 -- Check if user can use the plugin
@@ -395,52 +395,52 @@ end
 
 
 function send_order_msg(destination, msgs)
-   local cb_extra = {
-      destination = destination,
-      msgs = msgs
-   }
-   send_order_msg_callback(cb_extra, true)
+  local cb_extra = {
+    destination = destination,
+    msgs = msgs
+  }
+  send_order_msg_callback(cb_extra, true)
 end
 
 function send_order_msg_callback(cb_extra, success, result)
-   local destination = cb_extra.destination
-   local msgs = cb_extra.msgs
-   local file_path = cb_extra.file_path
-   if file_path ~= nil then
-      os.remove(file_path)
-      print("Deleted: " .. file_path)
-   end
-   if type(msgs) == 'string' then
-      send_large_msg(destination, msgs)
-   elseif type(msgs) ~= 'table' then
-      return
-   end
-   if #msgs < 1 then
-      return
-   end
-   local msg = table.remove(msgs, 1)
-   local new_cb_extra = {
-      destination = destination,
-      msgs = msgs
-   }
-   if type(msg) == 'string' then
-      send_msg(destination, msg, send_order_msg_callback, new_cb_extra)
-   elseif type(msg) == 'table' then
-      local typ = msg[1]
-      local nmsg = msg[2]
-      new_cb_extra.file_path = nmsg
-      if typ == 'document' then
-         send_document(destination, nmsg, send_order_msg_callback, new_cb_extra)
-      elseif typ == 'image' or typ == 'photo' then
-         send_photo(destination, nmsg, send_order_msg_callback, new_cb_extra)
-      elseif typ == 'audio' then
-         send_audio(destination, nmsg, send_order_msg_callback, new_cb_extra)
-      elseif typ == 'video' then
-         send_video(destination, nmsg, send_order_msg_callback, new_cb_extra)
-      else
-         send_file(destination, nmsg, send_order_msg_callback, new_cb_extra)
-      end
-   end
+  local destination = cb_extra.destination
+  local msgs = cb_extra.msgs
+  local file_path = cb_extra.file_path
+  if file_path ~= nil then
+    os.remove(file_path)
+    print("Deleted: " .. file_path)
+  end
+  if type(msgs) == 'string' then
+    send_large_msg(destination, msgs)
+  elseif type(msgs) ~= 'table' then
+    return
+  end
+  if #msgs < 1 then
+    return
+  end
+  local msg = table.remove(msgs, 1)
+  local new_cb_extra = {
+    destination = destination,
+    msgs = msgs
+  }
+  if type(msg) == 'string' then
+    send_msg(destination, msg, send_order_msg_callback, new_cb_extra)
+  elseif type(msg) == 'table' then
+    local typ = msg[1]
+    local nmsg = msg[2]
+    new_cb_extra.file_path = nmsg
+    if typ == 'document' then
+      send_document(destination, nmsg, send_order_msg_callback, new_cb_extra)
+    elseif typ == 'image' or typ == 'photo' then
+      send_photo(destination, nmsg, send_order_msg_callback, new_cb_extra)
+    elseif typ == 'audio' then
+      send_audio(destination, nmsg, send_order_msg_callback, new_cb_extra)
+    elseif typ == 'video' then
+      send_video(destination, nmsg, send_order_msg_callback, new_cb_extra)
+    else
+      send_file(destination, nmsg, send_order_msg_callback, new_cb_extra)
+    end
+  end
 end
 
 -- Same as send_large_msg_callback but friendly params

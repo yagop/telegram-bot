@@ -105,8 +105,8 @@ local function pre_process(msg)
 
   local user_id = msg.from.id
   local chat_id = msg.to.id
-  local chat = 'chat#id'..msg.to.id
-  local user = 'user#id'..msg.to.id
+  local chat = 'chat#id'..chat_id
+  local user = 'user#id'..user_id
 
   -- ANTI FLOOD
   local post_count = 'floodc:'..user_id..':'..chat_id
@@ -144,10 +144,10 @@ local function pre_process(msg)
 	      user_id = msg.action.user.id
       end
       print('Checking invited user '..user_id)
-      local banned = is_banned(user_id, msg.to.id)
+      local banned = is_banned(user_id, chat_id)
       if banned then
         print('User is banned!')
-        kick_user(user_id, msg.to.id)
+        kick_user(user_id, chat_id)
       end
     end
     -- No further checks
@@ -173,12 +173,12 @@ local function pre_process(msg)
   if whitelist and not issudo then
     print('Whitelist enabled and not sudo')
     -- Check if user or chat is whitelisted
-    local allowed = is_user_whitelisted(msg.from.id)
+    local allowed = is_user_whitelisted(user_id)
 
     if not allowed then
       print('User '..user..' not whitelisted')
       if msg.to.type == 'chat' then
-        allowed = is_chat_whitelisted(msg.to.id)
+        allowed = is_chat_whitelisted(chat_id)
         if not allowed then
           print ('Chat '..chat_id..' not whitelisted')
         else
