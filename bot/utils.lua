@@ -160,6 +160,51 @@ function is_sudo(msg)
   return var
 end
 
+-- user has admins privileges
+function is_admin(msg)
+  local var = false
+  local data = load_data(_config.moderation.data)
+  local user = msg.from.id
+  local admins = 'admins'
+  if data[tostring(admins)] then
+    if data[tostring(admins)][tostring(user)] then
+      var = true
+    end
+  end
+  for v,user in pairs(_config.sudo_users) do
+    if user == msg.from.id then
+        var = true
+    end
+  end
+  return var
+end
+
+-- user has moderator privileges
+function is_mod(msg)
+  local var = false
+  local data = load_data(_config.moderation.data)
+  local user = msg.from.id
+  if data[tostring(msg.to.id)] then
+    if data[tostring(msg.to.id)]['moderators'] then
+      if data[tostring(msg.to.id)]['moderators'][tostring(user)] then
+        var = true
+      end
+    end
+  end
+  if data['admins'] then
+    if data['admins'][tostring(user)] then
+      var = true
+    end
+  end
+  for v,user in pairs(_config.sudo_users) do
+    if user == msg.from.id then
+        var = true
+    end
+  end
+  return var
+end
+
+
 -- Returns the name of the sender
 function get_name(msg)
   local name = msg.from.first_name
@@ -387,6 +432,15 @@ end
 
 -- Check if user can use the plugin
 function user_allowed(plugin, msg)
+  -- If plugins moderated = true
+  if plugin.moderated and not is_mod(msg) then -- Check if user is a mod
+    if plugin.moderated and not is_admin(msg) then -- Check if user is an admin
+      if plugin.moderated and not is_sudo(msg) then -- Check if user is a sudoer
+        return false
+      end
+    end
+  end
+  -- If plugins privileged = true
   if plugin.privileged and not is_sudo(msg) then
     return false
   end
@@ -505,19 +559,19 @@ function load_from_file(file, default_data)
     print ('Created file', file)
   else
     print ('Data loaded from file', file)
-    f:close() 
+    f:close()
   end
   return loadfile (file)()
 end
 
 -- See http://stackoverflow.com/a/14899740
 function unescape_html(str)
-  local map = { 
-    ["lt"]  = "<", 
+  local map = {
+    ["lt"]  = "<",
     ["gt"]  = ">",
     ["amp"] = "&",
     ["quot"] = '"',
-    ["apos"] = "'" 
+    ["apos"] = "'"
   }
   new = string.gsub(str, '(&(#?x?)([%d%a]+);)', function(orig, n, s)
     var = map[s] or n == "#" and string.char(s)

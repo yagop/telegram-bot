@@ -2,8 +2,8 @@
 do
 
 -- make sure to set with value that not higher than stats.lua
-local NUM_MSG_MAX = 5  -- Max number of messages per TIME_CHECK seconds
-local TIME_CHECK = 5
+local NUM_MSG_MAX = 4  -- Max number of messages per TIME_CHECK seconds
+local TIME_CHECK = 4
 
 local function is_user_whitelisted(id)
   local hash = 'whitelist:user#id'..id
@@ -36,9 +36,29 @@ local function ban_user(user_id, chat_id)
   kick_user(user_id, chat_id)
 end
 
+local function superban_user(user_id, chat_id)
+  -- Save to redis
+  local hash =  'superbanned:'..user_id
+  redis:set(hash, true)
+  -- Kick from chat
+  kick_user(user_id, chat_id)
+end
+
+local function is_super_banned(user_id)
+    local hash = 'superbanned:'..user_id
+    local superbanned = redis:get(hash)
+    return superbanned or false
+end
+
 local function unban_user(user_id, chat_id)
   local hash = 'banned:'..chat_id..':'..user_id
   redis:del(hash)
+end
+
+local function superunban_user(user_id, chat_id)
+  local hash =  'superbanned:'..user_id
+  redis:del(hash)
+  return 'User '..user_id..' unbanned'
 end
 
 local function is_banned(user_id, chat_id)
@@ -47,21 +67,75 @@ local function is_banned(user_id, chat_id)
   return banned or false
 end
 
+local function action_by_id(extra, success, result)
+  if success == 1 then
+    local matches = extra.matches
+    local chat_id = result.id
+    local chat = 'chat#id'..chat_id
+    local member = matches[2]
+    for k,v in pairs(result.members) do
+      vuserid = tostring(v.id)
+      if matches[2] == vuserid then
+        lift_ban = false
+        local full_name = (v.first_name or '')..' '..(v.last_name or '')
+        local user_id = vuserid
+        if matches[1] == 'ban' then
+          ban_user(user_id, chat_id)
+          send_large_msg(chat, full_name..' ['..user_id..'] banned', ok_cb,  true)
+        elseif matches[1] == 'superban' then
+          superban_user(user_id, chat_id)
+          send_large_msg(chat, full_name..' ['..user_id..'] globally banned!', ok_cb, true)
+        elseif matches[1] == 'kick' then
+          kick_user(user_id, chat_id)
+        end
+      end
+    end
+    if matches[1] == 'unban' then
+      lift_ban = true
+      if is_banned(member, chat_id) then
+        unban_user(member, chat_id)
+        send_large_msg(chat, 'User with ID ['..member..'] is unbanned.')
+      else
+        send_large_msg(chat, 'No user with ID '..member..' in (super)ban list.')
+      end
+    elseif matches[1] == 'superunban' then
+      lift_ban = true
+      if is_super_banned(member) then
+        superunban_user(member, chat_id)
+        send_large_msg(chat, 'User with ID ['..member..'] is globally unbanned.')
+      else
+        send_large_msg(chat, 'No user with ID '..member..' in (super)ban list.')
+      end
+    end
+    if not lift_ban then
+      send_large_msg(chat, 'No user with ID '..member..' in this group.')
+    end
+  end
+end
+
 local function action_by_reply(extra, success, result)
   local msg = result
   local chat_id = msg.to.id
   local user_id = msg.from.id
   local chat = 'chat#id'..msg.to.id
   local user = 'user#id'..msg.from.id
+  local full_name = (msg.from.first_name or '')..' '..(msg.from.last_name or '')
+  local receiver = get_receiver(msg)
   if result.to.type == 'chat' and not is_sudo(msg) then
     if extra.match == 'kick' then
       chat_del_user(chat, user, ok_cb, false)
     elseif extra.match == 'ban' then
       ban_user(user_id, chat_id)
       send_msg(chat, 'User '..user_id..' banned', ok_cb,  true)
+    elseif extra.match == 'superban' then
+      superban_user(user_id, chat_id)
+      send_large_msg(receiver, full_name..' ['..user_id..'] globally banned!')
     elseif extra.match == 'unban' then
       unban_user(user_id, chat_id)
       send_msg(chat, 'User '..user_id..' unbanned', ok_cb,  true)
+    elseif extra.match == 'superunban' then
+      superunban_user(user_id, chat_id)
+      send_large_msg(receiver, full_name..' ['..user_id..'] globally unbanned!')
     end
   else
     return 'Use This in Your Groups'
@@ -69,12 +143,13 @@ local function action_by_reply(extra, success, result)
 end
 
 local function resolve_username(extra, success, result)
-  if success == 1 then
-    local msg = extra.msg
-    local chat_id = msg.to.id
+  local msg = extra.msg
+  local chat_id = msg.to.id
+  local chat = 'chat#id'..msg.to.id
+  if result ~= false then
     local user_id = result.id
-    local chat = 'chat#id'..msg.to.id
     local user = 'user#id'..result.id
+    local username = result.username
     if msg.to.type == 'chat' then
       -- check if sudo users
       local is_sudoers = false
@@ -83,21 +158,28 @@ local function resolve_username(extra, success, result)
           is_sudoers = true
         end
       end
-      -- if not sudo users
       if not is_sudoers then
         if extra.match == 'kick' then
           chat_del_user(chat, user, ok_cb, false)
         elseif extra.match == 'ban' then
           ban_user(user_id, chat_id)
-          send_msg(chat, 'User @'..result.username..' banned', ok_cb,  true)
+          send_msg(chat, 'User @'..username..' banned', ok_cb,  true)
+        elseif extra.match == 'superban' then
+          superban_user(user_id, chat_id)
+          send_msg(chat, 'User @'..username..' ['..user_id..'] globally banned!', ok_cb,  true)
         elseif extra.match == 'unban' then
           unban_user(user_id, chat_id)
-          send_msg(chat, 'User @'..result.username..' unbanned', ok_cb,  true)
+          send_msg(chat, 'User @'..username..' unbanned', ok_cb,  true)
+        elseif extra.match == 'superunban' then
+          superunban_user(user_id, chat_id)
+          send_msg(chat, 'User @'..username..' ['..user_id..'] globally unbanned!', ok_cb,  true)
         end
       end
     else
       return 'Use This in Your Groups.'
     end
+  else
+    send_large_msg(chat, 'No user @'..extra.user..' in this group.')
   end
 end
 
@@ -144,8 +226,9 @@ local function pre_process(msg)
 	      user_id = msg.action.user.id
       end
       print('Checking invited user '..user_id)
+      local superbanned = is_super_banned(user_id)
       local banned = is_banned(user_id, chat_id)
-      if banned then
+      if superbanned or banned then
         print('User is banned!')
         kick_user(user_id, chat_id)
       end
@@ -156,7 +239,13 @@ local function pre_process(msg)
 
   -- BANNED USER TALKING
   if msg.to.type == 'chat' then
+    local superbanned = is_super_banned(user_id)
     local banned = is_banned(user_id, chat_id)
+    if superbanned then
+      print('SuperBanned user talking!')
+      superban_user(user_id, chat_id)
+      msg.text = ''
+    end
     if banned then
       print('Banned user talking!')
       ban_user(user_id, chat_id)
@@ -202,33 +291,59 @@ end
 
 local function run(msg, matches)
 
-  -- Silent ignore
-  if not is_sudo(msg) then
-    return nil
-  end
-
   local user_id = matches[2]
   local chat_id = msg.to.id
-  local chat = 'chat#id'..msg.to.id
-  local user = 'user#id'..msg.to.id
+  local chat = 'chat#id'..chat_id
+  local user = 'user#id'..(user_id or '')
 
   if msg.to.type == 'chat' then
+    if matches[1] == 'kickme' then
+      if is_sudo(msg) or is_admin(msg) then
+        return "I won't kick an admin!"
+      elseif is_mod(msg) then
+        return "I won't kick a moderator!"
+      else
+        kick_user(msg.from.id, chat_id)
+      end
+    end
+
+    -- Silent ignore
+    if not is_mod(msg) then
+      return nil
+    end
+
     if matches[1] == 'ban' then
       if msg.reply_id then
         msgr = get_message(msg.reply_id, action_by_reply, {msg=msg, match=matches[1]})
       elseif string.match(user_id, '^%d+$') then
-        ban_user(user_id, chat_id)
-        return 'User '..user_id..' banned'
+        chat_info(chat, action_by_id, {msg=msg, matches=matches})
       elseif string.match(user_id, '^@.+$') then
         local user = string.gsub(user_id, '@', '')
         msgr = res_user(user, resolve_username, {msg=msg, match=matches[1]})
+      end
+    elseif matches[1] == 'superban' and is_admin(msg) then
+      if msg.reply_id then
+        msgr = get_message(msg.reply_id, action_by_reply, {msg=msg, match=matches[1]})
+      elseif string.match(user_id, '^%d+$') then
+        chat_info(chat, action_by_id, {msg=msg, matches=matches})
+      elseif string.match(user_id, '^@.+$') then
+        local user = string.gsub(user_id, '@', '')
+        msgr = res_user(user, resolve_username, {msg=msg, match=matches[1], user=user})
       end
     elseif matches[1] == 'unban' then
       if msg.reply_id then
         msgr = get_message(msg.reply_id, action_by_reply, {msg=msg, match=matches[1]})
       elseif string.match(user_id, '^%d+$') then
-        unban_user(user_id, chat_id)
-        return 'User '..user_id..' unbanned'
+        chat_info(chat, action_by_id, {msg=msg, matches=matches})
+      elseif string.match(user_id, '^@.+$') then
+        local user = string.gsub(user_id, '@', '')
+        msgr = res_user(user, resolve_username, {msg=msg, match=matches[1]})
+      end
+    elseif matches[1] == 'superunban' and is_admin(msg) then
+      if msg.reply_id then
+        msgr = get_message(msg.reply_id, action_by_reply, {msg=msg, match=matches[1]})
+      elseif string.match(user_id, '^%d+$') then
+        chat_info(chat, action_by_id, {msg=msg, matches=matches})
       elseif string.match(user_id, '^@.+$') then
         local user = string.gsub(user_id, '@', '')
         msgr = res_user(user, resolve_username, {msg=msg, match=matches[1]})
@@ -237,14 +352,14 @@ local function run(msg, matches)
       if msg.reply_id then
         msgr = get_message(msg.reply_id, action_by_reply, {msg=msg, match=matches[1]})
       elseif string.match(user_id, '^%d+$') then
-        kick_user(user_id, msg.to.id)
+        chat_info(chat, action_by_id, {msg=msg, matches=matches})
       elseif string.match(user_id, '^@.+$') then
         local user = string.gsub(user_id, '@', '')
         msgr = res_user(user, resolve_username, {msg=msg, match=matches[1]})
       end
     end
   else
-    return 'This is not a chat group'
+    return 'This is not a chat group.'
   end
 
   if matches[1] == 'antiflood' then
@@ -324,20 +439,28 @@ end
 return {
   description = "Plugin to manage bans, kicks and white/black lists.",
   usage = {
-    "!antiflood kick : Enable flood protection. Flooder will be kicked.",
-    "!antiflood ban : Enable flood protection. Flooder will be banned.",
-    "!antiflood disable : Disable flood protection",
-    "!ban : If type in reply, will ban user from chat group.",
-    "!ban <user_id>/<@username>: Kick user from chat and kicks it if joins chat again",
-    "!unban : If type in reply, will unban user from chat group.",
-    "!unban <user_id>/<@username>: Unban user",
-    "!kick : If type in reply, will kick user from chat group.",
-    "!kick <user_id>/<@username>: Kick user from chat group",
-    "!whitelist chat: Allow everybody on current chat to use the bot when whitelist mode is enabled",
-    "!whitelist delete chat: Remove chat from whitelist",
-    "!whitelist delete user <user_id>: Remove user from whitelist",
-    "!whitelist <enable>/<disable>: Enable or disable whitelist mode",
-    "!whitelist user <user_id>: Allow user to use the bot when whitelist mode is enabled"
+    admin = {
+      "!superban : If type in reply, will ban user globally.",
+      "!superban <user_id>/@<username> : Kick user_id/username from all chat and kicks it if joins again",
+      "!superunban : If type in reply, will unban user globally.",
+      "!superunban <user_id>/@<username> : Unban user_id/username globally."
+    },
+    moderator = {
+      "!antiflood kick : Enable flood protection. Flooder will be kicked.",
+      "!antiflood ban : Enable flood protection. Flooder will be banned.",
+      "!antiflood disable : Disable flood protection",
+      "!ban : If type in reply, will ban user from chat group.",
+      "!ban <user_id>/<@username>: Kick user from chat and kicks it if joins chat again",
+      "!unban : If type in reply, will unban user from chat group.",
+      "!unban <user_id>/<@username>: Unban user",
+      "!kick : If type in reply, will kick user from chat group.",
+      "!kick <user_id>/<@username>: Kick user from chat group",
+      "!whitelist chat: Allow everybody on current chat to use the bot when whitelist mode is enabled",
+      "!whitelist delete chat: Remove chat from whitelist",
+      "!whitelist delete user <user_id>: Remove user from whitelist",
+      "!whitelist <enable>/<disable>: Enable or disable whitelist mode",
+      "!whitelist user <user_id>: Allow user to use the bot when whitelist mode is enabled"
+    },
   },
   patterns = {
     "^!(antiflood) (.*)$",
@@ -347,17 +470,22 @@ return {
     "^!(unban)$",
     "^!(kick) (.+)$",
     "^!(kick)$",
+    "^!(kickme)$",
     "^!!tgservice (.+)$",
     "^!(whitelist) (chat)$",
     "^!(whitelist) (delete) (chat)$",
     "^!(whitelist) (delete) (user) (%d+)$",
     "^!(whitelist) (disable)$",
     "^!(whitelist) (enable)$",
-    "^!(whitelist) (user) (%d+)$"
+    "^!(whitelist) (user) (%d+)$",
+    "^!(superban)$",
+    "^!(superban) (.*)$",
+    "^!(superunban)$",
+    "^!(superunban) (.*)$"
   },
   run = run,
-  pre_process = pre_process,
-  privileged = true
+--  privileged = true
+  pre_process = pre_process
 }
 
 end

@@ -1,10 +1,18 @@
 -- data saved to data/moderation.json
 do
 
-local function gpadd(msg)
-  -- because sudo are always has privilege
-  if not is_sudo(msg) then
-    return nil
+local function create_group(msg)
+  if not is_admin(msg) then
+    return "You're not admin!"
+  end
+  local group_creator = msg.from.print_name
+  create_group_chat (group_creator, group_name, ok_cb, false)
+	return 'Group '..string.gsub(group_name, '_', ' ')..' has been created.'
+end
+
+local function addgroup(msg)
+  if not is_admin(msg) then
+    return "You're not admin"
   end
   local data = load_data(_config.moderation.data)
   if data[tostring(msg.to.id)] then
@@ -28,13 +36,12 @@ local function gpadd(msg)
   return 'Group has been added.'
 end
 
-local function gprem(msg)
-    -- because sudo are always has privilege
-    if not is_sudo(msg) then
-        return nil
-    end
-    local data = load_data(_config.moderation.data)
-    local receiver = get_receiver(msg)
+local function remgroup(msg)
+  if not is_admin(msg) then
+    return "You're not admin"
+  end
+  local data = load_data(_config.moderation.data)
+  local receiver = get_receiver(msg)
   if not data[tostring(msg.to.id)] then
     return 'Group is not added.'
   end
@@ -46,20 +53,20 @@ local function gprem(msg)
 end
 
 local function export_chat_link_callback(extra, success, result)
-  local receiver = extra.receiver
+  local msg = extra.msg
+  local group_name = msg.to.title
   local data = extra.data
-  local chat_id = extra.chat_id
-  local group_name = extra.group_name
+  local receiver = get_receiver(msg)
   if success == 0 then
     return send_large_msg(receiver, "Can't generate invite link for this group.\nMake sure you're the admin or sudoer.")
   end
-  data[tostring(chat_id)]['link'] = result
+  data[tostring(msg.to.id)]['link'] = result
   save_data(_config.moderation.data, data)
   return send_large_msg(receiver,'Newest generated invite link for '..group_name..' is:\n'..result)
 end
 
 local function set_description(msg, data)
-  if not is_sudo(msg) then
+  if not is_mod(msg) then
     return "For moderators only!"
   end
   local data_cat = 'description'
@@ -79,7 +86,7 @@ local function get_description(msg, data)
 end
 
 local function set_rules(msg, data)
-  if not is_sudo(msg) then
+  if not is_mod(msg) then
     return "For moderators only!"
   end
   local data_cat = 'rules'
@@ -101,7 +108,7 @@ end
 
 -- dis/allow APIs bots to enter group. Spam prevention.
 local function allow_api_bots(msg, data)
-  if not is_sudo(msg) then
+  if not is_mod(msg) then
     return "For moderators only!"
   end
   local group_bot_lock = data[tostring(msg.to.id)]['settings']['lock_bots']
@@ -115,7 +122,7 @@ local function allow_api_bots(msg, data)
 end
 
 local function disallow_api_bots(msg, data)
-  if not is_sudo(msg) then
+  if not is_mod(msg) then
     return "For moderators only!"
   end
   local group_bot_lock = data[tostring(msg.to.id)]['settings']['lock_bots']
@@ -130,7 +137,7 @@ end
 
 -- lock/unlock group name. bot automatically change group name when locked
 local function lock_group_name(msg, data)
-  if not is_sudo(msg) then
+  if not is_mod(msg) then
     return "For moderators only!"
   end
   local group_name_set = data[tostring(msg.to.id)]['settings']['set_name']
@@ -147,7 +154,7 @@ local function lock_group_name(msg, data)
 end
 
 local function unlock_group_name(msg, data)
-  if not is_sudo(msg) then
+  if not is_mod(msg) then
     return "For moderators only!"
   end
   local group_name_set = data[tostring(msg.to.id)]['settings']['set_name']
@@ -163,7 +170,7 @@ end
 
 --lock/unlock group member. bot automatically kick new added user when locked
 local function lock_group_member(msg, data)
-  if not is_sudo(msg) then
+  if not is_mod(msg) then
     return "For moderators only!"
   end
   local group_member_lock = data[tostring(msg.to.id)]['settings']['lock_member']
@@ -177,7 +184,7 @@ local function lock_group_member(msg, data)
 end
 
 local function unlock_group_member(msg, data)
-  if not is_sudo(msg) then
+  if not is_mod(msg) then
     return "For moderators only!"
   end
   local group_member_lock = data[tostring(msg.to.id)]['settings']['lock_member']
@@ -192,7 +199,7 @@ end
 
 --lock/unlock group photo. bot automatically keep group photo when locked
 local function lock_group_photo(msg, data)
-  if not is_sudo(msg) then
+  if not is_mod(msg) then
     return "For moderators only!"
   end
   local group_photo_lock = data[tostring(msg.to.id)]['settings']['lock_photo']
@@ -206,7 +213,7 @@ local function lock_group_photo(msg, data)
 end
 
 local function unlock_group_photo(msg, data)
-  if not is_sudo(msg) then
+  if not is_mod(msg) then
     return "For moderators only!"
   end
   local group_photo_lock = data[tostring(msg.to.id)]['settings']['lock_photo']
@@ -238,9 +245,10 @@ local function set_group_photo(msg, success, result)
     send_large_msg(receiver, 'Failed, please try again!', ok_cb, false)
   end
 end
+
 -- show group settings
 local function show_group_settings(msg, data)
-  if not is_sudo(msg) then
+  if not is_mod(msg) then
     return "For moderators only!"
   end
   local settings = data[tostring(msg.to.id)]['settings']
@@ -301,17 +309,23 @@ function run(msg, matches)
   local data = load_data(_config.moderation.data)
   local receiver = get_receiver(msg)
 
+  -- create a group
+  if matches[1] == 'mkgroup' and matches[2] then
+    group_name = matches[2]
+    return create_group(msg)
+  end
+
   -- add a group to be moderated
-  if matches[1] == 'gpadd' then
-    return gpadd(msg)
+  if matches[1] == 'addgroup' then
+    return addgroup(msg)
   end
 
   -- remove group from moderation
-  if matches[1] == 'gprem' then
-    return gprem(msg)
+  if matches[1] == 'remgroup' then
+    return remgroup(msg)
   end
 
-  if msg.media and is_chat_msg(msg) and is_sudo(msg) then
+  if msg.media and is_chat_msg(msg) and is_mod(msg) then
     if msg.media.type == 'photo' and data[tostring(msg.to.id)] then
       if data[tostring(msg.to.id)]['settings']['set_photo'] == 'waiting' then
         load_photo(msg.id, set_group_photo, msg)
@@ -353,8 +367,8 @@ function run(msg, matches)
           return "Invite link is not exist.\nTry !link set to generate it."
         end
       end
-      if matches[2] == 'set' and is_sudo(msg) then
-        msgr = export_chat_link('chat#id'..msg.to.id, export_chat_link_callback, {receiver=receiver, data=data, chat_id=msg.to.id, group_name=msg.to.print_name})
+      if matches[2] == 'set' and is_mod(msg) then
+        msgr = export_chat_link(chat, export_chat_link_callback, {data=data, msg=msg})
       end
 	  end
 
@@ -413,7 +427,7 @@ function run(msg, matches)
 		end
 
     -- set group name
-		if matches[1] == 'setname' and is_sudo(msg) then
+		if matches[1] == 'setname' and is_mod(msg) then
       local new_name = string.gsub(matches[2], '_', ' ')
       data[tostring(msg.to.id)]['settings']['set_name'] = new_name
       save_data(_config.moderation.data, data)
@@ -423,7 +437,7 @@ function run(msg, matches)
 		end
 
     -- set group photo
-		if matches[1] == 'setphoto' and is_sudo(msg) then
+		if matches[1] == 'setphoto' and is_mod(msg) then
       data[tostring(msg.to.id)]['settings']['set_photo'] = 'waiting'
       save_data(_config.moderation.data, data)
       return 'Please send me new group photo now'
@@ -480,31 +494,41 @@ end
 return {
   description = "Plugin to manage group chat.",
   usage = {
-    "!about : Read group description",
-    "!group <lock|unlock> bot : {Dis}allow APIs bots",
-    "!group <lock|unlock> member : Lock/unlock group member",
-    "!group <lock|unlock> name : Lock/unlock group name",
-    "!group <lock|unlock> photo : Lock/unlock group photo",
-    "!group settings : Show group settings",
-    "!link <get|set> : Get or revoke invite link",
-    "!rules : Read group rules",
-    "!setabout <description> : Set group description",
-    "!setname <new_name> : Set group name",
-    "!setphoto : Set group photo",
-    "!setrules <rules> : Set group rules"
+    admin = {
+      "!mkgroup <group_name> : Make/create a new group.",
+      "!addgroup : Add group to moderation list.",
+      "!remgroup : Remove group from moderation list."
+    },
+    moderator = {
+      "!group <lock|unlock> bot : {Dis}allow APIs bots",
+      "!group <lock|unlock> member : Lock/unlock group member",
+      "!group <lock|unlock> name : Lock/unlock group name",
+      "!group <lock|unlock> photo : Lock/unlock group photo",
+      "!group settings : Show group settings",
+      "!link <set> : Generate/revoke invite link",
+      "!setabout <description> : Set group description",
+      "!setname <new_name> : Set group name",
+      "!setphoto : Set group photo",
+      "!setrules <rules> : Set group rules"
+    },
+    user = {
+      "!about : Read group description",
+      "!rules : Read group rules",
+      "!link <get> : Print invite link"
+    },
   },
   patterns = {
     "^!(about)$",
+    "^!(addgroup)$",
     "%[(audio)%]",
     "%[(document)%]",
-    "^!(gpadd)$",
-    "^!(gprem)$",
     "^!(group) (lock) (.*)$",
     "^!(group) (settings)$",
     "^!(group) (unlock) (.*)$",
     "^!(link) (.*)$",
+    "^!(mkgroup) (.*)$",
     "%[(photo)%]",
-    "%[(photo)%]",
+    "^!(remgroup)$",
     "^!(rules)$",
     "^!(setabout) (.*)$",
     "^!(setname) (.*)$",
@@ -513,10 +537,7 @@ return {
     "^!!tgservice (.+)$",
     "%[(video)%]"
   },
-  run = run,
-  privileged = true,
-  hide = true,
-  pre_process = pre_process
+  run = run
 }
 
 end
