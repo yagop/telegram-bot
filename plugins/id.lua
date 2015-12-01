@@ -1,4 +1,7 @@
-local function user_print_name(user)
+local function usernameinfo (user)
+  if user.username then
+    return '@'..user.username
+  end
   if user.print_name then
     return user.print_name
   end
@@ -12,44 +15,74 @@ local function user_print_name(user)
   return text
 end
 
-local function returnids(cb_extra, success, result)
-  local receiver = cb_extra.receiver
-  local chat_id = "chat#id"..result.id
-  local chatname = result.print_name
+local function channelUserIDs (extra, success, result)
+  local receiver = extra.receiver
+  print('Result')
+  vardump(result)
+  
+  local text = ''
+  for k,user in ipairs(result) do
+    local id = user.peer_id
+    local username = usernameinfo (user)
+    text = text..("%s - %s\n"):format(username, id)
+  end
+  send_large_msg(receiver, text)
+end
 
-  local text = 'IDs for chat '..chatname
-  ..' ('..chat_id..')\n'
-  ..'There are '..result.members_num..' members'
-  ..'\n---------\n'
-  for k,v in pairs(result.members) do
-    text = text .. v.print_name .. " (user#id" .. v.id .. ")\n"
+local function returnids (extra, success, result)
+  local receiver = extra.receiver
+  local chatname = result.print_name
+  local id = result.peer_id
+    
+  local text = ('ID for chat %s (%s):\n'):format(chatname, id)
+  for k,user in ipairs(result.members) do
+    local username = usernameinfo(user)
+    local id = user.peer_id
+    local userinfo = ("%s - %s\n"):format(username, id)
+    text = text .. userinfo
   end
   send_large_msg(receiver, text)
 end
 
 local function run(msg, matches)
   local receiver = get_receiver(msg)
+
+  -- Id of the user and info about group / channel
   if matches[1] == "!id" then
-    local text = user_print_name(msg.from) .. ' (user#id' .. msg.from.id .. ')'
-    if is_chat_msg(msg) then
-      text = text .. "\nYou are in group " .. user_print_name(msg.to) .. " (chat#id" .. msg.to.id  .. ")"
+    if msg.to.type == 'channel' then
+      return ('Channel ID: %s\nUser ID: %s'):format(msg.to.id, msg.from.id)
     end
-    return text
-  elseif matches[1] == "chat" then
+    if msg.to.type == 'chat' then
+      return ('Chat ID: %s\nUser ID: %s'):format(msg.to.id, msg.from.id)
+    end
+    return ('User ID: %s'):format(msg.from.id)
+  elseif matches[1] == 'chat' or matches[1] == 'channel' then
+    local type = matches[1]
+    local chanId = matches[2]
     -- !ids? (chat) (%d+)
-    if matches[2] and is_sudo(msg) then
-      local chat = 'chat#id'..matches[2]
-      chat_info(chat, returnids, {receiver=receiver})
+    if chanId then
+      local chan = ("%s#id%s"):format(type, chanId)
+      if type == 'chat' then
+        chat_info(chan, returnids, {receiver=receiver})
+      else
+        channel_get_users(chan, channelUserIDs, {receiver=receiver})
+      end
     else
-      if not is_chat_msg(msg) then
+      -- !id chat/channel
+      local chan = ("%s#id%s"):format(msg.to.type, msg.to.id)
+      if msg.to.type == 'channel' then
+        channel_get_users(chan, channelUserIDs, {receiver=receiver})
+      end
+      if msg.to.type == 'chat' then
+        chat_info(chan, returnids, {receiver=receiver})
+      else
         return "You are not in a group."
       end
-      local chat = get_receiver(msg)
-      chat_info(chat, returnids, {receiver=receiver})
     end
   elseif matches[1] == "member" and matches[2] == "@" then
     local nick = matches[3]
-    local chat = get_receiver(msg)
+    
+    local chan = get_receiver(msg)
     if not is_chat_msg(msg) then
       return "You are not in a group."
     end
@@ -118,6 +151,8 @@ return {
     "!id: Return your ID and the chat id if you are in one.",
     "!ids chat: Return the IDs of the current chat members.",
     "!ids chat <chat_id>: Return the IDs of the <chat_id> members.",
+    "!ids channel: Return the IDs of the current channel members.",
+    "!ids channel <channel_id>: Return the IDs of the <channel_id> members.",
     "!id member @<user_name>: Return the member @<user_name> ID from the current chat",
     "!id members name <text>: Search for users with <text> on first_name, print_name or username on current chat"
   },
@@ -125,6 +160,8 @@ return {
     "^!id$",
     "^!ids? (chat) (%d+)$",
     "^!ids? (chat)$",
+    "^!ids (channel)$",
+    "^!ids (channel) (%d+)$",
     "^!id (member) (@)(.+)",
     "^!id (members) (name) (.+)"
   },
