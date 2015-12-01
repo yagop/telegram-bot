@@ -132,7 +132,7 @@ return {
     "^!id (.*)$",
     "^!id (%d+)$"
   },
-  privileged = true,
+  moderated = true,
   run = run
 }
 
