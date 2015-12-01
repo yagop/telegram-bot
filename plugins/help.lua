@@ -87,9 +87,9 @@ local function plugin_help(name,number,requester)
         text = text..usage..'\n'
       end
     end
-    text = text..'}----------{(o)}----------{\n'
+    text = text..'=========================\n'
   elseif has_usage_data(plugin) then -- Is not empty
-    text = text..plugin.usage..'\n}----------{(o)}----------{\n'
+    text = text..plugin.usage..'\n=========================\n'
   end
   return text
 end
