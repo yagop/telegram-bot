@@ -16,7 +16,7 @@ function on_msg_receive (msg)
 
   local receiver = get_receiver(msg)
 
-  --vardump(msg)
+  -- vardump(msg)
   msg = pre_process_service_msg(msg)
   if msg_valid(msg) then
     msg = pre_process_msg(msg)
@@ -205,9 +205,9 @@ function create_config( )
   -- A simple config with basic plugins and ourselves as privileged user
   config = {
     enabled_plugins = {
-      "anti-flood",
       "banhammer",
       "channels",
+      "greeter",
       "groupmanager",
       "help",
       "id",
