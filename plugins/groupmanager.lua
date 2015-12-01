@@ -537,7 +537,8 @@ return {
     "^!!tgservice (.+)$",
     "%[(video)%]"
   },
-  run = run
+  run = run,
+  pre_process = pre_process
 }
 
 end
