@@ -79,69 +79,80 @@ local function run(msg, matches)
         return "You are not in a group."
       end
     end
-  elseif matches[1] == "member" and matches[2] == "@" then
-    local nick = matches[3]
+  elseif matches[1] == "member" and matches[2] == "@" then    
     
+    local nick = matches[3]
     local chan = get_receiver(msg)
-    if not is_chat_msg(msg) then
-      return "You are not in a group."
-    end
-    chat_info(chat, function (extra, success, result)
-      local receiver = extra.receiver
-      local nick = extra.nick
-      local found
-      for k,user in pairs(result.members) do
-        if user.username == nick then
-          found = user
-        end
-      end
-      if not found then
-        send_msg(receiver, "User not found on this chat.", ok_cb, false)
-      else
-        local text = "ID: "..found.id
-        send_msg(receiver, text, ok_cb, false)
-      end
-    end, {receiver=chat, nick=nick})
-  elseif matches[1] == "members" and matches[2] == "name" then
-    local text = matches[3]
-    local chat = get_receiver(msg)
-    if not is_chat_msg(msg) then
-      return "You are not in a group."
-    end
-    chat_info(chat, function (extra, success, result)
-      local members = result.members
-      local receiver = extra.receiver
-      local text = extra.text
 
-      local founds = {}
-      for k,member in pairs(members) do
-        local fields = {'first_name', 'print_name', 'username'}
-        for k,field in pairs(fields) do
-          if member[field] and type(member[field]) == "string" then
-            if member[field]:match(text) then
-              local id = tostring(member.id)
-              founds[id] = member
+    if msg.to.type == 'chat' then
+      chat_info(chan, function (extra, success, result)
+        local receiver = extra.receiver
+        local nick = extra.nick
+        local found
+        for k,user in pairs(result.members) do
+          if user.username == nick then
+            found = user
+          end
+        end
+        if not found then
+          send_msg(receiver, "User not found on this chat.", ok_cb, false)
+        else
+          local text = found.peer_id
+          send_msg(receiver, text, ok_cb, false)
+        end
+      end, {receiver=chan, nick=nick})
+    elseif msg.to.type == 'channel' then
+      -- TODO
+      return 'Channels currently not supported'
+    else
+      return 'You are not in a group'
+    end
+  elseif matches[1] == "members" and matches[2] == "name" then
+    
+    local text = matches[3]
+    local chan = get_receiver(msg)
+
+    if msg.to.type == 'chat' then
+      chat_info(chan, function (extra, success, result)
+        local members = result.members
+        local receiver = extra.receiver
+        local text = extra.text
+
+        local founds = {}
+        for k,member in pairs(members) do
+          local fields = {'first_name', 'print_name', 'username'}
+          for k,field in pairs(fields) do
+            if member[field] and type(member[field]) == "string" then
+              if member[field]:match(text) then
+                local id = tostring(member.peer_id)
+                founds[id] = member
+              end
             end
           end
         end
-      end
-      if next(founds) == nil then -- Empty table
-        send_msg(receiver, "User not found on this chat.", ok_cb, false)
-      else
-        local text = ""
-        for k,user in pairs(founds) do
-          local first_name = user.first_name or ""
-          local print_name = user.print_name or ""
-          local user_name = user.user_name or ""
-          local id = user.id  or "" -- This would be funny
-          text = text.."First name: "..first_name.."\n"
-            .."Print name: "..print_name.."\n"
-            .."User name: "..user_name.."\n"
-            .."ID: "..id
+        if next(founds) == nil then -- Empty table
+          send_msg(receiver, "User not found on this chat.", ok_cb, false)
+        else
+          local text = ""
+          for k,user in pairs(founds) do
+            local first_name = user.first_name or ""
+            local print_name = user.print_name or ""
+            local user_name = user.user_name or ""
+            local id = user.peer_id  or "" -- This would be funny
+            text = text.."First name: "..first_name.."\n"
+              .."Print name: "..print_name.."\n"
+              .."User name: "..user_name.."\n"
+              .."ID: "..id
+          end
+          send_msg(receiver, text, ok_cb, false)
         end
-        send_msg(receiver, text, ok_cb, false)
-      end
-    end, {receiver=chat, text=text})
+      end, {receiver=chan, text=text})
+    elseif msg.to.type == 'channel' then
+      -- TODO
+      return 'Channels currently not supported'
+    else
+      return 'You are not in a group'
+    end
   end
 end
 
