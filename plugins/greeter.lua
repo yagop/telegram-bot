@@ -14,7 +14,9 @@ Disable welcome service. Also, you can just disable welcome_service plugin.
 
 do
 
--- do not greeting banned user
+local data = load_data(_config.moderation.data)
+
+-- do not greet banned user
 local function is_banned(user_id, chat_id)
   local hash =  'banned:'..chat_id..':'..user_id
   local banned = redis:get(hash)
@@ -23,7 +25,6 @@ end
 
 local function welcome_message(msg, new_member)
 
-  local data = load_data(_config.moderation.data)
   local welcome_stat = data[tostring(msg.to.id)]['settings']['welcome']
 
   if data[tostring(msg.to.id)] then
@@ -49,7 +50,6 @@ end
 
 local function run(msg, matches)
 
-  local data = load_data(_config.moderation.data)
   local welcome_stat = data[tostring(msg.to.id)]['settings']['welcome']
 
   if matches[1] == 'welcome' then
@@ -78,24 +78,28 @@ local function run(msg, matches)
     end
   end
 
-  if welcome_stat ~= 'no' and msg.service then
-    if matches[1] == "chat_add_user" and not is_banned(msg.action.user.id, msg.to.id) then
-      if not msg.action.user.username then
-        new_member = msg.action.user.first_name..' '..(msg.action.user.last_name or '')
-      else
-        new_member = '@'..msg.action.user.username
+  local settings = data[tostring(msg.to.id)]['settings']
+  -- do not greet bot when group is locked from bot
+  if settings.lock_bots == 'no' then
+    if welcome_stat ~= 'no' and msg.service then
+      if matches[1] == "chat_add_user" and not is_banned(msg.action.user.id, msg.to.id) then
+        if not msg.action.user.username then
+          new_member = msg.action.user.first_name..' '..(msg.action.user.last_name or '')
+        else
+          new_member = '@'..msg.action.user.username
+        end
+        welcome_message(msg, new_member)
+      elseif matches[1] == "chat_add_user_link" and not is_banned(msg.from.id, msg.to.id) then
+        if not msg.from.username then
+          new_member = msg.from.first_name..' '..(msg.from.last_name or '')
+        else
+          new_member = '@'..msg.from.username
+        end
+        welcome_message(msg, new_member)
+      elseif matches[1] == "chat_del_user" and not is_banned(msg.action.user.id, msg.to.id) then
+        local bye_name = msg.action.user.first_name..' '..(msg.action.user.last_name or '')
+        return 'Bye '..bye_name..'!'
       end
-      welcome_message(msg, new_member)
-    elseif matches[1] == "chat_add_user_link" and not is_banned(msg.from.id, msg.to.id) then
-      if not msg.from.username then
-        new_member = msg.from.first_name..' '..(msg.from.last_name or '')
-      else
-        new_member = '@'..msg.from.username
-      end
-      welcome_message(msg, new_member)
-    elseif matches[1] == "chat_del_user" and not is_banned(msg.action.user.id, msg.to.id) then
-      local bye_name = msg.action.user.first_name..' '..(msg.action.user.last_name or '')
-      return 'Bye '..bye_name..'!'
     end
   end
 
@@ -104,15 +108,18 @@ end
 return {
   description = 'Sends a custom message when a user enters or leave a chat.',
   usage = {
-    '!welcome group : Welcome message will shows in group.',
-    '!welcome pm : Welcome message will send to new member via PM.',
-    '!welcome disable : Disable welcome message.'
+    moderator = {
+      '!welcome group : Welcome message will shows in group.',
+      '!welcome pm : Welcome message will send to new member via PM.',
+      '!welcome disable : Disable welcome message.'
+    },
   },
   patterns = {
     "^!!tgservice (.+)$",
     "^!(welcome) (.*)$"
   },
-  run = run
+  run = run,
+  moderated = true
 }
 
 end
