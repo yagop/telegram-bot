@@ -9,22 +9,26 @@ The custom message will send to private chat newly joins member.
 Not recommended as a privacy concern and the possibility of user reporting the bot.
 
 !welcome disable
-Disable welcome service. Also, you can just disable welcome_service plugin.
+Disable welcome service. Also, you can just disable greeter plugin.
 --]]
 
 do
 
-local data = load_data(_config.moderation.data)
-
--- do not greet banned user
 local function is_banned(user_id, chat_id)
   local hash =  'banned:'..chat_id..':'..user_id
   local banned = redis:get(hash)
   return banned or false
 end
 
+local function is_super_banned(user_id)
+    local hash = 'superbanned:'..user_id
+    local superbanned = redis:get(hash)
+    return superbanned or false
+end
+
 local function welcome_message(msg, new_member)
 
+  local data = load_data(_config.moderation.data)
   local welcome_stat = data[tostring(msg.to.id)]['settings']['welcome']
 
   if data[tostring(msg.to.id)] then
@@ -50,6 +54,7 @@ end
 
 local function run(msg, matches)
 
+  local data = load_data(_config.moderation.data)
   local welcome_stat = data[tostring(msg.to.id)]['settings']['welcome']
 
   if matches[1] == 'welcome' then
@@ -78,28 +83,37 @@ local function run(msg, matches)
     end
   end
 
-  local settings = data[tostring(msg.to.id)]['settings']
-  -- do not greet bot when group is locked from bot
-  if settings.lock_bots == 'no' then
-    if welcome_stat ~= 'no' and msg.service then
-      if matches[1] == "chat_add_user" and not is_banned(msg.action.user.id, msg.to.id) then
-        if not msg.action.user.username then
-          new_member = msg.action.user.first_name..' '..(msg.action.user.last_name or '')
-        else
-          new_member = '@'..msg.action.user.username
-        end
-        welcome_message(msg, new_member)
-      elseif matches[1] == "chat_add_user_link" and not is_banned(msg.from.id, msg.to.id) then
-        if not msg.from.username then
-          new_member = msg.from.first_name..' '..(msg.from.last_name or '')
-        else
-          new_member = '@'..msg.from.username
-        end
-        welcome_message(msg, new_member)
-      elseif matches[1] == "chat_del_user" and not is_banned(msg.action.user.id, msg.to.id) then
-        local bye_name = msg.action.user.first_name..' '..(msg.action.user.last_name or '')
-        return 'Bye '..bye_name..'!'
+  if welcome_stat ~= 'no' and msg.action and msg.action.type then
+    -- do not greet (super)banned users or API bots.
+    local action = msg.action.type
+    if action == 'chat_add_user' or action == 'chat_add_user_link' or action == "chat_del_user" then
+      if msg.action.link_issuer then
+        user_id = msg.from.id
+        new_member = (msg.from.first_name or '')..' '..(msg.from.last_name or '')
+        user_flags = msg.flags
+      else
+	      user_id = msg.action.user.id
+        new_member = (msg.action.user.first_name or '')..' '..(msg.action.user.last_name or '')
+        user_flags = msg.action.user.flags
       end
+      local superbanned = is_super_banned(user_id)
+      local banned = is_banned(user_id, msg.to.id)
+      if superbanned or banned then
+        print 'Ignored. User is banned!'
+        return nil
+      end
+      if user_flags == 4352 then
+        print "Ignored. It's an API bot."
+        return nil
+      end
+    end
+
+    if matches[1] == "chat_add_user" then
+      welcome_message(msg, new_member)
+    elseif matches[1] == "chat_add_user_link" then
+      welcome_message(msg, new_member)
+    elseif matches[1] == "chat_del_user" then
+      return 'Bye '..new_member..'!'
     end
   end
 
@@ -108,15 +122,16 @@ end
 return {
   description = 'Sends a custom message when a user enters or leave a chat.',
   usage = {
-    '!welcome group : Welcome message will shows in group.',
-    '!welcome pm : Welcome message will send to new member via PM.',
-    '!welcome disable : Disable welcome message.'
+      '!welcome group : Welcome message will shows in group.',
+      '!welcome pm : Welcome message will send to new member via PM.',
+      '!welcome disable : Disable welcome message.'
   },
   patterns = {
     "^!!tgservice (.+)$",
     "^!(welcome) (.*)$"
   },
-  run = run
+  run = run,
+  privileged = true
 }
 
 end
