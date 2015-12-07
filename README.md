@@ -2,7 +2,6 @@ telegram-bot
 ============
 
 [![Build Status](https://travis-ci.org/nerdclub-tfg/telegram-bot.svg)](https://travis-ci.org/nerdclub-tfg/telegram-bot)
-
 A Telegram Bot based on plugins using [tg](https://github.com/vysheng/tg).
 
 Multimedia
@@ -384,4 +383,4 @@ Contact me
 ------------
 You can contact me [via Telegram](https://telegram.me/yago_perez) but if you have an issue please [open](https://github.com/yagop/telegram-bot/issues) one.
 
-[Join](https://telegram.me/joinchat/ALJ3iwFAhOCh4WNUHAyzXQ) on the TelegramBot Discussion Group.
+[Join](https://telegram.me/joinchat/ALJ3izwBCNXSswCHOKMwGw) on the TelegramBot Discussion Group.

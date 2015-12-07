@@ -239,7 +239,7 @@ function _send_photo(receiver, file_path, cb_function, cb_extra)
     cb_extra = cb_extra
   }
   -- Call to remove with optional callback
-  send_photo(receiver, file_path, rmtmp_cb, cb_extra)
+  send_photo(receiver, file_path, cb_function, cb_extra)
 end
 
 -- Download the image and send to receiver, it will be deleted.

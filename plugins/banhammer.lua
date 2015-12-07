@@ -13,15 +13,25 @@ end
 local function kick_user(user_id, chat_id)
   local chat = 'chat#id'..chat_id
   local user = 'user#id'..user_id
-  chat_del_user(chat, user, ok_cb, true)
+
+  if user_id == tostring(our_id) then
+    send_msg(chat, "I won't kick myself!", ok_cb,  true)
+  else
+    chat_del_user(chat, user, ok_cb, true)
+  end
 end
 
 local function ban_user(user_id, chat_id)
-  -- Save to redis
-  local hash =  'banned:'..chat_id..':'..user_id
-  redis:set(hash, true)
-  -- Kick from chat
-  kick_user(user_id, chat_id)
+  local chat = 'chat#id'..chat_id
+  if user_id == tostring(our_id) then
+    send_msg(chat, "I won't kick myself!", ok_cb,  true)
+  else
+    -- Save to redis
+    local hash =  'banned:'..chat_id..':'..user_id
+    redis:set(hash, true)
+    -- Kick from chat
+    kick_user(user_id, chat_id)
+  end
 end
 
 local function is_banned(user_id, chat_id)
@@ -65,7 +75,7 @@ local function pre_process(msg)
       msg.text = ''
     end
   end
-  
+
   -- WHITELIST
   local hash = 'whitelist:enabled'
   local whitelist = redis:get(hash)
@@ -95,7 +105,7 @@ local function pre_process(msg)
       msg.text = ''
     end
 
-  else 
+  else
     print('Whitelist not enabled or is sudo')
   end
 
@@ -152,7 +162,7 @@ local function run(msg, matches)
     if matches[2] == 'user' then
       local hash = 'whitelist:user#id'..matches[3]
       redis:set(hash, true)
-      return 'User '..msg.from.id..' whitelisted'
+      return 'User '..matches[3]..' whitelisted'
     end
 
     if matches[2] == 'chat' then
@@ -183,7 +193,7 @@ local function run(msg, matches)
 end
 
 return {
-  description = "Plugin to manage bans, kicks and white/black lists.", 
+  description = "Plugin to manage bans, kicks and white/black lists.",
   usage = {
     "!whitelist <enable>/<disable>: Enable or disable whitelist mode",
     "!whitelist user <user_id>: Allow user to use the bot when whitelist mode is enabled",
@@ -205,7 +215,7 @@ return {
     "^!(ban) (delete) (%d+)$",
     "^!(kick) (%d+)$",
     "^!!tgservice (.+)$",
-  }, 
+  },
   run = run,
   pre_process = pre_process
 }
