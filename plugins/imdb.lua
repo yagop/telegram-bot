@@ -3,7 +3,7 @@ do
 function imdb(msg, movie)
   local http = require("socket.http")
   local movie = movie:gsub(' ', '+')
-  local url = "http://www.imdbapi.com/?t=" .. movie
+  local url = "http://www.omdbapi.com/?t=" .. movie
   local response, code, headers = http.request(url)
 
   if code ~= 200 then
@@ -12,7 +12,11 @@ function imdb(msg, movie)
 
   if #response > 0 then
     local r = json:decode(response)
-    r['Url'] = "http://imdb.com/title/" .. r.imdbID
+    vardump(r)
+    if r.Error then
+      return r.Error
+    end
+    r['Url'] = "http://omdb.com/title/" .. r.imdbID
     local t = ""
     for k, v in pairs(r) do
       if not string.match(k, 'Poster') then

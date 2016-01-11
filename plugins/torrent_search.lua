@@ -1,36 +1,21 @@
---[[ NOT USED DUE TO SSL ERROR
--- See https://getstrike.net/api/
-local function strike_search(query)
-  local strike_base = 'http://getstrike.net/api/v2/torrents/'
-  local url = strike_base..'search/?phrase='..URL.escape(query)
-  print(url)
-  local b,c = http.request(url)
-  print(b,c)
-  local search = json:decode(b)
-  vardump(search)
-
-  if c ~= 200 then 
-    return search.message
-  end
-
-  vardump(search)
-  local results = search.results
-  local text = 'Results: '..results
-  local results = math.min(results, 3)
-  for i=1,results do
-    local torrent = search.torrents[i]
-    text = text..torrent.torrent_title
-      ..'\n'..'Seeds: '..torrent.seeds
-      ..' '..'Leeches: '..torrent.seeds
-      ..'\n'..torrent.magnet_uri..'\n\n'
-  end
-  return text
-end]]--
+local https = require ('ssl.https')
+local ltn12 = require ("ltn12")
 
 local function search_kickass(query)
-  local url = 'http://kat.cr/json.php?q='..URL.escape(query)
-  local b,c = http.request(url)
-  local data = json:decode(b)
+  local url = 'https://kat.cr/json.php?q='..URL.escape(query)
+
+  local resp = {}
+
+  local b,c = https.request
+  {
+    url = url,
+    protocol = "tlsv1",
+    sink = ltn12.sink.table(resp)
+  }
+
+  resp = table.concat(resp)
+
+  local data = json:decode(resp)
 
   local text = 'Results: '..data.total_results..'\n\n'
   local results = math.min(#data.list, 5)
