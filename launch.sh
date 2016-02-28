@@ -78,7 +78,7 @@ install() {
   git pull
   git submodule update --init --recursive
   patch -i "patches/disable-python-and-libjansson.patch" -p 0 --batch --forward
-  patch -i "patches/lua-tg.get_message.resolve_username.media_caption.patch" -p 0 --batch --forward
+  patch -i "patches/merbot.patch" -p 0 --batch --forward
   RET=$?;
 
   cd tg
