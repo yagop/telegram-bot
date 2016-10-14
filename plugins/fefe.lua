@@ -1,13 +1,16 @@
 local function getpost(id)
-    local base_url = "https://blog.fefe.de/?ts="
-    local url = base_url .. id
-	local https = require 'ssl.https'
-    local res, code = https.request(url)
+    local base_url = "http://blog.fefe.de/?ts="
+    local res, code = http.request(base_url .. id)
+    print('HTTP: ' .. base_url .. id)
+    print(code)
     if code ~=200 then return nil  end
     return res
 end
 
 local function extracttext(results)
+    if results == nil then
+        return "Error :-("
+    end
     -- match line containing text
     local line = string.sub( results, string.find(results, "<li><a href[^\n]+"))
     local text = line:gsub("<div style=.+", "")
