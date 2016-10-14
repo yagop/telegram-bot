@@ -1,13 +1,8 @@
 local function getpost(id)
-    local base_url = "http://blog.fefe.de/?ts="
-    local base_url_match = "http://blog%.fefe%.de/%?ts="
-    local url
-    if string.find(id, base_url_match) ~= nil then
-        url = id
-    else
-        url = base_url .. id
-    end
-    local res, code = http.request(url)
+    local base_url = "https://blog.fefe.de/?ts="
+    local url = base_url .. id
+	local https = require 'ssl.https'
+    local res, code = https.request(url)
     if code ~=200 then return nil  end
     return res
 end
@@ -36,7 +31,8 @@ return {
     description = "Sends blog.fefe.de post",
     usage = "!fefe [url|id]: sends blog.fefe.de post",
     patterns = {
-        "^!fefe (http://blog%.fefe%.de/%?ts=%w%w%w%w%w%w%w%w)$",
+        "^!fefe http://blog%.fefe%.de/%?ts=(%w%w%w%w%w%w%w%w)$",
+        "^!fefe https://blog%.fefe%.de/%?ts=(%w%w%w%w%w%w%w%w)$",
         "^!fefe (%w%w%w%w%w%w%w%w)$"
     },
     run = run
