@@ -1,3 +1,9 @@
+
+:warning: UNMAINTAINED / DEPRECATED :warning:
+============
+This proyect is no longer active since [Telegram Bot API](https://core.telegram.org/bots/api/) creation. It's better using the API rather than telegram-bot, almost every feature on Telegram-cli is available on API. You can use [node-telegram-bot-api](https://github.com/yagop/node-telegram-bot-api) Node.js module if you want. Or search your favourite one [here](https://www.reddit.com/r/TelegramBots/comments/4ly273/updated_collection_of_api_wrappers/).
+
+
 telegram-bot
 ============
 
