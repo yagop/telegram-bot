@@ -5,7 +5,7 @@ function run(msg, matches)
   local lon = matches[2]
   local receiver = get_receiver(msg)
 
-  local zooms = {16, 18}
+  local zooms = {15}
   local urls = {}
   for i = 1, #zooms do
     local zoom = zooms[i]
@@ -15,12 +15,12 @@ function run(msg, matches)
 
   send_photos_from_url(receiver, urls)
 
-  return "www.google.es/maps/place/@" .. lat .. "," .. lon
+  return "www.google.com/maps/place/@" .. lat .. "," .. lon .. ",17z"
 end
 
 return {
-  description = "generates a map showing the given GPS coordinates", 
-  usage = "!gps latitude,longitude: generates a map showing the given GPS coordinates",
+  description = "generates a map showing the given GPS coordinates",
+  usage = "!gps latitude,longitude: generates a map showing the given GPS coordinates (example: !gps 50.449859,30.524089)",
   patterns = {"^!gps ([^,]*)[,%s]([^,]*)$"}, 
   run = run 
 }

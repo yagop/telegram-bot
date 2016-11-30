@@ -36,7 +36,7 @@ local function get_weather(location)
 end
 
 local function run(msg, matches)
-  local city = 'Madrid,ES'
+  local city = 'Kyiv'
 
   if matches[1] ~= '!weather' then
     city = matches[1]

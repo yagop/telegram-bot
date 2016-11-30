@@ -1,6 +1,6 @@
 do
 
-local function imdb(movie)
+function imdb(msg, movie)
   local http = require("socket.http")
   local movie = movie:gsub(' ', '+')
   local url = "http://www.omdbapi.com/?t=" .. movie
@@ -19,15 +19,21 @@ local function imdb(movie)
     r['Url'] = "http://imdb.com/title/" .. r.imdbID
     local t = ""
     for k, v in pairs(r) do
-      t = t..k..": "..v.. "\n"
+      if not string.match(k, 'Poster') then
+        t = t .. k .. ": " .. v .. ".\n"
+      end
     end
-    return t
+
+    local receiver = get_receiver(msg)
+    send_photo_from_url(receiver, r['Poster'])
+
+    return t:sub(1, -3)
   end
   return nil
 end
 
 local function run(msg, matches)
-  return imdb(matches[1])
+  return imdb(msg, matches[1])
 end
 
 return {
