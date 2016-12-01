@@ -70,8 +70,13 @@ local types = {
   ["video/x-mng"] = "mng",
   ["video/x-ms-asf"] = "asf",
   ["video/x-ms-wmv"] = "wmv",
-  ["video/x-msvideo"] = "avi"
+  ["video/x-msvideo"] = "avi",
 }
+
+local reverse_types = {}
+for k, v in pairs(types) do
+    reverse_types[v] = k
+end
 
 -- Returns the common file extension from a content-type
 function mimetype.get_mime_extension(content_type)
@@ -80,21 +85,13 @@ end
 
 -- Returns the mimetype and subtype
 function mimetype.get_content_type(extension)
-  for k,v in pairs(types) do
-    if v == extension then
-      return k
-    end
-  end
+  return reverse_types[extension]
 end
 
 -- Returns the mimetype without the subtype
 function mimetype.get_content_type_no_sub(extension)
-  for k,v in pairs(types) do
-    if v == extension then
-      -- Before /
-      return k:match('([%w-]+)/')
-    end
-  end
+  -- Before /
+  return reverse_types[extension]:match('([%w-]+)/')
 end
 
 return mimetype
