@@ -2,16 +2,10 @@ local add_user_cfg = load_from_file('data/add_user_cfg.lua')
 
 local function template_add_user(base, to_username, from_username, chat_name, chat_id)
    base = base or ''
-   to_username = '@' .. (to_username or '')
-   from_username = '@' .. (from_username or '')
+   to_username = (to_username or '')
+   from_username = (from_username or '')
    chat_name = chat_name or ''
    chat_id = "chat#id" .. (chat_id or '')
-   if to_username == "@" then
-      to_username = ''
-   end
-   if from_username == "@" then
-      from_username = ''
-   end
    base = string.gsub(base, "{to_username}", to_username)
    base = string.gsub(base, "{from_username}", from_username)
    base = string.gsub(base, "{chat_name}", chat_name)
@@ -20,9 +14,14 @@ local function template_add_user(base, to_username, from_username, chat_name, ch
 end
 
 function chat_new_user_link(msg)
-   local pattern = add_user_cfg.initial_chat_msg
+   -- if a user entered a group chat
+   local pattern = add_user_cfg.initial_chat_msg_link
+   -- change message if self invite via link
+   if msg.from.id == our_id then
+     pattern = add_user_cfg.invited_chat_msg_link
+   end
+   
    local to_username = msg.from.username
-   local from_username = '[link](@' .. (msg.action.link_issuer.username or '') .. ')'
    local chat_name = msg.to.print_name
    local chat_id = msg.to.id
    pattern = template_add_user(pattern, to_username, from_username, chat_name, chat_id)
@@ -33,9 +32,26 @@ function chat_new_user_link(msg)
 end
 
 function chat_new_user(msg)
+
+   -- if a user were invited into a grouo
    local pattern = add_user_cfg.initial_chat_msg
-   local to_username = msg.action.user.username
-   local from_username = msg.from.username
+   -- change message if bot's was invited
+   if msg.action.user.id == our_id then
+     pattern = add_user_cfg.invited_chat_msg
+   end
+  
+   local to_username = msg.action.user.print_name
+   -- change to username if exists
+   if msg.action.user.username then
+     to_username = '@'..msg.action.user.username
+   end
+
+   local from_username = msg.from.print_name
+   -- change to username if exists
+   if msg.from.username then
+     from_username = '@'..msg.from.username
+   end
+
    local chat_name = msg.to.print_name
    local chat_id = msg.to.id
    pattern = template_add_user(pattern, to_username, from_username, chat_name, chat_id)
