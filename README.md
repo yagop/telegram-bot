@@ -1,10 +1,5 @@
 
-:warning: UNMAINTAINED / DEPRECATED :warning:
-============
-This proyect is no longer active since [Telegram Bot API](https://core.telegram.org/bots/api/) creation. It's better using the API rather than telegram-bot, almost every feature on Telegram-cli is available on API. You can use [node-telegram-bot-api](https://github.com/yagop/node-telegram-bot-api) Node.js module if you want. Or search your favourite one [here](https://www.reddit.com/r/TelegramBots/comments/4ly273/updated_collection_of_api_wrappers/).
-
-
-telegram-bot
+cyque-bot
 ============
 
 [![https://yago.me/tg-bot](https://img.shields.io/badge/💬_Telegram-Bot_Dev._Group-blue.svg)](https://yago.me/tg-bot) [![https://telegram.me/Yago_Perez](https://img.shields.io/badge/💬_Telegram-Yago__Perez-blue.svg)](https://telegram.me/Yago_Perez) [![https://gitter.im/yagop/telegram-bot](https://img.shields.io/badge/💬_Gitter-Join_Chat-green.svg)](https://gitter.im/yagop/telegram-bot)
@@ -154,7 +149,7 @@ Bot Commands
     </tr>
     <tr>
       <td>img_google.lua</td>
-      <td>Search image with Google API and sends it.</td>
+      <td>Search image with Google API and it.</td>
       <td>!img [term]: Random search an image with Google API.</td>
     </tr>
     <tr>
@@ -324,7 +319,7 @@ Bot Commands
   </tbody>
 </table>
 
-[Installation](https://github.com/yagop/telegram-bot/wiki/Installation)
+[Installation](https://github.com/bottest123/cyque-bot/wiki/Installation)
 ------------
 ```bash
 # Tested on Ubuntu 14.04, for other OSs check out https://github.com/yagop/telegram-bot/wiki/Installation
@@ -334,13 +329,13 @@ sudo apt-get install libreadline-dev libconfig-dev libssl-dev lua5.2 liblua5.2-d
 ```bash
 # After those dependencies, lets install the bot
 cd $HOME
-git clone https://github.com/yagop/telegram-bot.git
+git clone https://github.com/bottest123/cyque-bot.git
 cd telegram-bot
 ./launch.sh install
 ./launch.sh # Will ask you for a phone number & confirmation code.
 ```
 
-Enable more [`plugins`](https://github.com/yagop/telegram-bot/tree/master/plugins)
+Enable more [`plugins`](https://github.com/bottest123/cyque-bot/tree/master/plugins)
 -------------
 See the plugins list with `!plugins` command.
 
@@ -364,6 +359,6 @@ $ sudo stop telegram # To stop it
 
 Contact me
 ------------
-You can contact me [via Telegram](https://telegram.me/yago_perez) but if you have an issue please [open](https://github.com/yagop/telegram-bot/issues) one.
+You can contact me [via Telegram](https://telegram.me/hackedyouagain) but if you have an issue please [open](https://github.com/bottest123/cyque-bot/issues) one.
 
 [Join](https://telegram.me/joinchat/ALJ3izwBCNXSswCHOKMwGw) on the TelegramBot Discussion Group.
