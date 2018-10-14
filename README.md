@@ -149,7 +149,7 @@ Bot Commands
     </tr>
     <tr>
       <td>img_google.lua</td>
-      <td>Search image with Google API and it.</td>
+      <td>Search image with Google API and sends it.</td>
       <td>!img [term]: Random search an image with Google API.</td>
     </tr>
     <tr>
