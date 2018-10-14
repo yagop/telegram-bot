@@ -1,52 +1,47 @@
--- See https://bitcoinaverage.com/api
-local function getBTCX(amount,currency)
-  local base_url = 'https://api.bitcoinaverage.com/ticker/global/'
-  -- Do request on bitcoinaverage, the final / is critical!
-  local res,code  = https.request(base_url..currency.."/")
-  
-  if code ~= 200 then return nil end
-  local data = json:decode(res)
+do
 
-  -- Easy, it's right there
-  text = "BTC/"..currency..'\n'..'Buy: '..data.ask..'\n'..'Sell: '..data.bid
-  
-  -- If we have a number as second parameter, calculate the bitcoin amount
-  if amount~=nil then
-    btc = tonumber(amount) / tonumber(data.ask)
-    text = text.."\n "..currency .." "..amount.." = BTC "..btc
+  -- See https://bitcoinaverage.com/api
+  local function run(msg, matches)
+    local base_url = 'https://api.bitcoinaverage.com/ticker/global/'
+    local currency = 'USD'
+
+    if matches[2] then
+      currency = matches[2]:upper()
+    end
+
+    -- Do request on bitcoinaverage, the final / is critical!
+    local res, code = https.request(base_url .. currency .. '/')
+
+    if code ~= 200 then return nil end
+
+    local data = json:decode(res)
+    local ask = string.gsub(data.ask, '%.', ',')
+    local bid = string.gsub(data.bid, '%.', ',')
+    local index = '<b>BTC</b> in <b>' .. currency .. ':</b>\n'
+        .. '• Buy: ' .. group_into_three(ask) .. '\n'
+        .. '• Sell: ' .. group_into_three(bid)
+
+    bot_sendMessage(get_receiver_api(msg), index, true, msg.id, 'html')
   end
-  return text
+
+  --------------------------------------------------------------------------------
+
+  return {
+    description = 'Displays the current Bitcoin price.',
+    usage = {
+      '<code>!btc</code>',
+      'Displays Bitcoin price in USD',
+      '',
+      '<code>!btc [currency]</code>',
+      'Displays Bitcoin price in <code>[currency]</code>',
+      '<code>[currency]</code> is in <a href"https://en.wikipedia.org/wiki/ISO_4217">ISO 4217</a> format.',
+      '',
+    },
+    patterns = {
+      '^!(btc)$',
+      '^!(btc) (%a%a%a)$',
+    },
+    run = run
+  }
+
 end
-
-local function run(msg, matches)
-  local cur = 'EUR'
-  local amt = nil
-
-  -- Get the global match out of the way
-  if matches[1] == "!btc" then 
-    return getBTCX(amt,cur) 
-  end
-
-  if matches[2] ~= nil then
-    -- There is a second match
-    amt = matches[2]
-    cur = string.upper(matches[1])
-  else
-    -- Just a EUR or USD param
-    cur = string.upper(matches[1])
-  end
-  return getBTCX(amt,cur)
-end
-
-return {
-  description = "Bitcoin global average market value (in EUR or USD)", 
-  usage = "!btc [EUR|USD] [amount]",
-  patterns = {
-    "^!btc$",
-    "^!btc ([Ee][Uu][Rr])$",
-    "^!btc ([Uu][Ss][Dd])$",
-    "^!btc (EUR) (%d+[%d%.]*)$",
-    "^!btc (USD) (%d+[%d%.]*)$"
-  }, 
-  run = run 
-}
